@@ -1,0 +1,39 @@
+┌─────────────────────────────────────────────────────────────┐
+│ OPERATION KERNEL SHADOWS                                      │
+│ BRIEFING — Episode 01                                         │
+│ Classification: RESTRICTED                                    │
+│ Date: 02 October 2025                                         │
+└─────────────────────────────────────────────────────────────┘
+
+OPERATOR: Maxim "Max" Sokolov
+STATUS: Active
+CLEARANCE: Level 1 (Provisional)
+
+MISSION OBJECTIVE:
+Locate and extract coordinates for primary server infrastructure.
+Three files contain critical intelligence:
+  1. briefing.txt (this file)
+  2. .secret_location (coordinates)
+  3. .next_server (IP address)
+
+BACKGROUND:
+Viktor Petrov requires secure infrastructure for Operation KERNEL SHADOWS.
+Your task: demonstrate proficiency with Linux systems.
+
+INTEL:
+- Files are hidden using standard Unix conventions
+- No encryption applied (this is a test)
+- All data is on this server
+
+SUCCESS CRITERIA:
+✅ Locate all three files
+✅ Extract coordinates and IP
+✅ Create automated search script
+✅ Generate report
+
+FAILURE IS NOT AN OPTION.
+
+Next briefing: 14:00, 03 October 2025, ГУМ Bosco Café.
+
+— Viktor Petrov
+
