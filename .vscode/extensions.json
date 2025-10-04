@@ -1,0 +1,26 @@
+{
+  "recommendations": [
+    // Bash scripting
+    "timonwong.shellcheck",
+    "foxundermoon.shell-format",
+    "rogalmic.bash-debug",
+
+    // Markdown (документация)
+    "yzhang.markdown-all-in-one",
+    "davidanson.vscode-markdownlint",
+
+    // Git
+    "eamodio.gitlens",
+
+    // Подсветка TODO/FIXME
+    "wayou.vscode-todo-highlight",
+
+    // SSH & Remote
+    "ms-vscode-remote.remote-ssh",
+
+    // Docker (для Season 3-4)
+    "ms-azuretools.vscode-docker"
+  ],
+  "unwantedRecommendations": []
+}
+

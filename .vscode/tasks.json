@@ -1,0 +1,108 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "🧪 Run Episode Tests",
+      "type": "shell",
+      "command": "cd ${fileDirname} && if [ -f tests/test.sh ]; then bash tests/test.sh; else echo 'No tests found in this directory'; fi",
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "▶️ Run Current Script",
+      "type": "shell",
+      "command": "bash ${file}",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "🔍 Shellcheck Current File",
+      "type": "shell",
+      "command": "shellcheck ${file}",
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": {
+        "owner": "shellcheck",
+        "fileLocation": "absolute",
+        "pattern": {
+          "regexp": "^In\\s+(.+)\\s+line\\s+(\\d+):$",
+          "file": 1,
+          "line": 2
+        }
+      }
+    },
+    {
+      "label": "🚀 Run Starter Script",
+      "type": "shell",
+      "command": "cd ${fileDirname} && if [ -f starter.sh ]; then bash starter.sh; else echo 'No starter.sh found'; fi",
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "🤖 LILITH Help",
+      "type": "shell",
+      "command": "bash ${workspaceFolder}/tools/lilith.sh help",
+      "group": "none",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "📊 Show Progress",
+      "type": "shell",
+      "command": "bash ${workspaceFolder}/tools/progress.sh",
+      "group": "none",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "🧹 Clean Test Environment",
+      "type": "shell",
+      "command": "cd ${fileDirname} && rm -rf artifacts/test_environment/* && echo 'Test environment cleaned'",
+      "group": "none",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "📝 Format Current Shell Script",
+      "type": "shell",
+      "command": "shfmt -w -i 2 -ci ${file}",
+      "group": "none",
+      "presentation": {
+        "reveal": "silent",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    }
+  ]
+}
+

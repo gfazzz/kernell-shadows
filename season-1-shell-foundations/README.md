@@ -87,10 +87,10 @@ Max готов к настройке реальных серверов. Полу
 ```bash
 cd season-1-shell-foundations/episode-01-terminal-awakening/
 
-# 1. Прочитайте mission.md — сюжет и задание
-cat mission.md
+# 1. Прочитайте README.md — интегрированное руководство (сюжет + теория + практика)
+less README.md
 
-# 2. Изучите теорию в README.md
+# 2. Следуйте 8 последовательным заданиям
 less README.md
 
 # 3. Скопируйте тестовую среду
@@ -116,7 +116,7 @@ cd ~/kernel-shadows/season-1-shell-foundations/episode-01-terminal-awakening/tes
 
 ## 📊 Прогресс сезона
 
-**Версия:** v0.1  
+**Версия:** v0.1
 **Статус:** Early Development
 
 - [x] **Episode 01** — Complete (mission, README, artifacts, tests)
@@ -150,8 +150,7 @@ season-1-shell-foundations/
 ├── README.md                          # Этот файл
 │
 └── episode-01-terminal-awakening/
-    ├── mission.md                     # Сюжетное задание
-    ├── README.md                      # Теория + примеры
+    ├── README.md                      # Интегрированное руководство (v0.1.3+)
     ├── starter.sh                     # Шаблон скрипта
     │
     ├── solution/
@@ -233,7 +232,7 @@ history          # Показать последние команды
 
 <div align="center">
 
-**OPERATION KERNEL SHADOWS**  
+**OPERATION KERNEL SHADOWS**
 *Season 1 — Shell & Foundations*
 
 *"Ты видишь shell. Я вижу тени."* — LILITH

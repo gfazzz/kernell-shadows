@@ -8,8 +8,11 @@ ehthumbs.db
 Thumbs.db
 *~
 
+# personal files
+personal/
+
 # IDE and editor files
-.vscode/
+# .vscode/ — НЕ игнорируем, это часть курса!
 .idea/
 *.swp
 *.swo
@@ -37,4 +40,7 @@ season-*/episode-*/artifacts/test_environment/*
 .env
 .env.local
 secrets.txt
+
+# Progress tracker (индивидуальный для каждого студента)
+.progress
 
