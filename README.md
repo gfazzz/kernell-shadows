@@ -6,7 +6,7 @@
 **"In the shadows of the kernel, we control everything."**
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![Version](https://img.shields.io/badge/version-0.1.0-orange.svg)](https://github.com/gfazzz/kernel-shadows)
+[![Version](https://img.shields.io/badge/version-0.1.4-orange.svg)](https://github.com/gfazzz/kernel-shadows)
 [![Status](https://img.shields.io/badge/status-early_development-yellow.svg)]()
 
 </div>
@@ -199,14 +199,15 @@ lsb_release -a
 
 ## 📊 Прогресс курса
 
-**Версия:** 0.1.0 (Early Development)
-**Статус:** Episode 01 Ready
-**Прогресс:** 10% (Episode 01 + документация)
+**Версия:** 0.1.4 (Early Development)
+**Статус:** Episodes 01-02 Ready
+**Прогресс:** 15% (Episodes 01-02 + документация)
 
 ### Roadmap:
 - [x] Концепция и сюжет
 - [x] Структура 8 сезонов
 - [x] Season 1 Episode 01 (READY ✅)
+- [x] Season 1 Episode 02 (READY ✅)
 - [x] Аудит курса (4 октября 2025)
 - [ ] LILITH AI интеграция
 - [ ] Первые 4 эпизода (Season 1)

@@ -3,7 +3,7 @@
 ```
 ОПЕРАЦИЯ: KERNEL SHADOWS
 СЕЗОН: 1 — Shell & Foundations
-СТАТУС: Episode 01 Ready (v0.1)
+СТАТУС: Episodes 01-02 Ready (v0.1.4)
 ```
 
 ---
@@ -23,7 +23,7 @@
 | Episode | Название | Сложность | Время | Статус |
 |---------|----------|-----------|-------|--------|
 | **01** | Terminal Awakening | ⭐☆☆☆☆ | 3-4ч | ✅ Ready |
-| **02** | Shell Scripting Basics | ⭐⭐☆☆☆ | 3-4ч | 🔄 Planned |
+| **02** | Shell Scripting Basics | ⭐⭐☆☆☆ | 3-4ч | ✅ Ready |
 | **03** | Text Processing Masters | ⭐⭐☆☆☆ | 3-4ч | 🔄 Planned |
 | **04** | Package Management | ⭐☆☆☆☆ | 2-3ч | 🔄 Planned |
 
@@ -41,12 +41,14 @@
 - ✅ Создание простых bash скриптов
 - ✅ Понимание структуры Linux filesystem
 
-### Episode 02: Shell Scripting Basics (Planned)
-- Переменные в bash
-- Условия (`if`, `else`, `elif`)
-- Циклы (`for`, `while`)
-- Функции
-- Автоматизация задач
+### Episode 02: Shell Scripting Basics
+- ✅ Структура bash скриптов (shebang, комментарии)
+- ✅ Переменные в bash (`VAR="value"`, `$VAR`, `${VAR}`)
+- ✅ Условия (`if`, `[[ ]]`, операторы сравнения)
+- ✅ Циклы (`for`, `while`, `while read`)
+- ✅ Функции (`function_name() {}`, `local`, `return`)
+- ✅ Exit codes (`$?`, `exit 0/1`)
+- ✅ Автоматизация мониторинга серверов
 
 ### Episode 03: Text Processing Masters (Planned)
 - Pipes и redirects (`|`, `>`, `>>`)
@@ -112,15 +114,42 @@ cd ~/kernel-shadows/season-1-shell-foundations/episode-01-terminal-awakening/tes
 ./test.sh
 ```
 
+### Episode 02 — Shell Scripting Basics:
+
+```bash
+cd season-1-shell-foundations/episode-02-shell-scripting/
+
+# 1. Прочитайте README.md — интегрированное руководство
+less README.md
+
+# 2. Скопируйте артефакты
+cp artifacts/servers.txt .
+
+# 3. Начните с шаблона или создайте свой скрипт
+cp starter.sh server_monitor.sh
+chmod +x server_monitor.sh
+nano server_monitor.sh
+
+# 4. Тестируйте по ходу разработки
+./server_monitor.sh
+
+# 5. Проверьте логи
+cat monitor.log
+cat alerts.txt
+
+# 6. Запустите автотесты
+./tests/test.sh
+```
+
 ---
 
 ## 📊 Прогресс сезона
 
-**Версия:** v0.1
+**Версия:** v0.1.4
 **Статус:** Early Development
 
-- [x] **Episode 01** — Complete (mission, README, artifacts, tests)
-- [ ] Episode 02 — Not started
+- [x] **Episode 01** — Complete (README, artifacts, tests, solution)
+- [x] **Episode 02** — Complete (README, artifacts, tests, solution)
 - [ ] Episode 03 — Not started
 - [ ] Episode 04 — Not started
 - [ ] Season Project — Not started
@@ -216,11 +245,17 @@ history          # Показать последние команды
 
 ## 🔄 Следующие шаги
 
-После завершения Episode 01:
+### После завершения Episode 01:
 1. ✅ Убедитесь, что нашли все 3 файла
 2. ✅ Создали рабочий скрипт `find_files.sh`
 3. ✅ Прошли все тесты (`./tests/test.sh`)
-4. ➡️ Переходите к Episode 02 (когда будет готов)
+4. ➡️ Переходите к Episode 02
+
+### После завершения Episode 02:
+1. ✅ Создали функциональный `server_monitor.sh`
+2. ✅ Скрипт проверяет серверы и создаёт логи
+3. ✅ Прошли все тесты (`./tests/test.sh`)
+4. ➡️ Переходите к Episode 03 (в разработке)
 
 ---
 

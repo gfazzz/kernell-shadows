@@ -1,0 +1,34 @@
+# OPERATION KERNEL SHADOWS - Server List
+# Format: SERVER_NAME IP_ADDRESS
+# Lines starting with # are comments
+
+# Google DNS (для тестирования - должен быть online)
+test-server-01 8.8.8.8
+
+# Cloudflare DNS (для тестирования - должен быть online)
+test-server-02 1.1.1.1
+
+# Localhost (должен быть online если система работает)
+test-server-03 127.0.0.1
+
+# Несуществующий IP (для тестирования offline)
+test-server-04 192.168.255.255
+
+# Операция KERNEL SHADOWS - реальные серверы (симуляция)
+shadow-server-01 185.192.45.118
+shadow-server-02 185.192.45.119
+shadow-server-03 185.192.45.120
+shadow-server-04 185.192.45.121
+shadow-server-05 185.192.45.122
+
+# Backup серверы
+backup-server-01 185.192.46.10
+backup-server-02 185.192.46.11
+
+# Database серверы
+db-server-01 185.192.47.20
+db-server-02 185.192.47.21
+
+# Monitoring сервер
+monitor-01 185.192.48.30
+
