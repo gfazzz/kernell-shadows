@@ -31,6 +31,10 @@ season-*/episode-*/artifacts/test_environment/*
 !**/solution/.gitkeep
 !**/solution/*.sh.example
 
+# Exception: Season project solution (reference implementation)
+!season-1-shell-foundations/season-project/solution/
+!season-1-shell-foundations/season-project/solution/*.sh
+
 # Logs and temporary files
 *.log
 *.tmp
