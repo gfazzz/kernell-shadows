@@ -608,7 +608,6 @@ fi
 
 - **GitHub Issues:** [github.com/gfazzz/kernell-shadows/issues](https://github.com/gfazzz/kernell-shadows/issues)
 - **Discussions:** [github.com/gfazzz/kernell-shadows/discussions](https://github.com/gfazzz/kernell-shadows/discussions)
-- **Email:** your-email@example.com
 
 ---
 
