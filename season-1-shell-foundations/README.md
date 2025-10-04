@@ -24,7 +24,7 @@
 |---------|----------|-----------|-------|--------|
 | **01** | Terminal Awakening | ⭐☆☆☆☆ | 3-4ч | ✅ Ready |
 | **02** | Shell Scripting Basics | ⭐⭐☆☆☆ | 3-4ч | ✅ Ready |
-| **03** | Text Processing Masters | ⭐⭐☆☆☆ | 3-4ч | 🔄 Planned |
+| **03** | Text Processing Masters | ⭐⭐☆☆☆ | 3-4ч | ✅ Ready |
 | **04** | Package Management | ⭐☆☆☆☆ | 2-3ч | 🔄 Planned |
 
 **Общее время:** 12-15 часов
@@ -50,12 +50,15 @@
 - ✅ Exit codes (`$?`, `exit 0/1`)
 - ✅ Автоматизация мониторинга серверов
 
-### Episode 03: Text Processing Masters (Planned)
-- Pipes и redirects (`|`, `>`, `>>`)
-- `grep` для поиска текста
-- `awk` для обработки колонок
-- `sed` для замены текста
-- `cut`, `sort`, `uniq`
+### Episode 03: Text Processing Masters
+- ✅ Pipes и redirects (`|`, `>`, `>>`, `<`, `2>`)
+- ✅ `grep` для поиска текста (regex, filters)
+- ✅ `awk` для обработки колонок (fields, conditions)
+- ✅ `sed` для замены текста (stream editing)
+- ✅ `cut`, `sort`, `uniq`, `wc` для обработки данных
+- ✅ Анализ логов (Apache Combined Log Format)
+- ✅ Извлечение IP адресов и User-Agents
+- ✅ TOP-N анализ (TOP-10 attackers)
 
 ### Episode 04: Package Management (Planned)
 - APT (`apt install`, `apt update`)
@@ -141,6 +144,43 @@ cat alerts.txt
 ./tests/test.sh
 ```
 
+### Episode 03 — Text Processing Masters:
+
+```bash
+cd season-1-shell-foundations/episode-03-text-processing/
+
+# 1. Прочитайте README.md — интегрированное руководство
+less README.md
+
+# 2. Скопируйте артефакты
+mkdir -p ~/log_analysis
+cp artifacts/access.log ~/log_analysis/
+cp artifacts/suspicious_ips.txt ~/log_analysis/
+cp artifacts/report_template.txt ~/log_analysis/
+cd ~/log_analysis/
+
+# 3. Начните анализ по заданиям из README
+# Задание 1-6: Изучение grep, awk, sed, pipes
+grep "03:47" access.log | head
+awk '{print $1}' access.log | head
+
+# 4. Создайте свой log_analyzer.sh
+cp ~/kernel-shadows/season-1-shell-foundations/episode-03-text-processing/starter.sh ./log_analyzer.sh
+chmod +x log_analyzer.sh
+nano log_analyzer.sh
+
+# 5. Запустите анализ
+./log_analyzer.sh access.log suspicious_ips.txt final_report.txt
+
+# 6. Проверьте результаты
+cat final_report.txt
+cat top_attackers.txt
+
+# 7. Запустите автотесты
+cd ~/kernel-shadows/season-1-shell-foundations/episode-03-text-processing/tests
+./test.sh
+```
+
 ---
 
 ## 📊 Прогресс сезона
@@ -150,7 +190,7 @@ cat alerts.txt
 
 - [x] **Episode 01** — Complete (README, artifacts, tests, solution)
 - [x] **Episode 02** — Complete (README, artifacts, tests, solution)
-- [ ] Episode 03 — Not started
+- [x] **Episode 03** — Complete (README, artifacts, tests, solution)
 - [ ] Episode 04 — Not started
 - [ ] Season Project — Not started
 
@@ -255,7 +295,15 @@ history          # Показать последние команды
 1. ✅ Создали функциональный `server_monitor.sh`
 2. ✅ Скрипт проверяет серверы и создаёт логи
 3. ✅ Прошли все тесты (`./tests/test.sh`)
-4. ➡️ Переходите к Episode 03 (в разработке)
+4. ➡️ Переходите к Episode 03
+
+### После завершения Episode 03:
+1. ✅ Освоили grep, awk, sed, pipes
+2. ✅ Проанализировали логи атаки (4400+ строк)
+3. ✅ Создали `log_analyzer.sh` для автоматического анализа
+4. ✅ Нашли TOP-10 атакующих IP (включая Tor exit node)
+5. ✅ Прошли все тесты (`./tests/test.sh`)
+6. ➡️ Переходите к Episode 04 (в разработке)
 
 ---
 
