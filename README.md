@@ -94,7 +94,7 @@
 - Базовое понимание компьютеров (что такое файл, папка, программа)
 - Ubuntu Linux установлен (или VM, или WSL2)
 - Желание учиться через практику и сюжет
-- (Опционально) Прохождение [OPERATION MOONLIGHT](https://github.com/gfazzz/moonlight-course) для полного погружения в сюжет
+- (Опционально) параллельное прохождение [OPERATION MOONLIGHT](https://github.com/gfazzz/moonlight-course) для полного погружения в сюжет
 
 ---
 
