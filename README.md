@@ -42,8 +42,6 @@
 
 ## 🤖 LILITH — Ваш AI-Помощник
 
-<img src="assets/lilith-avatar.png" width="150" align="right" alt="LILITH">
-
 **LILITH** (Linux Infrastructure & Low-level Intelligence Threat Hunter) — это не просто помощник. Это AI из теневого мира, специализирующийся на Linux системах, сетях и security.
 
 ### Философия LILITH:
