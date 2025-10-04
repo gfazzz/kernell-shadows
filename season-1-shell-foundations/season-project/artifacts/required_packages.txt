@@ -1,0 +1,34 @@
+# Required Packages for KERNEL SHADOWS Operations
+# Season 1 Integration Project
+#
+# This file contains packages that should be installed on all servers
+
+# System monitoring
+htop
+iotop
+sysstat
+
+# Networking tools
+net-tools
+iproute2
+dnsutils
+curl
+wget
+
+# Security tools
+nmap
+tcpdump
+fail2ban
+
+# Text processing
+jq
+xmlstarlet
+
+# Development tools
+git
+vim
+
+# Compression
+zip
+unzip
+

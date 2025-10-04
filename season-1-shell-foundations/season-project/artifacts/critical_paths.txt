@@ -1,0 +1,28 @@
+# Critical Paths Check
+# These paths should exist on all servers
+
+# System directories
+/etc
+/var
+/var/log
+/home
+/root
+/tmp
+/usr/bin
+/usr/local/bin
+
+# Configuration files
+/etc/passwd
+/etc/group
+/etc/hosts
+/etc/hostname
+/etc/ssh/sshd_config
+
+# Log files
+/var/log/syslog
+/var/log/auth.log
+
+# Systemd
+/etc/systemd/system
+/usr/lib/systemd/system
+

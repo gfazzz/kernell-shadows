@@ -27,7 +27,9 @@
 | **03** | Text Processing Masters | ⭐⭐☆☆☆ | 3-4ч | ✅ Ready |
 | **04** | Package Management | ⭐☆☆☆☆ | 2-3ч | ✅ Ready |
 
-**Общее время:** 12-15 часов
+**Общее время:** 12-15 часов + 4-6 часов (Season Project)
+
+**Season Project:** System Setup Master Script — интеграция всех 4 эпизодов (⭐⭐⭐⭐☆)
 
 ---
 
@@ -70,6 +72,17 @@
 - ✅ Non-interactive installation (DEBIAN_FRONTEND)
 - ✅ Логирование и отчёты
 - ✅ Docker installation (custom repository)
+
+### Season Project: System Setup Master Script
+**Интеграция всех навыков из Episodes 01-04:**
+- ✅ System checking (Episode 01: filesystem, permissions, disk space)
+- ✅ System monitoring (Episode 02: CPU, memory, processes, services)
+- ✅ Security analysis (Episode 03: failed logins, threat detection, TOP-10 attackers)
+- ✅ Package management (Episode 04: automated installation, dependency resolution)
+- ✅ Report generation (comprehensive system audit)
+- ✅ Production-ready automation script
+- ✅ Error handling и logging
+- ✅ Dry-run mode для безопасного тестирования
 
 ---
 
@@ -241,6 +254,58 @@ sudo ./install_toolkit.sh artifacts/required_tools.txt
 
 ---
 
+### Season Project — Integration (после Episodes 01-04):
+
+```bash
+cd season-1-shell-foundations/season-project/
+
+# 1. Прочитайте README.md — задание и инструкции
+less README.md
+
+# 2. Изучите артефакты
+cat artifacts/required_packages.txt
+cat artifacts/threat_database.txt
+cat artifacts/critical_paths.txt
+
+# 3. Начните с шаблона
+cp starter.sh system_setup.sh
+chmod +x system_setup.sh
+nano system_setup.sh
+
+# 4. Реализуйте модули по порядку:
+#    - Module 1: System Check (Episode 01 навыки)
+#    - Module 2: System Monitoring (Episode 02 навыки)
+#    - Module 3: Security Analysis (Episode 03 навыки)
+#    - Module 4: Package Management (Episode 04 навыки)
+#    - Module 5: Report Generation
+
+# 5. Тестируйте по ходу (dry-run mode)
+./system_setup.sh --dry-run
+
+# 6. Проверьте сгенерированные отчёты
+cat system_report.txt
+cat security_analysis.txt
+cat setup.log
+
+# 7. Запустите автотесты
+cd tests/
+./test.sh
+
+# 8. Полный запуск (с установкой пакетов, если root)
+cd ..
+sudo ./system_setup.sh
+```
+
+**⚠️ ВАЖНО для Season Project:**
+- Это **ФИНАЛЬНЫЙ ПРОЕКТ** Season 1
+- Объединяет ВСЕ навыки из Episodes 01-04
+- Проходите ТОЛЬКО после завершения всех 4 эпизодов
+- Можно работать без sudo (используйте --dry-run)
+- Автотесты проверяют структуру и функциональность
+- После успешного прохождения → переход к Season 2
+
+---
+
 ## 📊 Прогресс сезона
 
 **Версия:** v0.1.6
@@ -250,7 +315,7 @@ sudo ./install_toolkit.sh artifacts/required_tools.txt
 - [x] **Episode 02** — Complete (README, artifacts, tests, solution)
 - [x] **Episode 03** — Complete (README, artifacts, tests, solution)
 - [x] **Episode 04** — Complete (README, artifacts, tests, solution)
-- [ ] Season Project — Planned (integration of all 4 episodes)
+- [x] **Season Project** — Complete (Integration: system_setup.sh) 🎉
 
 ---
 
@@ -370,7 +435,16 @@ history          # Показать последние команды
 4. ✅ Установили security & networking tools
 5. ✅ Настроили логирование и отчёты
 6. ✅ Прошли все тесты (`./tests/test.sh`)
-7. 🎉 **Season 1 завершён!** Переходите к Season 2 (в разработке)
+7. ➡️ Переходите к Season Project — Integration
+
+### После завершения Season Project:
+1. ✅ Интегрировали все навыки из Episodes 01-04
+2. ✅ Создали production-ready `system_setup.sh`
+3. ✅ Автоматизировали system checking, monitoring, security analysis, package management
+4. ✅ Реализовали comprehensive reporting
+5. ✅ Прошли все тесты (`./tests/test.sh` — 20/20)
+6. ✅ Скрипт работает на реальных серверах
+7. 🎉 **Season 1 ЗАВЕРШЁН!** Переходите к Season 2 (в разработке)
 
 ---
 
