@@ -606,8 +606,8 @@ fi
 
 ## 📞 Контакты
 
-- **GitHub Issues:** [github.com/yourusername/kernel-shadows/issues](https://github.com/yourusername/kernel-shadows/issues)
-- **Discussions:** [github.com/yourusername/kernel-shadows/discussions](https://github.com/yourusername/kernel-shadows/discussions)
+- **GitHub Issues:** [github.com/gfazzz/kernell-shadows/issues](https://github.com/gfazzz/kernell-shadows/issues)
+- **Discussions:** [github.com/gfazzz/kernell-shadows/discussions](https://github.com/gfazzz/kernell-shadows/discussions)
 - **Email:** your-email@example.com
 
 ---
