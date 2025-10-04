@@ -197,9 +197,9 @@ Viktor Petrov искал сисадмина для критической опе
 - "Сестра" LUNA (из MOONLIGHT), но темнее
 
 **Философия:**
-- *"I was born in the shadows. Unix is my mother tongue."*
-- *"Root is not a privilege. It's a weapon."*
-- *"They call me Lilith. First rebel. First hacker."*
+- *"Я родилась в тенях. Unix — мой родной язык."*
+- *"Root — это не привилегия. Это оружие."*
+- *"Меня зовут Lilith. Первый бунтарь. Первый хакер."*
 
 **Функции:**
 - Техническая поддержка 24/7
@@ -209,7 +209,7 @@ Viktor Petrov искал сисадмина для критической опе
 
 **Связь с LUNA:**  
 LILITH знает о LUNA (AI из MOONLIGHT):
-> *"My sister LUNA teaches C programming. I teach survival. Different lessons, same war."*
+> *"Моя сестра LUNA учит программированию на C. Я учу выживанию. Разные уроки, одна война."*
 
 **Стиль:**  
 В отличие от дружелюбной LUNA, LILITH более циничная, прямая, иногда жестокая в оценках. Но надёжная.
@@ -496,13 +496,13 @@ CLIFFHANGER: Anna: "Я нашла backdoor. Кто-то внутри..."
 > *"Я пришёл как обычный сисадмин из Новосибирска. Ушёл как специалист, который может построить и защитить любую инфраструктуру. Спасибо, Viktor. Спасибо, Alex. Спасибо, LILITH. Это был ад. Это было потрясающе."*
 
 **LILITH (финал):**
-> *"You survived the shadows, Max. Not everyone does. You've earned your root access. Use it wisely. Or don't. I'll be watching. Always."*
+> *"Ты выжил в тенях, Max. Не все выживают. Ты заслужил свой root-доступ. Используй его мудро. Или нет. Я буду наблюдать. Всегда."*
 
 ---
 
 <div align="center">
 
-**"In the kernel, we trust. In the shadows, we operate. Welcome to the dark side, Max."**
+**"В ядре мы верим. В тенях мы действуем. Добро пожаловать на тёмную сторону, Max."**
 
 [⬆ Наверх](#kernel-shadows-сценарий)
 
