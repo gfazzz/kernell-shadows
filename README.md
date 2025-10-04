@@ -6,7 +6,7 @@
 **"In the shadows of the kernel, we control everything."**
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![Version](https://img.shields.io/badge/version-0.1.0-orange.svg)](https://github.com/gfazzz/kernell-shadows)
+[![Version](https://img.shields.io/badge/version-0.1.0-orange.svg)](https://github.com/gfazzz/kernel-shadows)
 [![Status](https://img.shields.io/badge/status-early_development-yellow.svg)]()
 
 </div>
@@ -132,8 +132,8 @@ lsb_release -a
 ### 2. Клонирование курса
 
 ```bash
-git clone https://github.com/gfazzz/kernell-shadows.git
-cd kernell-shadows
+git clone https://github.com/gfazzz/kernel-shadows.git
+cd kernel-shadows
 ```
 
 ### 3. Первый эпизод
@@ -232,8 +232,8 @@ KERNEL SHADOWS — это open source проект под лицензией **G
 
 ## 📞 Контакты
 
-- **GitHub Issues:** [Report a bug](https://github.com/gfazzz/kernell-shadows/issues)
-- **Discussions:** [Community forum](https://github.com/gfazzz/kernell-shadows/discussions)
+- **GitHub Issues:** [Report a bug](https://github.com/gfazzz/kernel-shadows/issues)
+- **Discussions:** [Community forum](https://github.com/gfazzz/kernel-shadows/discussions)
 
 
 ---

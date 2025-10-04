@@ -606,8 +606,8 @@ fi
 
 ## 📞 Контакты
 
-- **GitHub Issues:** [github.com/gfazzz/kernell-shadows/issues](https://github.com/gfazzz/kernell-shadows/issues)
-- **Discussions:** [github.com/gfazzz/kernell-shadows/discussions](https://github.com/gfazzz/kernell-shadows/discussions)
+- **GitHub Issues:** [github.com/gfazzz/kernel-shadows/issues](https://github.com/gfazzz/kernel-shadows/issues)
+- **Discussions:** [github.com/gfazzz/kernel-shadows/discussions](https://github.com/gfazzz/kernel-shadows/discussions)
 
 ---
 

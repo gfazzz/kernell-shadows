@@ -103,12 +103,12 @@ find . -name "briefing.txt"
 # ... и так далее
 
 # 5. Создайте свой скрипт
-cp ~/kernell-shadows/season-1-shell-foundations/episode-01-terminal-awakening/starter.sh ./find_files.sh
+cp ~/kernel-shadows/season-1-shell-foundations/episode-01-terminal-awakening/starter.sh ./find_files.sh
 chmod +x find_files.sh
 nano find_files.sh
 
 # 6. Запустите тесты
-cd ~/kernell-shadows/season-1-shell-foundations/episode-01-terminal-awakening/tests/
+cd ~/kernel-shadows/season-1-shell-foundations/episode-01-terminal-awakening/tests/
 ./test.sh
 ```
 

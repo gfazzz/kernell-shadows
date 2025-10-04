@@ -114,7 +114,7 @@ Episode 01 соответствует ВСЕМ критериям:
 ### Как протестировать Episode 01:
 
 ```bash
-cd /home/fazzz/kernell-shadows/season-1-shell-foundations/episode-01-terminal-awakening/
+cd /home/fazzz/kernel-shadows/season-1-shell-foundations/episode-01-terminal-awakening/
 
 # 1. Прочитать mission.md
 cat mission.md
@@ -137,12 +137,12 @@ cat .next_server
 
 # 5. Создать свой скрипт
 cd ~/
-cp kernell-shadows/season-1-shell-foundations/episode-01-terminal-awakening/starter.sh ./find_files.sh
+cp kernel-shadows/season-1-shell-foundations/episode-01-terminal-awakening/starter.sh ./find_files.sh
 chmod +x find_files.sh
 nano find_files.sh
 
 # 6. Запустить тесты
-cd ~/kernell-shadows/season-1-shell-foundations/episode-01-terminal-awakening/tests/
+cd ~/kernel-shadows/season-1-shell-foundations/episode-01-terminal-awakening/tests/
 ./test.sh
 ```
 
