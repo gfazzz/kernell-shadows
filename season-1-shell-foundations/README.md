@@ -3,7 +3,7 @@
 ```
 ОПЕРАЦИЯ: KERNEL SHADOWS
 СЕЗОН: 1 — Shell & Foundations
-СТАТУС: Episodes 01-02 Ready (v0.1.4)
+СТАТУС: Episodes 01-04 Ready (v0.1.6)
 ```
 
 ---
@@ -25,7 +25,7 @@
 | **01** | Terminal Awakening | ⭐☆☆☆☆ | 3-4ч | ✅ Ready |
 | **02** | Shell Scripting Basics | ⭐⭐☆☆☆ | 3-4ч | ✅ Ready |
 | **03** | Text Processing Masters | ⭐⭐☆☆☆ | 3-4ч | ✅ Ready |
-| **04** | Package Management | ⭐☆☆☆☆ | 2-3ч | 🔄 Planned |
+| **04** | Package Management | ⭐☆☆☆☆ | 2-3ч | ✅ Ready |
 
 **Общее время:** 12-15 часов
 
@@ -60,11 +60,16 @@
 - ✅ Извлечение IP адресов и User-Agents
 - ✅ TOP-N анализ (TOP-10 attackers)
 
-### Episode 04: Package Management (Planned)
-- APT (`apt install`, `apt update`)
-- DPKG
-- Snap packages
-- Установка необходимых инструментов
+### Episode 04: Package Management
+- ✅ APT (Advanced Package Tool): `apt install`, `apt update`, `apt upgrade`
+- ✅ DPKG (Debian Package Manager): low-level управление
+- ✅ Snap packages: современная альтернатива
+- ✅ Репозитории: `/etc/apt/sources.list`, добавление PPA
+- ✅ Dependency resolution и troubleshooting
+- ✅ Автоматизация установки через скрипт
+- ✅ Non-interactive installation (DEBIAN_FRONTEND)
+- ✅ Логирование и отчёты
+- ✅ Docker installation (custom repository)
 
 ---
 
@@ -181,18 +186,71 @@ cd ~/kernel-shadows/season-1-shell-foundations/episode-03-text-processing/tests
 ./test.sh
 ```
 
+### Episode 04 — Package Management:
+
+```bash
+cd season-1-shell-foundations/episode-04-package-management/
+
+# 1. Прочитайте README.md — интегрированное руководство
+less README.md
+
+# 2. Изучите список инструментов
+cat artifacts/required_tools.txt
+
+# 3. Попрактикуйтесь с APT (НЕ запускайте sudo без понимания!)
+apt search nmap
+apt show nmap
+
+# 4. Начните с шаблона
+cp starter.sh install_toolkit.sh
+chmod +x install_toolkit.sh
+nano install_toolkit.sh
+
+# 5. Заполните TODO комментарии
+# Начните с простых функций: log_message(), check_root()
+
+# 6. Тестирование БЕЗ sudo (должна выдать ошибку о root)
+./install_toolkit.sh artifacts/required_tools.txt
+
+# 7. Создайте минимальный тестовый файл
+echo "htop" > test_tools.txt
+echo "curl" >> test_tools.txt
+
+# 8. Тестирование с sudo (ОСТОРОЖНО! Реальная установка)
+sudo ./install_toolkit.sh test_tools.txt
+
+# 9. Проверьте результаты
+cat install_report.txt
+cat install.log
+
+# 10. Запустите автотесты
+cd tests/
+./test.sh
+
+# 11. Полная установка (когда готовы)
+cd ..
+sudo ./install_toolkit.sh artifacts/required_tools.txt
+```
+
+**⚠️ ВАЖНО для Episode 04:**
+- Episode 04 **ТРЕБУЕТ sudo** (root права)
+- Некоторые команды устанавливают реальные пакеты
+- Тестируйте на виртуальной машине или докер-контейнере
+- Или используйте минимальный test_tools.txt
+- Читайте artifacts/README.md для деталей Docker installation
+
 ---
 
 ## 📊 Прогресс сезона
 
-**Версия:** v0.1.4
-**Статус:** Early Development
+**Версия:** v0.1.6
+**Статус:** Season 1 Complete! 🎉
 
 - [x] **Episode 01** — Complete (README, artifacts, tests, solution)
 - [x] **Episode 02** — Complete (README, artifacts, tests, solution)
 - [x] **Episode 03** — Complete (README, artifacts, tests, solution)
-- [ ] Episode 04 — Not started
-- [ ] Season Project — Not started
+- [x] **Episode 04** — Complete (README, artifacts, tests, solution)
+- [ ] Season Project — Planned (integration of all 4 episodes)
 
 ---
 
@@ -303,7 +361,16 @@ history          # Показать последние команды
 3. ✅ Создали `log_analyzer.sh` для автоматического анализа
 4. ✅ Нашли TOP-10 атакующих IP (включая Tor exit node)
 5. ✅ Прошли все тесты (`./tests/test.sh`)
-6. ➡️ Переходите к Episode 04 (в разработке)
+6. ➡️ Переходите к Episode 04
+
+### После завершения Episode 04:
+1. ✅ Освоили package management (APT, DPKG, Snap)
+2. ✅ Научились добавлять репозитории безопасно
+3. ✅ Создали `install_toolkit.sh` для автоматизации
+4. ✅ Установили security & networking tools
+5. ✅ Настроили логирование и отчёты
+6. ✅ Прошли все тесты (`./tests/test.sh`)
+7. 🎉 **Season 1 завершён!** Переходите к Season 2 (в разработке)
 
 ---
 
