@@ -1,25 +1,39 @@
 # KERNEL SHADOWS: Статус проекта
 
-**Версия:** 0.2.0 (Season 2 Starts — Episode 05 Ready!)
+**Версия:** 0.2.2 (Season 2: Firewalls & iptables — DDoS Attack! 🔥)
 **Дата:** 8 октября 2025
-**Обновлено:** 8 октября 2025 (Season 2 Episode 05 — TCP/IP Fundamentals)
-**Статус:** Season 1 Complete! Season 2 начался 🚀 (Episode 05 Ready)
+**Обновлено:** 8 октября 2025 (Season 2 Episode 07 — Firewalls & iptables)
+**Статус:** Season 1 Complete! Season 2 Episode 07 Ready 🚀 (75% done)
 
 ---
 
-## 📊 Общий прогресс: 32%
+## 📊 Общий прогресс: 35%
 
-### v0.2.1 — Season 2 Episode 06 Ready! 🇸🇪
+### v0.2.2 — Season 2 Episode 07 Ready! 🔥🇷🇺
+- [x] **Season 2 Episode 07** (100%) — Firewalls & iptables (Москва, дни 13-14)
+  - Интегрированный README.md (2,738+ строк):
+    - Сюжет: DDoS атака в реальном времени (03:47, экстренный звонок от Alex)
+    - 8 последовательных заданий с progressive hints (check → enable UFW → allow ports → block IPs → rate limiting → logging → monitoring → audit)
+    - Полная теория: UFW vs iptables, chains, targets, rate limiting, SYN flood, fail2ban, nftables
+    - LILITH Emergency Mode — активный помощник под давлением
+    - Twist: Сообщение от Krylov в TCP payload логах
+  - starter.sh (350+ строк) — шаблон с TODO для всех 8 задач
+  - solution/firewall_setup.sh (500+ строк) — референсное решение:
+    - Complete firewall setup (UFW + iptables)
+    - IP blocking (botnet list processing)
+    - Rate limiting (connlimit, recent, hashlimit)
+    - Attack logging (rsyslog integration)
+    - Real-time monitoring
+    - Comprehensive audit report
+  - artifacts/:
+    - botnet_ips.txt (50 test IPs, real attack had 847)
+    - README.md (forensics notes from Anna)
+  - tests/test.sh (400+ строк) — 11 test categories
 - [x] **Season 2 Episode 06** (100%) — DNS & Name Resolution (Стокгольм, дни 10-12)
-  - Интегрированный README.md (2,550+ строк)
-  - starter.sh шаблон с TODO (280+ строк)
-  - solution/dns_audit.sh референсное решение (80+ строк)
-  - artifacts/ (dns_zones.txt, suspicious_domains.txt, README.md)
-  - tests/test.sh автотесты (6 основных тестов)
 - [x] **Season 2 Episode 05** (100%) — TCP/IP Fundamentals (Москва, день 9)
 - [x] **Season 2 README** (100%) — обзор сезона Networking
 - [x] **Season 1** (100%) — Shell & Foundations (4 episodes)
-- [ ] Season 2 Episodes 07-08 (0%) — в разработке
+- [ ] Season 2 Episode 08 (0%) — VPN & SSH Tunneling (в разработке)
 
 ---
 
@@ -28,7 +42,7 @@
 | Season | Название | Episodes | Прогресс | Статус |
 |--------|----------|----------|----------|--------|
 | **1** | Shell & Foundations | 01-04 | 100% | Complete! 🎉 |
-| **2** | Networking | 05-08 | 50% | Episodes 05-06 Ready! 🇸🇪 |
+| **2** | Networking | 05-08 | 75% | Episodes 05-07 Ready! 🔥 |
 | **3** | System Administration | 09-12 | 0% | Not started |
 | **4** | DevOps & Automation | 13-16 | 0% | Not started |
 | **5** | Security & Pentesting | 17-20 | 0% | Not started |
@@ -129,6 +143,49 @@
 - **Структура:** Learn by Doing with Theory (практика + справочник)
 - **Финальный проект:** Log analyzer для forensics анализа
 - **Особенность:** Первая атака в сюжете, Anna Kovaleva, Tor exit node
+
+### Episode 07: Firewalls & iptables (COMPLETE ✅):
+- ✅ **README.md** (2,738+ строк) — интегрированный сюжет + теория + практика
+  - Сюжет: DDoS атака в реальном времени (03:47 Moscow time, 847 IPs, SYN flood)
+  - 8 последовательных заданий с progressive hints (3-level system)
+  - Теория: UFW vs iptables, chains (INPUT/OUTPUT/FORWARD), targets (ACCEPT/DROP/REJECT/LOG)
+  - Rate limiting: connlimit, recent, hashlimit, limit modules
+  - SYN flood protection и kernel tuning
+  - Практика: Emergency incident response под давлением (5 минут до crash)
+  - LILITH Emergency Mode — real-time помощник
+  - Twist: Сообщение от Krylov в TCP payload: "Соколов. Передай брату: я найду вас. Обоих. - К."
+- ✅ **starter.sh** — шаблон с TODO (350+ строк)
+- ✅ **solution/firewall_setup.sh** — референсное решение (500+ строк)
+  - Complete UFW setup (default deny + allow SSH/HTTP/HTTPS)
+  - Botnet IP blocking (847 IPs via iptables)
+  - Multi-layer rate limiting (per-IP, per-service, global)
+  - Attack logging (rsyslog integration, separate log files)
+  - Real-time monitoring (load, SYN_RECV, blocked packets)
+  - Comprehensive audit report (8 sections, forensics analysis)
+- ✅ **artifacts/** — incident response data:
+  - `botnet_ips.txt` — 50 test IPs (simulating 847 real IPs from Krylov's botnet)
+  - `README.md` — forensics notes from Anna (attack attribution, timing, recommendations)
+- ✅ **tests/test.sh** — comprehensive test suite (400+ строк)
+  - File structure tests (scripts, artifacts, executability)
+  - Syntax validation (bash -n)
+  - Security features validation (UFW policies, rate limiting, logging)
+  - Error handling checks (set -e, file checks, IP validation)
+  - 11 test categories, detailed reporting
+
+### Статистика Episode 07:
+- **Строк кода:** ~1,250 (starter + solution + tests)
+- **Строк документации:** ~2,738 (интегрированный README)
+- **Размер:** ~110 KB
+- **Время прохождения:** 4-5 часов
+- **Сложность:** ⭐⭐⭐☆☆ (incident response под давлением!)
+- **Структура:** Emergency Incident Response (time pressure, real-world scenario)
+- **Финальный проект:** Complete firewall setup с DDoS mitigation + audit report
+- **Особенность:** 
+  - Первый REAL incident (не симуляция)
+  - 5-минутный deadline (Load Average 47 → 2)
+  - Удалённое администрирование (SSH из самолёта, 1200ms latency)
+  - Progressive escalation (Krylov угрожает лично Alex и Max)
+  - Multi-tool integration (UFW + iptables + rsyslog + netstat + ss)
 
 ---
 

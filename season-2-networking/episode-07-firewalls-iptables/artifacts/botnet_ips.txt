@@ -1,0 +1,68 @@
+# Botnet IP addresses detected in DDoS attack
+# Source: Anna Kovaleva (Forensics Analysis)
+# Date: Day 13 of 60 (KERNEL SHADOWS Operation)
+# Attack type: SYN Flood
+# Total IPs: 50 (simulated, real attack had 847)
+
+# Tor exit nodes
+185.220.101.47     # Tor exit node (DE)
+91.219.237.244     # Tor exit node (NL)
+195.123.246.151    # Tor exit node (RO)
+178.17.170.23      # Tor exit node (UA)
+178.17.171.102     # Tor exit node (UA)
+
+# VPN providers (compromised)
+203.0.113.10       # VPN exit IP
+203.0.113.15       # VPN exit IP
+203.0.113.20       # VPN exit IP
+203.0.113.25       # VPN exit IP
+203.0.113.30       # VPN exit IP
+
+# Compromised servers
+198.51.100.10      # Compromised web server
+198.51.100.15      # Compromised web server
+198.51.100.20      # Compromised web server
+198.51.100.25      # Compromised web server
+198.51.100.30      # Compromised web server
+
+# Residential proxies (botnet)
+192.0.2.10         # Residential proxy
+192.0.2.15         # Residential proxy
+192.0.2.20         # Residential proxy
+192.0.2.25         # Residential proxy
+192.0.2.30         # Residential proxy
+192.0.2.35         # Residential proxy
+192.0.2.40         # Residential proxy
+192.0.2.45         # Residential proxy
+192.0.2.50         # Residential proxy
+192.0.2.55         # Residential proxy
+
+# Known Krylov infrastructure
+185.220.100.1      # Krylov C2 server
+185.220.100.2      # Krylov C2 server
+185.220.100.3      # Krylov C2 server
+185.220.100.4      # Krylov proxy
+185.220.100.5      # Krylov proxy
+
+# Additional attack sources
+10.0.0.1           # Internal test IP (should not block - invalid)
+10.0.0.2           # Internal test IP (should not block - invalid)
+203.0.113.100      # Attack source
+203.0.113.101      # Attack source
+203.0.113.102      # Attack source
+203.0.113.103      # Attack source
+203.0.113.104      # Attack source
+203.0.113.105      # Attack source
+203.0.113.106      # Attack source
+203.0.113.107      # Attack source
+203.0.113.108      # Attack source
+203.0.113.109      # Attack source
+203.0.113.110      # Attack source
+203.0.113.111      # Attack source
+203.0.113.112      # Attack source
+203.0.113.113      # Attack source
+203.0.113.114      # Attack source
+203.0.113.115      # Attack source
+
+# Total: 50 IPs (for testing)
+# Production note: Real attack used 847 unique IPs
