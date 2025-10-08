@@ -1,15 +1,62 @@
 # KERNEL SHADOWS: Статус проекта
 
-**Версия:** 0.2.2 (Season 2: Firewalls & iptables — DDoS Attack! 🔥)
+**Версия:** 0.3.0 (Season 2: NETWORKING — COMPLETE! 🎉🔒)
 **Дата:** 8 октября 2025
-**Обновлено:** 8 октября 2025 (Season 2 Episode 07 — Firewalls & iptables)
-**Статус:** Season 1 Complete! Season 2 Episode 07 Ready 🚀 (75% done)
+**Обновлено:** 8 октября 2025 (Season 2 Complete — Episode 08: VPN & SSH Tunneling)
+**Статус:** Season 2 COMPLETE! 🎓 (8/32 episodes, 25% done)
 
 ---
 
-## 📊 Общий прогресс: 35%
+## 📊 Общий прогресс: 25% (8/32 episodes)
 
-### v0.2.2 — Season 2 Episode 07 Ready! 🔥🇷🇺
+### v0.3.0 — Season 2: NETWORKING COMPLETE! 🎉🔒
+- [x] **Season 2 Episode 08** (100%) — VPN & SSH Tunneling (Стокгольм → Москва → Цюрих, дни 15-16) **SEASON 2 FINALE!**
+  - Интегрированный README.md (3,458+ строк!) — самый большой эпизод:
+    - Сюжет: Эмоциональный финал Season 2 (разговор Alex о его прошлом в ФСБ, Krylov эскалирует)
+    - 7 последовательных заданий с progressive hints:
+      1. SSH keys generation (ed25519)
+      2. SSH config automation (~/.ssh/config, ProxyJump)
+      3. SSH tunneling (Local Forward: Grafana, PostgreSQL)
+      4. SOCKS proxy (Dynamic Forward: browser через VPN)
+      5. VPN configuration (OpenVPN vs WireGuard comparison + WireGuard setup)
+      6. VPN monitoring & testing (bandwidth, leak tests)
+      7. Final Security Audit (итог всего Season 2)
+    - Полная теория:
+      - SSH: Keys (ed25519 vs RSA), Config, Tunneling (L/R/D forward), SOCKS proxy, Best practices
+      - VPN: Концепты, OpenVPN vs WireGuard, Encryption (ChaCha20-Poly1305, Curve25519), Setup, Monitoring
+      - Security: End-to-end encryption, Perfect Forward Secrecy, DNS/IP leak protection
+    - Персонажи: Viktor, Alex (эмоциональный backstory), Anna, Dmitry, Katarina Lindström (криптография)
+    - Katarina's wisdom: "Encryption is mathematics. Mathematics doesn't lie. Unlike people."
+    - Alex's confession: История почему покинул ФСБ из-за Krylov (фабрикация дел)
+    - LILITH v2.0 Security Mode — encryption focused
+    - Twist: Вся команда переходит на защищённые каналы после угрозы Krylov
+  - starter.sh (400+ строк) — шаблон с TODO для всех 7 задач (8 функций)
+  - solution/vpn_setup.sh (600+ строк) — complete reference solution:
+    - SSH key generation (ed25519 для 5 членов команды)
+    - SSH config with ProxyJump (VPN gateway → Moscow servers)
+    - SSH tunnel examples (Local, Dynamic forward)
+    - WireGuard full setup (server + 5 clients)
+    - VPN monitoring scripts
+    - Security testing (IP leak, DNS leak)
+    - Comprehensive Season 2 Final Audit Report
+  - artifacts/:
+    - README.md (450+ строк) — detailed installation, troubleshooting, security practices
+    - ssh_keys/ (генерируются) — ed25519 keys для команды
+    - wireguard/ (генерируются) — server_wg0.conf + client configs
+    - ssh_config (генерируется) — automation config
+    - season2_final_audit.txt (генерируется) — итоговый отчёт Season 2
+  - tests/test.sh (650+ строк) — 10 test categories:
+    1. File structure
+    2. SSH keys generation (5 members)
+    3. SSH config (hosts, ProxyJump, settings)
+    4. WireGuard configuration (server + clients)
+    5. Final audit report (comprehensive check)
+    6. README content (plot, technical, characters)
+    7. Script execution
+    8. Security checks (permissions, no leaked secrets)
+    9. Documentation quality
+    10. Season 2 integration (references to Episodes 05-07)
+
 - [x] **Season 2 Episode 07** (100%) — Firewalls & iptables (Москва, дни 13-14)
   - Интегрированный README.md (2,738+ строк):
     - Сюжет: DDoS атака в реальном времени (03:47, экстренный звонок от Alex)
@@ -32,8 +79,7 @@
 - [x] **Season 2 Episode 06** (100%) — DNS & Name Resolution (Стокгольм, дни 10-12)
 - [x] **Season 2 Episode 05** (100%) — TCP/IP Fundamentals (Москва, день 9)
 - [x] **Season 2 README** (100%) — обзор сезона Networking
-- [x] **Season 1** (100%) — Shell & Foundations (4 episodes)
-- [ ] Season 2 Episode 08 (0%) — VPN & SSH Tunneling (в разработке)
+- [x] **Season 1** (100%) — Shell & Foundations (4 episodes, days 2-8)
 
 ---
 
@@ -41,14 +87,14 @@
 
 | Season | Название | Episodes | Прогресс | Статус |
 |--------|----------|----------|----------|--------|
-| **1** | Shell & Foundations | 01-04 | 100% | Complete! 🎉 |
-| **2** | Networking | 05-08 | 75% | Episodes 05-07 Ready! 🔥 |
-| **3** | System Administration | 09-12 | 0% | Not started |
-| **4** | DevOps & Automation | 13-16 | 0% | Not started |
-| **5** | Security & Pentesting | 17-20 | 0% | Not started |
-| **6** | Embedded Linux | 21-24 | 0% | Not started |
-| **7** | Advanced Topics | 25-28 | 0% | Not started |
-| **8** | Final Operation | 29-32 | 0% | Not started |
+| **1** | Shell & Foundations | 01-04 | 100% | ✅ Complete! (Days 2-8) |
+| **2** | Networking | 05-08 | 100% | ✅ Complete! (Days 9-16) 🎉 |
+| **3** | System Administration | 09-12 | 0% | 🚧 Not started (Days 17-24) |
+| **4** | DevOps & Automation | 13-16 | 0% | 🚧 Not started |
+| **5** | Security & Pentesting | 17-20 | 0% | 🚧 Not started |
+| **6** | Embedded Linux | 21-24 | 0% | 🚧 Not started |
+| **7** | Advanced Topics | 25-28 | 0% | 🚧 Not started |
+| **8** | Final Operation | 29-32 | 0% | 🚧 Not started |
 
 ---
 
