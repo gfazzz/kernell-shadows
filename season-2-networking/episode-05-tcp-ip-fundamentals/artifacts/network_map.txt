@@ -1,0 +1,53 @@
+# KERNEL SHADOWS — Network Map
+# ЦОД "Москва-1" — Internal Network Configuration
+# Day 9 of Operation
+#
+# Format: IP_ADDRESS  HOSTNAME  DESCRIPTION
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+# Viktor Servers (Operation)
+10.50.1.100  shadow-server-02.ops.internal  Viktor Primary Server (Москва)
+10.50.1.101  shadow-server-03.ops.internal  Viktor Backup Server (Москва)
+10.50.1.102  shadow-db-01.ops.internal      Database Server (PostgreSQL)
+
+# ЦОД Infrastructure
+10.50.0.1    gateway.moscow-dc1.internal    Main Gateway
+10.50.0.10   switch-01.moscow-dc1.internal  Core Switch
+10.50.0.11   switch-02.moscow-dc1.internal  Backup Switch
+10.50.0.20   fw-01.moscow-dc1.internal      Firewall Primary
+10.50.0.21   fw-02.moscow-dc1.internal      Firewall Secondary
+
+# Monitoring & Management
+10.50.2.10   prometheus.ops.internal        Prometheus Monitoring
+10.50.2.11   grafana.ops.internal           Grafana Dashboard
+10.50.2.12   ansible.ops.internal           Ansible Control Node
+
+# Development/Testing
+10.50.3.100  test-server-01.ops.internal    Test Environment
+10.50.3.101  test-server-02.ops.internal    Staging Environment
+
+# External Servers (for reference)
+# These are located in other data centers, will be explored in later episodes
+
+# Stockholm, Sweden (Episode 06-08)
+# 10.51.x.x  (Bahnhof Pionen Datacenter)
+
+# Таллин, Estonia (Episode 11-12)
+# 10.52.x.x  (e-Estonia Infrastructure)
+
+# Berlin, Germany (Episode 13-16)
+# 10.53.x.x  (CCC Network)
+
+# Zurich, Switzerland (Episode 17-20)
+# 10.54.x.x  (UBS Underground Datacenter)
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# Security Notes:
+# - All internal IPs are private (10.x.x.x)
+# - Public IPs managed by Viktor (classified)
+# - VPN required for remote access (Episode 08)
+# - Firewall rules: whitelist only (Episode 07)
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+# Last updated: 2025-10-11 by Max Sokolov
+# Episode: 05 — TCP/IP Fundamentals
