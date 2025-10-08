@@ -26,7 +26,7 @@
 
 Высокий швед в чёрной куртке с логотипом Bahnhof держит табличку: **"Max Sokolov — Shadow Ops"**.
 
-**Erik Johansson** (30 лет, блондин, спокойный):
+**Erik Johansson** (38 лет, блондин, спокойный):
 > *"Welcome to Sweden, Max. Viktor says you're good with Linux. We'll see. I'm Erik, network engineer at Bahnhof. Our car is outside."*
 
 Max (немного растерян):
