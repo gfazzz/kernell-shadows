@@ -1,0 +1,44 @@
+# KERNEL SHADOWS — DNS Zones
+# Episode 06: DNS & Name Resolution
+#
+# Shadow Operation Internal Domains
+# These domains should NOT be in public DNS (security requirement)
+#
+# Location: Distributed globally
+# Owner: Viktor Petrov
+# Confidential: For operation use only
+#
+
+# Moscow Data Center (Россия 🇷🇺)
+shadow-server-01.ops.internal
+shadow-server-02.ops.internal
+shadow-server-03.ops.internal
+
+# Stockholm Data Center (Sweden 🇸🇪)
+shadow-server-04.ops.internal
+shadow-server-05.ops.internal
+
+# Tallinn Backup (Estonia 🇪🇪)
+shadow-server-06.ops.internal
+shadow-server-07.ops.internal
+
+# Amsterdam Core (Netherlands 🇳🇱)
+shadow-server-08.ops.internal
+shadow-server-09.ops.internal
+
+# Berlin Relay (Germany 🇩🇪)
+shadow-server-10.ops.internal
+
+# Zurich Secure (Switzerland 🇨🇭)
+shadow-server-11.ops.internal
+shadow-server-12.ops.internal
+
+# Shenzhen Node (China 🇨🇳)
+shadow-server-13.ops.internal
+
+# Reykjavik Final (Iceland 🇮🇸)
+shadow-server-14.ops.internal
+shadow-server-15.ops.internal
+
+# Total: 15 internal domains
+# Expected result: 0 domains in public DNS (all NXDOMAIN)

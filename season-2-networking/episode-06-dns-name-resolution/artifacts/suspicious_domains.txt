@@ -1,0 +1,24 @@
+# KERNEL SHADOWS — Suspicious Domains List
+# Episode 06: DNS & Name Resolution
+#
+# DNS Spoofing Detection Database
+# Format: domain expected_ip [comment]
+#
+# These domains have been targeted by Krylov's cache poisoning attacks
+# Check if actual DNS response matches expected IP
+#
+
+# Shadow Operation Servers (internal — should not resolve in public DNS)
+shadow-server-01.ops.internal 10.50.1.101 # Moscow ЦОД
+shadow-server-02.ops.internal 10.50.1.102 # Moscow ЦОД
+shadow-server-03.ops.internal 10.50.1.103 # Moscow ЦОД
+shadow-server-04.ops.internal 10.60.1.104 # Stockholm Bahnhof
+shadow-server-05.ops.internal 10.60.1.105 # Stockholm Bahnhof
+shadow-server-06.ops.internal 10.70.1.106 # Tallinn Backup
+shadow-server-07.ops.internal 10.70.1.107 # Tallinn Backup
+shadow-server-08.ops.internal 10.80.1.108 # Amsterdam Core
+shadow-server-09.ops.internal 10.80.1.109 # Amsterdam Core
+shadow-server-10.ops.internal 10.90.1.110 # Berlin Relay
+
+# Note: Internal domains should return NXDOMAIN in public DNS
+# If they resolve to different IP → information leak or spoofing!

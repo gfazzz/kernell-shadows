@@ -7,18 +7,19 @@
 
 ---
 
-## 📊 Общий прогресс: 28%
+## 📊 Общий прогресс: 32%
 
-### v0.2.0 — Season 2 Episode 05 Ready! 🚀
+### v0.2.1 — Season 2 Episode 06 Ready! 🇸🇪
+- [x] **Season 2 Episode 06** (100%) — DNS & Name Resolution (Стокгольм, дни 10-12)
+  - Интегрированный README.md (2,550+ строк)
+  - starter.sh шаблон с TODO (280+ строк)
+  - solution/dns_audit.sh референсное решение (80+ строк)
+  - artifacts/ (dns_zones.txt, suspicious_domains.txt, README.md)
+  - tests/test.sh автотесты (6 основных тестов)
 - [x] **Season 2 Episode 05** (100%) — TCP/IP Fundamentals (Москва, день 9)
-  - Интегрированный README.md (2,500+ строк)
-  - starter.sh шаблон с TODO (200+ строк)
-  - solution/network_audit.sh референсное решение (350+ строк)
-  - artifacts/ (network_map.txt, README.md)
-  - tests/test.sh автотесты (28 тестов)
 - [x] **Season 2 README** (100%) — обзор сезона Networking
 - [x] **Season 1** (100%) — Shell & Foundations (4 episodes)
-- [ ] Season 2 Episodes 06-08 (0%) — в разработке
+- [ ] Season 2 Episodes 07-08 (0%) — в разработке
 
 ---
 
@@ -27,7 +28,7 @@
 | Season | Название | Episodes | Прогресс | Статус |
 |--------|----------|----------|----------|--------|
 | **1** | Shell & Foundations | 01-04 | 100% | Complete! 🎉 |
-| **2** | Networking | 05-08 | 25% | Episode 05 Ready 🚀 |
+| **2** | Networking | 05-08 | 50% | Episodes 05-06 Ready! 🇸🇪 |
 | **3** | System Administration | 09-12 | 0% | Not started |
 | **4** | DevOps & Automation | 13-16 | 0% | Not started |
 | **5** | Security & Pentesting | 17-20 | 0% | Not started |
@@ -246,15 +247,15 @@ cd ../../tests/
 
 ## 📊 Метрики проекта
 
-### Текущие (v0.2.0):
-- **Эпизодов готово:** 5/32 (15.6%)
+### Текущие (v0.2.1):
+- **Эпизодов готово:** 6/32 (18.75%)
 - **Season 1:** Complete! 🎉 (4 episodes)
-- **Season 2:** Episode 05 Ready 🚀 (1/4 episodes)
-- **Документация:** Season 2 README + Episode 05 README (3,000+ строк)
-- **Progressive hints:** 100% в Season 1 + Episode 05 (3-уровневая система)
-- **Строк документации:** ~31,000+ (README files)
-- **Строк кода:** ~4,500 (starter + solution + tests)
-- **Размер:** ~1,650 KB
+- **Season 2:** Episodes 05-06 Ready! 🇸🇪 (2/4 episodes, 50%)
+- **Документация:** Episodes 05-06 README (5,550+ строк)
+- **Progressive hints:** 100% в Season 1 + Episodes 05-06 (3-уровневая система)
+- **Строк документации:** ~34,500+ (README files)
+- **Строк кода:** ~5,200 (starter + solution + tests)
+- **Размер:** ~1,800 KB
 
 ### Целевые (v1.0.0):
 - **Эпизодов:** 32
@@ -466,6 +467,34 @@ cd ../../tests/
 
 ---
 
+### v0.2.1 (8 октября 2025) — Season 2: DNS & Name Resolution 🇸🇪
+- ✅ **Episode 06: DNS & Name Resolution (COMPLETE)**
+  - Интегрированный README.md (2,550+ строк):
+    - Сюжет: Max в Стокгольме, Bahnhof Pionen (ядерный бункер 30м под землёй)
+    - 8 последовательных заданий (DNS lookup → spoofing detection → DNSSEC → отчёт)
+    - Progressive hints — 3-уровневая система подсказок (как в Season 1)
+    - Полная теория DNS: records, DNSSEC, cache poisoning, DoT/DoH
+    - Персонажи: Erik Johansson, Katarina Lindström
+  - starter.sh (280+ строк) — шаблон с TODO
+  - solution/dns_audit.sh (80+ строк) — референсное решение:
+    - Check shadow servers (information leaks)
+    - DNS spoofing detection (cache poisoning)
+    - DNSSEC validation
+    - Security audit report generation
+  - artifacts/:
+    - dns_zones.txt — 15 internal доменов операции
+    - suspicious_domains.txt — список для spoofing detection
+    - README.md — инструкции по использованию
+  - tests/test.sh (6 тестов):
+    - File structure tests
+    - Execution tests
+    - Report generation validation
+- ✅ **Season 2 прогресс: 50%** (2/4 episodes готовы)
+
+**Production Ready! 🇸🇪**
+
+---
+
 ### v0.2.0 (8 октября 2025) — Season 2 Starts: TCP/IP Fundamentals ⭐🚀
 - ✅ **Episode 05: TCP/IP Fundamentals (COMPLETE)**
   - Интегрированный README.md (3,000+ строк):
@@ -508,17 +537,17 @@ cd ../../tests/
 
 <div align="center">
 
-**KERNEL SHADOWS v0.2.0** — Season 2 Starts! 🚀
+**KERNEL SHADOWS v0.2.1** — Stockholm Complete! 🇸🇪
 
-*"Каждый пакет рассказывает историю. Научись слушать."* — LILITH v2.0
+*"DNS — телефонная книга интернета. Если книга поддельная — весь трафик идёт не туда."* — Erik Johansson
 
 **Season 1: Shell & Foundations — 100% COMPLETE! 🎉**
-**Season 2: Networking — Episode 05 Ready! 🚀**
+**Season 2: Networking — 50% (Episodes 05-06 Ready!) 🇸🇪**
 
-**Текущая локация:** Москва, ЦОД "Москва-1" 🇷🇺
-**День операции:** 9 из 60
-**Персонажи:** Alex, Anna, Dmitry, Viktor (первая встреча)
-**Угроза:** Полковник Krylov (DDoS, DNS spoofing)
-**Следующая остановка:** Стокгольм, Швеция 🇸🇪 (Episode 06)
+**Текущая локация:** Стокгольм, Швеция 🇸🇪 → Москва 🇷🇺  
+**День операции:** 10-12 из 60  
+**Персонажи:** Erik Johansson, Katarina Lindström  
+**Достижение:** DNS spoofing обнаружен, DNSSEC проверен ✓  
+**Следующая остановка:** Москва (возврат) — Firewalls & iptables (Episode 07) 🇷🇺
 
 </div>
