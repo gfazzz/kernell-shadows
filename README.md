@@ -6,8 +6,8 @@
 **"In the shadows of the kernel, we control everything."**
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![Version](https://img.shields.io/badge/version-0.1.6-orange.svg)](https://github.com/gfazzz/kernel-shadows)
-[![Status](https://img.shields.io/badge/status-Season_1_Complete-green.svg)]()
+[![Version](https://img.shields.io/badge/version-0.2.4-orange.svg)](https://github.com/gfazzz/kernel-shadows)
+[![Status](https://img.shields.io/badge/status-Seasons_1--2_Complete-green.svg)]()
 
 </div>
 
@@ -199,28 +199,34 @@ lsb_release -a
 
 ## 📊 Прогресс курса
 
-**Версия:** 0.1.6 (Season 1 Complete!)
-**Статус:** Episodes 01-04 Ready + Integration Project
-**Прогресс:** 25% (Season 1 Complete + документация)
+**Версия:** 0.2.4 (Season 2 Complete! 🎉🔒)
+**Статус:** Episodes 01-08 Ready (Seasons 1-2 Complete)
+**Прогресс:** 25% (8/32 episodes complete)
 
 ### Roadmap:
-- [x] Концепция и сюжет
-- [x] Структура 8 сезонов
-- [x] Season 1 Episode 01 (READY ✅)
-- [x] Season 1 Episode 02 (READY ✅)
-- [x] Season 1 Episode 03 (READY ✅)
-- [x] Season 1 Episode 04 (READY ✅)
-- [x] Season 1 Project (Integration — READY ✅)
+- [x] Концепция и сюжет (глобальная распределённая операция)
+- [x] Структура 8 сезонов × 32 эпизода
+- [x] **Season 1: Shell & Foundations** (Episodes 01-04) — ✅ COMPLETE
+  - [x] Episode 01: Terminal Awakening
+  - [x] Episode 02: Shell Scripting Basics
+  - [x] Episode 03: Text Processing Masters
+  - [x] Episode 04: Package Management
+- [x] **Season 2: Networking** (Episodes 05-08) — ✅ COMPLETE
+  - [x] Episode 05: TCP/IP Fundamentals (Москва 🇷🇺)
+  - [x] Episode 06: DNS & Name Resolution (Стокгольм 🇸🇪)
+  - [x] Episode 07: Firewalls & iptables (Москва 🇷🇺)
+  - [x] Episode 08: VPN & SSH Tunneling (Стокгольм → Цюрих)
 - [x] Аудит курса (4 октября 2025)
-- [ ] LILITH AI интеграция
-- [ ] Season 2 (Networking)
-- [ ] Season 3-8 (базовая структура)
-- [ ] Artifacts, tests, визуализации
+- [x] Глобальная концепция (8 стран, 27 персонажей)
+- [ ] LILITH AI интеграция (CLI tools ready)
+- [ ] Season 3: System Administration (СПб → Таллин 🇪🇪)
+- [ ] Season 4-8 (базовая структура)
 - [ ] Community testing & feedback
 
 ### 📝 Аудит курса
 **Проведён:** 4 октября 2025
-**Оценка:** 4.2/5 (A-) → Потенциал 4.8/5 (A+)
+**Оценка:** 4.2/5 (A-) → 4.6/5 (A) после Phase 1
+**Текущий статус:** Seasons 1-2 Complete (25% курса готово)
 
 ### 📚 Рекомендуемые ресурсы
 - [RESOURCES.md](RESOURCES.md) — кураторский список качественных материалов
@@ -298,7 +304,26 @@ KERNEL SHADOWS — это open source проект под лицензией **G
 
 ## 🔗 Связанные проекты
 
-- **[OPERATION MOONLIGHT](https://github.com/gfazzz/moonlight-course)** — курс программирования на C (та же вселенная)
+- **[OPERATION MOONLIGHT](https://github.com/gfazzz/moonlight-course)** — курс программирования на C (та же вселенная, 2024)
+
+---
+
+## 📍 Текущее состояние
+
+**Версия:** 0.2.4 (8 октября 2025)
+**Завершено:**
+- ✅ Season 1: Shell & Foundations (Новосибирск 🇷🇺, дни 2-8)
+- ✅ Season 2: Networking (Москва → Стокгольм 🇸🇪, дни 9-16)
+
+**Статистика:**
+- **Эпизодов:** 8/32 (25%)
+- **Строк документации:** ~18,000+ (README files)
+- **Строк кода:** ~3,700+ (starter + solution + tests)
+- **Персонажей:** 27 (Core Team + Local Experts + Antagonists)
+- **Локаций:** 8+ стран (4 готовы: Новосибирск, Москва, Стокгольм, + миграция)
+
+**Следующий этап:**
+- 🚧 Season 3: System Administration (СПб → Таллин 🇪🇪, дни 17-24)
 
 
 ---
@@ -332,6 +357,17 @@ KERNEL SHADOWS — это open source проект под лицензией **G
 <div align="center">
 
 **"We are ROOT. We are LILITH. We are the shadows of the kernel."**
+
+---
+
+**KERNEL SHADOWS v0.2.4** — Season 2: NETWORKING COMPLETE! 🎉🔒
+
+*"Encryption is mathematics. Mathematics doesn't lie. Unlike people."* — Katarina Lindström
+
+**Прогресс:** 25% (8/32 episodes) | **Локация:** Стокгольм → Цюрих 🇸🇪🇨🇭
+**Следующая остановка:** Season 3 — Санкт-Петербург → Таллин 🇷🇺🇪🇪
+
+---
 
 Made with ❤️ and lots of `sudo` commands
 

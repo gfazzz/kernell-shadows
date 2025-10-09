@@ -597,27 +597,40 @@ fi
 
 ## 🎯 Приоритеты разработки
 
-### Версия 0.1.3 (текущая) ✅
-- [x] Episode 01 интегрированная структура
-- [x] "Learn by Doing" подход
+### Версия 0.2.4 (текущая) ✅
+- [x] **Season 1: Shell & Foundations** (Episodes 01-04) — COMPLETE
+  - [x] Episode 01: Terminal Awakening
+  - [x] Episode 02: Shell Scripting Basics
+  - [x] Episode 03: Text Processing Masters
+  - [x] Episode 04: Package Management
+- [x] **Season 2: Networking** (Episodes 05-08) — COMPLETE
+  - [x] Episode 05: TCP/IP Fundamentals
+  - [x] Episode 06: DNS & Name Resolution
+  - [x] Episode 07: Firewalls & iptables
+  - [x] Episode 08: VPN & SSH Tunneling
+- [x] Глобальная концепция (8 стран, 27 персонажей, 60 дней)
+- [x] "Learn by Doing" + Progressive hints (3-уровневая система)
 - [x] LILITH как активный проводник
-- [x] Обновлена документация
+- [x] Интегрированная структура (теория just-in-time)
 
-### Версия 0.2.0 (следующая):
-- [ ] Episode 02: Shell Scripting Basics (интегрированная структура)
-- [ ] Episode 03: Text Processing Masters
-- [ ] Episode 04: Package Management
-- [ ] Season 1 Project
+### Версия 0.3.0 (следующая):
+- [ ] **Season 3: System Administration** (Episodes 09-12)
+  - [ ] Episode 09: Users & Permissions (СПб 🇷🇺)
+  - [ ] Episode 10: Processes & Systemd
+  - [ ] Episode 11: Disk Management & LVM (Таллин 🇪🇪)
+  - [ ] Episode 12: Backup & Recovery
+- [ ] Локации: Санкт-Петербург → Таллин
+- [ ] Новые персонажи: Andrei Volkov, Kristjan Tamm, Liisa Kask
 
-### Версия 0.3.0 (планируется):
-- [ ] Season 2: Networking (Episodes 05-08)
-- [ ] LILITH CLI улучшения
+### Версия 0.5.0 (планируется):
+- [ ] Season 4: DevOps & Automation (Амстердам → Берлин 🇳🇱🇩🇪)
+- [ ] LILITH CLI улучшения (интерактивный помощник)
 
-### Что нужно срочно:
-1. **Episode 02-04** — завершить Season 1 с новой структурой
-2. **Тестирование Episode 01** — feedback от студентов
+### Что нужно сейчас:
+1. **Season 3 Episodes 09-12** — начать разработку
+2. **Community testing Seasons 1-2** — feedback от студентов
 3. **LILITH визуализация** — аватар, иконки
-4. **Применить интегрированную структуру к Episode 02-04**
+4. **Документация персонажей** — расширить биографии
 
 ---
 
@@ -640,7 +653,17 @@ fi
 
 **"We are ROOT. We are LILITH. We are the shadows of the kernel."**
 
+---
+
+**KERNEL SHADOWS v0.2.4** — Season 2 Complete! 🎉🔒
+
+**Прогресс:** 25% (8/32 episodes) | **Следующая остановка:** Season 3 🇷🇺🇪🇪
+
+---
+
 Сделано с ❤️ и lots of `sudo` commands
+
+**Последнее обновление:** 8 октября 2025
 
 [⬆ Наверх](#contributing-to-kernel-shadows)
 
