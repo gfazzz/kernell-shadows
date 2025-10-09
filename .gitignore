@@ -48,3 +48,6 @@ secrets.txt
 # Progress tracker (индивидуальный для каждого студента)
 .progress
 
+
+# Exception: Episode solution files (reference implementations for course)
+!**/episode-*/solution/*.sh
