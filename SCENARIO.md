@@ -138,7 +138,7 @@ Viktor Petrov искал сисадмина для критической опе
 
 - **Season 1 (Новосибирск):** Sergey Ivanov, Olga Petrova
 - **Season 2 (Стокгольм):** Erik Johansson, Katarina Lindström
-- **Season 3 (СПб/Таллин):** Andrei Volkov, Kristjan Tamm, Liisa Kask
+- **Season 3 (СПб/Таллин):** Andrei Volkov, Boris Kuznetsov, Kristjan Tamm, Liisa Kask
 - **Season 4 (Амстердам/Берлин):** Hans Müller, Sophie van Dijk, Klaus Schmidt
 - **Season 5 (Цюрих/Женева):** Eva Zimmerman, Marcus Weber, Jean-Pierre Dubois, Dr. Heinrich Bauer, Isabella Rossi
 - **Season 6 (Шэньчжэнь):** Li Wei, Chen Xiaoming, Zhang Mei
@@ -352,8 +352,9 @@ Anna: *"Атаки становятся серьёзнее. Нужен полн�
 
 **Персонажи:**
 - **Andrei Volkov** (Episode 09) — security admin из СПб, бывший университетский преподаватель Unix
+- **Boris Kuznetsov** (Episode 10) — SystemD architect, ex-Red Hat contributor, СПб
 - **Kristjan Tamm** (Episode 11) — эстонский IT-архитектор, эксперт по e-Government, LVM/RAID
-- **Liisa Kask** (Episode 12) — backup engineer, работала на Skype (основан в Таллине)
+- **Liisa Kask** (Episodes 11-12) — backup engineer, работала на Skype (основан в Таллине)
 
 **Локации:**
 - СПб: Васильевский остров, ЛЭТИ (университет), ЦОД на набережной, белые ночи

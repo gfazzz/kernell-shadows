@@ -1,13 +1,115 @@
 # KERNEL SHADOWS: Статус проекта
 
-**Версия:** 0.3.1 (Season 3: SYSTEM ADMINISTRATION — Episode 10! 🇷🇺⚙️)
+**Версия:** 0.3.3 (Season 3: SYSTEM ADMINISTRATION — COMPLETE! 🇪🇪✅)
 **Дата:** 9 октября 2025
-**Обновлено:** 9 октября 2025 (Episode 10: Processes & SystemD — Boris Kuznetsov)
-**Статус:** Season 3 Episode 10 Ready! (10/32 episodes, 31% done)
+**Обновлено:** 9 октября 2025 (Episode 12: Backup & Recovery — Season 3 FINALE!)
+**Статус:** Season 3 COMPLETE! (12/32 episodes, 38% done) 🎉
 
 ---
 
-## 📊 Общий прогресс: 31% (10/32 episodes)
+## 📊 Общий прогресс: 38% (12/32 episodes)
+
+### v0.3.3 — Episode 12: Backup & Recovery 💾🇪🇪 (SEASON 3 FINALE! 🎉)
+- [x] **Season 3 Episode 12** (100%) — Backup & Recovery (Tallinn, Estonia, дни 23-24) **SEASON 3 COMPLETE!**
+  - Интегрированный README.md (1,332 строки):
+    - Сюжет: Krylov атакует! Database deleted, emergency restore, Liisa Kask (ex-Skype backup engineer)
+    - Кризис: 03:47 ночи, сервер скомпрометирован, база данных удалена, 72 часа backdoor активен
+    - 8 практических заданий:
+      1. Full backup (tar + gzip + checksums)
+      2. Incremental backup (rsync + hard links)
+      3. Offsite backup (remote SSH sync)
+      4. Restore from backup (verify checksums → extract)
+      5. Backup health check (age, size monitoring)
+      6. Cleanup old backups (retention policy)
+      7. Disaster recovery test (full simulation: create → backup → destroy → restore → verify)
+      8. Generate backup report (comprehensive status)
+    - Полная теория:
+      - Backup strategies: full, incremental, differential
+      - Tools: rsync (рекомендуется), tar, dd
+      - 3-2-1 backup rule (3 copies, 2 media, 1 offsite)
+      - Automation с cron (расписания)
+      - Testing restore procedures
+      - Monitoring backup health
+      - Disaster recovery planning
+      - Security: encryption (GPG), access control, immutable backups
+      - Common mistakes и best practices
+    - Персонажи: Liisa Kask (Skype legacy, 300M users backup experience), Kristjan Tamm (support)
+    - Liisa's wisdom: "Untested backup = no backup. Test restore every month."
+    - Anna forensics: "Krylov backdoor 72 hours inside, incremental backups compromised"
+    - Философия: Backup = insurance, 3-2-1 rule, RAID ≠ backup
+  - starter.sh (368 строк) — шаблон с TODO для всех 8 задач
+  - solution/backup_manager.sh (507 строк) — production-ready solution:
+    - Full backup (tar.gz + sha256 checksums)
+    - Incremental backup (rsync --link-dest)
+    - Offsite backup (SSH key authentication)
+    - Restore with checksum verification
+    - Health monitoring (age, size checks)
+    - Cleanup old backups (retention policies)
+    - Disaster recovery test (complete simulation)
+    - Comprehensive reporting
+    - Color output, logging, error handling
+  - artifacts/:
+    - README.md (471 строка) — testing guide, Krylov attack simulation, 3-2-1 rule test, encryption
+  - tests/test.sh (308 строк) — 12 test categories:
+    1. File structure
+    2. Script permissions
+    3. Required commands (tar, rsync, sha256sum)
+    4. Test data setup
+    5. Full backup test
+    6. Checksum verification
+    7. Incremental backup (hard links)
+    8. Restore test
+    9. Backup age check
+    10. Cleanup test
+    11. Disaster recovery simulation (complete cycle)
+    12. Solution script functions validation
+  - **Total:** 2,743 строки — Season 3 FINALE!
+
+### v0.3.2 — Episode 11: Disk Management & LVM 💾🇪🇪
+- [x] **Season 3 Episode 11** (100%) — Disk Management & LVM (Tallinn, Estonia, дни 21-22)
+  - Интегрированный README.md (1,222 строки):
+    - Сюжет: Переезд СПб → Tallinn, Kristjan Tamm (e-Gov architect), Liisa Kask (backup specialist)
+    - Кризис: Disk failure на production server (/dev/sdb failing, SMART warnings)
+    - 7 последовательных заданий с progressive hints:
+      1. Disk health check (SMART monitoring, lsblk, iostat)
+      2. Partitioning (GPT, parted, новый диск для replacement)
+      3. LVM setup (PV → VG → LV hierarchy, ext4 filesystem)
+      4. Data migration (rsync, checksum verification, read-only mounts)
+      5. RAID configuration (RAID1 с mdadm, redundancy)
+      6. Filesystem management (mount options, /etc/fstab, noatime)
+      7. Comprehensive audit report generation
+    - Полная теория:
+      - Block devices: /dev/sda, naming conventions, lsblk
+      - Partitioning: GPT vs MBR, parted, fdisk, partition types
+      - LVM: Physical Volumes, Volume Groups, Logical Volumes, resize, snapshots
+      - RAID: levels (0,1,5,10), mdadm, /proc/mdstat, redundancy
+      - Filesystems: ext4, xfs, btrfs, mkfs, tune2fs, resize2fs
+      - Mount: /etc/fstab, mount options, noatime, remount
+      - SMART: smartctl, health monitoring, critical attributes
+    - Персонажи: Kristjan Tamm (e-Estonia infrastructure), Liisa Kask (backup expert)
+    - Kristjan's wisdom: "e-Estonia работает на доверии к данным. Если диск умирает — доверие умирает."
+    - Liisa's rule: "Untested backup = no backup. Test restore every month."
+    - Философия: RAID ≠ backup, 3-2-1 backup rule
+  - starter.sh (335 строк) — шаблон с TODO для всех 7 задач
+  - solution/disk_manager.sh (571 строка) — complete reference solution:
+    - Demo mode (loop devices для безопасного тестирования)
+    - Disk health check (SMART, lsblk, df)
+    - GPT partitioning (parted, LVM type)
+    - Complete LVM setup (pvcreate, vgcreate, lvcreate, mkfs, mount)
+    - Data migration simulation (rsync, checksums)
+    - RAID1 array (mdadm, 2 disks, ext4 on RAID)
+    - Filesystem optimization (mount options)
+    - Comprehensive audit report (10 sections, Kristjan/Liisa assessments)
+  - artifacts/:
+    - README.md (530 строк) — loop devices simulation, troubleshooting, commands reference
+  - tests/test.sh (293 строки) — 7 test categories:
+    1. File structure
+    2. Command availability (lsblk, LVM, mdadm, smartctl)
+    3. LVM configuration (pvs, vgs, lvs)
+    4. RAID status (/proc/mdstat, mdadm)
+    5. Filesystems (mounted, /etc/fstab syntax)
+    6. Disk health (SMART capability)
+    7. Audit report existence
 
 ### v0.3.1 — Episode 10: Processes & SystemD ⚙️🇷🇺
 - [x] **Season 3 Episode 10** (100%) — Processes & SystemD (Санкт-Петербург, дни 19-20)
@@ -187,7 +289,7 @@
 |--------|----------|----------|----------|--------|
 | **1** | Shell & Foundations | 01-04 | 100% | ✅ Complete! (Days 2-8) |
 | **2** | Networking | 05-08 | 100% | ✅ Complete! (Days 9-16) 🎉 |
-| **3** | System Administration | 09-12 | 50% | 🚧 In Progress (Days 17-24) 🇷🇺⚙️ |
+| **3** | System Administration | 09-12 | 100% | ✅ Complete! (Days 17-24) 🇷🇺🇪🇪🎉 |
 | **4** | DevOps & Automation | 13-16 | 0% | 🚧 Not started |
 | **5** | Security & Pentesting | 17-20 | 0% | 🚧 Not started |
 | **6** | Embedded Linux | 21-24 | 0% | 🚧 Not started |
@@ -324,7 +426,7 @@
 - **Сложность:** ⭐⭐⭐☆☆ (incident response под давлением!)
 - **Структура:** Emergency Incident Response (time pressure, real-world scenario)
 - **Финальный проект:** Complete firewall setup с DDoS mitigation + audit report
-- **Особенность:**
+- **Особенность:** 
   - Первый REAL incident (не симуляция)
   - 5-минутный deadline (Load Average 47 → 2)
   - Удалённое администрирование (SSH из самолёта, 1200ms latency)
@@ -745,10 +847,10 @@ cd ../../tests/
 **Season 1: Shell & Foundations — 100% COMPLETE! 🎉**
 **Season 2: Networking — 50% (Episodes 05-06 Ready!) 🇸🇪**
 
-**Текущая локация:** Стокгольм, Швеция 🇸🇪 → Москва 🇷🇺
-**День операции:** 10-12 из 60
-**Персонажи:** Erik Johansson, Katarina Lindström
-**Достижение:** DNS spoofing обнаружен, DNSSEC проверен ✓
+**Текущая локация:** Стокгольм, Швеция 🇸🇪 → Москва 🇷🇺  
+**День операции:** 10-12 из 60  
+**Персонажи:** Erik Johansson, Katarina Lindström  
+**Достижение:** DNS spoofing обнаружен, DNSSEC проверен ✓  
 **Следующая остановка:** Москва (возврат) — Firewalls & iptables (Episode 07) 🇷🇺
 
 </div>
