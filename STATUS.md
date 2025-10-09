@@ -1,13 +1,64 @@
 # KERNEL SHADOWS: Статус проекта
 
-**Версия:** 0.2.4 (Season 2: NETWORKING — COMPLETE! 🎉🔒)
-**Дата:** 8 октября 2025
-**Обновлено:** 8 октября 2025 (Season 2 Complete — Episode 08: VPN & SSH Tunneling)
-**Статус:** Season 2 COMPLETE! 🎓 (8/32 episodes, 25% done)
+**Версия:** 0.3.0 (Season 3: SYSTEM ADMINISTRATION BEGINS! 🇷🇺🎓)
+**Дата:** 9 октября 2025
+**Обновлено:** 9 октября 2025 (Season 3 Started — Episode 09: Users & Permissions)
+**Статус:** Season 3 Episode 09 Ready! (9/32 episodes, 28% done)
 
 ---
 
-## 📊 Общий прогресс: 25% (8/32 episodes)
+## 📊 Общий прогресс: 28% (9/32 episodes)
+
+### v0.3.0 — Season 3: SYSTEM ADMINISTRATION BEGINS! 🇷🇺🎓
+- [x] **Season 3 Episode 09** (100%) — Users & Permissions (Санкт-Петербург, дни 17-18) **SEASON 3 PREMIERE!**
+  - Интегрированный README.md (1,000+ строк):
+    - Сюжет: Белые ночи СПб, ЛЭТИ, встреча с Andrei Volkov (ex-профессор Unix)
+    - Кризис: Сервер взломан через misconfigured permissions (backdoor от Krylov)
+    - 8 последовательных заданий с progressive hints:
+      1. Инспекция пользователей (поиск backdoor accounts с UID 0)
+      2. Создание team users (viktor, alex, anna, dmitry)
+      3. Создание групп (operations, security, forensics, devops, netadmin)
+      4. Shared directory с sticky bit + SGID (3770 permissions)
+      5. sudo для Alex (network commands only - Principle of Least Privilege)
+      6. ACL для Anna (read-only log access - forensics requirements)
+      7. SUID/SGID security audit (baseline + monitoring)
+      8. Comprehensive security audit report
+    - Полная теория:
+      - Users & Groups: useradd, usermod, /etc/passwd, /etc/shadow, /etc/group
+      - Permissions: chmod, chown, UGO model, rwx, octal notation
+      - Special Bits: SUID (4000), SGID (2000), Sticky Bit (1000)
+      - sudo: /etc/sudoers, visudo, Cmnd_Alias, NOPASSWD
+      - ACL: setfacl, getfacl, granular permissions
+      - Security: Principle of Least Privilege, Defense in Depth
+    - Персонажи: Andrei Volkov (LETI professor, Unix mentor)
+    - Andrei's wisdom: "Root access как заряженный пистолет. Не давай его кому попало."
+    - Философия: Unix permissions - это не команды, это философия безопасности
+  - starter.sh (400+ строк) — шаблон с TODO для всех 8 задач
+  - solution/user_management.sh (800+ строк) — complete reference solution:
+    - User inspection + backdoor detection
+    - Team user creation with password policy
+    - Group structure (5 groups, role-based)
+    - Shared directory (sticky bit + SGID)
+    - sudo configuration for Alex (network only)
+    - ACL setup for Anna (read-only logs)
+    - SUID/SGID audit (baseline comparison)
+    - Comprehensive security report generation
+  - artifacts/:
+    - README.md (300+ строк) — testing guide, troubleshooting
+    - team_list.txt — team members with roles
+    - requirements.txt (500+ строк) — complete security policy document
+  - tests/test.sh (600+ строк) — 10 test categories:
+    1. File structure
+    2. User creation (home, shell, UID validation)
+    3. Groups & membership (5 groups, role mapping)
+    4. Shared directory permissions (3770, sticky bit, SGID)
+    5. sudo configuration (Alex network-only)
+    6. ACL configuration (Anna read-only logs)
+    7. SUID/SGID security audit
+    8. Final security report (comprehensive validation)
+    9. Script execution (syntax, best practices)
+    10. Documentation quality
+    11. Integration tests
 
 ### v0.2.4 — Season 2: NETWORKING COMPLETE! 🎉🔒
 - [x] **Season 2 Episode 08** (100%) — VPN & SSH Tunneling (Стокгольм → Москва → Цюрих, дни 15-16) **SEASON 2 FINALE!**
@@ -89,7 +140,7 @@
 |--------|----------|----------|----------|--------|
 | **1** | Shell & Foundations | 01-04 | 100% | ✅ Complete! (Days 2-8) |
 | **2** | Networking | 05-08 | 100% | ✅ Complete! (Days 9-16) 🎉 |
-| **3** | System Administration | 09-12 | 0% | 🚧 Not started (Days 17-24) |
+| **3** | System Administration | 09-12 | 25% | 🚧 In Progress (Days 17-24) 🇷🇺 |
 | **4** | DevOps & Automation | 13-16 | 0% | 🚧 Not started |
 | **5** | Security & Pentesting | 17-20 | 0% | 🚧 Not started |
 | **6** | Embedded Linux | 21-24 | 0% | 🚧 Not started |
@@ -226,7 +277,7 @@
 - **Сложность:** ⭐⭐⭐☆☆ (incident response под давлением!)
 - **Структура:** Emergency Incident Response (time pressure, real-world scenario)
 - **Финальный проект:** Complete firewall setup с DDoS mitigation + audit report
-- **Особенность:** 
+- **Особенность:**
   - Первый REAL incident (не симуляция)
   - 5-минутный deadline (Load Average 47 → 2)
   - Удалённое администрирование (SSH из самолёта, 1200ms latency)
@@ -647,10 +698,10 @@ cd ../../tests/
 **Season 1: Shell & Foundations — 100% COMPLETE! 🎉**
 **Season 2: Networking — 50% (Episodes 05-06 Ready!) 🇸🇪**
 
-**Текущая локация:** Стокгольм, Швеция 🇸🇪 → Москва 🇷🇺  
-**День операции:** 10-12 из 60  
-**Персонажи:** Erik Johansson, Katarina Lindström  
-**Достижение:** DNS spoofing обнаружен, DNSSEC проверен ✓  
+**Текущая локация:** Стокгольм, Швеция 🇸🇪 → Москва 🇷🇺
+**День операции:** 10-12 из 60
+**Персонажи:** Erik Johansson, Katarina Lindström
+**Достижение:** DNS spoofing обнаружен, DNSSEC проверен ✓
 **Следующая остановка:** Москва (возврат) — Firewalls & iptables (Episode 07) 🇷🇺
 
 </div>
