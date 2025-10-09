@@ -1,13 +1,60 @@
 # KERNEL SHADOWS: Статус проекта
 
-**Версия:** 0.3.0 (Season 3: SYSTEM ADMINISTRATION BEGINS! 🇷🇺🎓)
+**Версия:** 0.3.1 (Season 3: SYSTEM ADMINISTRATION — Episode 10! 🇷🇺⚙️)
 **Дата:** 9 октября 2025
-**Обновлено:** 9 октября 2025 (Season 3 Started — Episode 09: Users & Permissions)
-**Статус:** Season 3 Episode 09 Ready! (9/32 episodes, 28% done)
+**Обновлено:** 9 октября 2025 (Episode 10: Processes & SystemD — Boris Kuznetsov)
+**Статус:** Season 3 Episode 10 Ready! (10/32 episodes, 31% done)
 
 ---
 
-## 📊 Общий прогресс: 28% (9/32 episodes)
+## 📊 Общий прогресс: 31% (10/32 episodes)
+
+### v0.3.1 — Episode 10: Processes & SystemD ⚙️🇷🇺
+- [x] **Season 3 Episode 10** (100%) — Processes & SystemD (Санкт-Петербург, дни 19-20)
+  - Интегрированный README.md (2,000+ строк):
+    - Сюжет: Boris Kuznetsov (ex-Red Hat, SystemD архитектор), продолжение в СПб
+    - Кризис: Backdoor процесс маскируется под sshd (sshd_backup, PID trick)
+    - 7 последовательных заданий с progressive hints:
+      1. Hunt for backdoor process (ps, pgrep, /proc inspection)
+      2. Kill backdoor (SIGTERM → SIGKILL escalation)
+      3. Create systemd monitoring service (shadow-monitor.service)
+      4. Create systemd timer for backups (shadow-backup.timer, hourly)
+      5. Analyze logs with journalctl (filtering, forensics)
+      6. Monitor system health (load, memory, CPU, failed services)
+      7. Generate comprehensive audit report
+    - Полная теория:
+      - Processes: ps, top, pgrep/pkill, /proc filesystem, PID, PPID, states
+      - Signals: SIGTERM, SIGKILL, SIGHUP, signal handling
+      - SystemD: init system, unit files, services, timers, targets
+      - Service Units: [Unit], [Service], [Install], Type, ExecStart, Restart
+      - Timer Units: OnCalendar, Persistent, timers vs cron
+      - Journalctl: -u, -p, --since, -f, forensics queries
+      - System monitoring: uptime, free, CPU/memory analysis
+    - Персонажи: Boris Kuznetsov (SystemD architect, ex-Red Hat contributor)
+    - Boris's wisdom: "Init scripts — это прошлое. SystemD — это настоящее. И настоящее."
+    - Философия: SystemD как unified control plane всей системы
+  - starter.sh (357 строк) — шаблон с TODO для всех 7 задач
+  - solution/process_manager.sh (1,165 строк) — complete reference solution:
+    - Backdoor process hunt (pattern matching, /proc inspection)
+    - Process killing with proper signal escalation
+    - Shadow-monitor service (continuous monitoring script + unit file)
+    - Shadow-backup timer (backup script + service + timer units)
+    - Journalctl analysis (multiple filtering techniques)
+    - System health monitoring (load, memory, CPU, services)
+    - Comprehensive audit report (14 sections, production-ready)
+  - artifacts/:
+    - README.md (547 строк) — testing guide, simulation, troubleshooting, pro tips
+  - tests/test.sh (808 строк) — 10 test categories:
+    1. File structure (scripts, units, directories)
+    2. Script content (shebang, loops, logger usage)
+    3. SystemD service units (structure, ExecStart, Restart, journal logging)
+    4. SystemD timer (OnCalendar, Persistent, Type=oneshot)
+    5. Service runtime (active, enabled, process running, scheduled)
+    6. Logging (journal entries, journalctl commands)
+    7. Backups (directory, files created, permissions)
+    8. Process management (ps, pgrep, top, kill, systemctl)
+    9. Report (exists, content, sections, permissions)
+    10. Integration (service restart, manual backup trigger, health check)
 
 ### v0.3.0 — Season 3: SYSTEM ADMINISTRATION BEGINS! 🇷🇺🎓
 - [x] **Season 3 Episode 09** (100%) — Users & Permissions (Санкт-Петербург, дни 17-18) **SEASON 3 PREMIERE!**
@@ -140,7 +187,7 @@
 |--------|----------|----------|----------|--------|
 | **1** | Shell & Foundations | 01-04 | 100% | ✅ Complete! (Days 2-8) |
 | **2** | Networking | 05-08 | 100% | ✅ Complete! (Days 9-16) 🎉 |
-| **3** | System Administration | 09-12 | 25% | 🚧 In Progress (Days 17-24) 🇷🇺 |
+| **3** | System Administration | 09-12 | 50% | 🚧 In Progress (Days 17-24) 🇷🇺⚙️ |
 | **4** | DevOps & Automation | 13-16 | 0% | 🚧 Not started |
 | **5** | Security & Pentesting | 17-20 | 0% | 🚧 Not started |
 | **6** | Embedded Linux | 21-24 | 0% | 🚧 Not started |
