@@ -1,13 +1,244 @@
 # KERNEL SHADOWS: Статус проекта
 
-**Версия:** 0.3.3 (Season 3: SYSTEM ADMINISTRATION — COMPLETE! 🇪🇪✅)
-**Дата:** 9 октября 2025
-**Обновлено:** 9 октября 2025 (Episode 12: Backup & Recovery — Season 3 FINALE!)
-**Статус:** Season 3 COMPLETE! (12/32 episodes, 38% done) 🎉
+**Версия:** 0.4.3 (SEASON 4: DEVOPS & AUTOMATION — COMPLETE! 🎉🇳🇱🇩🇪)
+**Дата:** 10 октября 2025
+**Обновлено:** 10 октября 2025 (Episode 16: Ansible & IaC — SEASON 4 FINALE!)
+**Статус:** Season 4 COMPLETE! (16/32 episodes, 50% done) 🎉🚀
 
 ---
 
-## 📊 Общий прогресс: 38% (12/32 episodes)
+## 📊 Общий прогресс: 50.0% (16/32 episodes)
+
+### v0.4.3 — Episode 16: Ansible & Infrastructure as Code 🤖🇳🇱🇩🇪 (SEASON 4 FINALE! 🎉)
+- [x] **Season 4 Episode 16** (100%) — Ansible & IaC (Amsterdam → Berlin, дни 31-32) **SEASON 4 COMPLETE!**
+  - Интегрированный README.md (1,693 строки):
+    - Сюжет: Amsterdam Tempelhof datacenter, Klaus Schmidt (Ansible architect), возврат в Berlin для debriefing
+    - ИНЦИДЕНТ (16:30): Server-27 compromise detected! Krylov root access 3 weeks ago, modified OpenSSL binary
+    - Emergency response: Full security audit с Ansible, server rebuild в 30 минут (vs 8+ hours manual)
+    - 9 практических заданий:
+      1. Install Ansible (apt, verify version, test connection)
+      2. Create inventory file (50 servers в groups: web, database, cache, monitoring, app)
+      3. Write basic playbook (packages, users, firewall, Docker)
+      4. Create roles (common, webserver, database — reusable components)
+      5. Use variables (group_vars, host_vars, defaults)
+      6. Templates with Jinja2 (nginx.conf.j2, dynamic configs)
+      7. Handlers (restart nginx on config change, idempotent)
+      8. Ansible Vault (encrypted secrets: db_password, api_key)
+      9. Security audit playbook (UID 0, empty passwords, SSH, suspicious processes, modified files)
+    - Полная теория:
+      - Ansible architecture (control node, managed nodes, agentless SSH)
+      - Inventory (groups, variables, dynamic inventory)
+      - Playbooks (tasks, modules, plays)
+      - Roles (tasks, handlers, templates, files, vars, defaults)
+      - Variables (precedence, group_vars, host_vars, extra vars)
+      - Templates (Jinja2, loops, conditionals)
+      - Handlers (reactive tasks, run at end of play)
+      - Ansible Vault (encrypt secrets, vault password file)
+      - Idempotence (run multiple times, same result)
+      - Best practices (check mode, tags, limit, forks)
+    - Персонажи: Klaus Schmidt (Ansible architect, pragmatic Dutch/German approach), Dmitry Orlov, Hans Müller (final review)
+    - Klaus's wisdom: "Configuration management is not about managing servers. It's about managing chaos."
+    - Klaus on efficiency: "50 servers, 3 minutes, one command. Manual: 25 hours. That's 500× efficiency."
+    - Klaus on incident: "Server compromised? Rebuild in 30 minutes. Manual? 8 hours + mistakes. IaC = insurance."
+    - Season 4 finale: Hans final review — "Git, Docker, CI/CD, Ansible. You are now DevOps engineers. Senior level."
+    - Cliffhanger (Season 5): Viktor calls — "Season 5: Security. Zürich. Eva Zimmerman (ex-NSA). Secure your infrastructure."
+    - Философия: "Infrastructure as Code = Everything versioned, automated, reproducible. Scale from 1 to 1,000 servers."
+  - starter.sh (250 строк) — шаблон с TODO для всех 9 задач
+  - solution/ansible_setup.sh (908 строк) — complete reference implementation:
+    - Ansible installation with version check
+    - Inventory file (50 servers, 5 groups, variables)
+    - Basic playbook (packages, users, firewall, Docker)
+    - Roles (common, webserver with nginx, database with PostgreSQL)
+    - Variables (group_vars/all.yml, web.yml, database.yml)
+    - Templates (nginx.conf.j2 with Jinja2 variables)
+    - Security audit playbook (10 security checks)
+    - Site orchestration playbook (roles → servers mapping)
+    - ansible.cfg (project configuration)
+    - README.md (documentation, quick start, commands cheat sheet)
+    - Completion report (statistics, Klaus's assessment)
+  - artifacts/README.md (384 строки) — testing guide, local testing (Docker containers), Vault usage, performance benchmarks
+  - tests/test.sh (554 строки) — 12 test categories:
+    1. Ansible installation (ansible, ansible-playbook, ansible-vault)
+    2. Project structure (directories, required files)
+    3. Inventory file (groups, servers, syntax validation)
+    4. Playbook syntax (YAML validation, name, hosts, tasks, become)
+    5. Roles (common, webserver, database — tasks, handlers, templates)
+    6. Variables (group_vars, host_vars)
+    7. Templates (Jinja2 files, variable usage)
+    8. Handlers (service restarts, configuration changes)
+    9. Security audit playbook (UID 0, SSH, processes, ports, firewall)
+    10. Ansible configuration (ansible.cfg, inventory path, host key checking)
+    11. Best practices (idempotent modules, documentation, .gitignore)
+    12. Integration test (local ping, playbook dry run)
+  - **Total:** 3,789 строк — Infrastructure as Code complete!
+  - **SEASON 4 COMPLETE:** Git → Docker → CI/CD → Ansible = Full DevOps stack!
+
+### v0.4.2 — Episode 15: CI/CD Pipelines ⚙️🇩🇪
+- [x] **Season 4 Episode 15** (100%) — CI/CD Pipelines (Berlin, Germany, дни 29-30)
+  - Интегрированный README.md (1,097 строк):
+    - Сюжет: Возврат в Берлин, Chaos Computer Club, Hans Müller (returns)
+    - ИНЦИДЕНТ (15:47): Production broken! HTTP 500 errors на всех 50 серверах, Dmitry deployment mistake
+    - Emergency rollback (5 minutes under pressure): identify → rollback → verify → post-mortem
+    - 9 практических заданий:
+      1. Create GitHub Actions workflow (ci-cd.yml)
+      2. Automated testing (lint, unit tests, integration tests)
+      3. Docker registry integration (automated image push)
+      4. Deploy to staging (automatic after tests pass)
+      5. Deploy to production (manual approval, environment protection)
+      6. Rollback strategy (workflow_dispatch, version input)
+      7. Blue-green deployment (zero-downtime updates)
+      8. Monitoring & alerts (post-deployment health checks)
+      9. INCIDENT: Emergency rollback (time pressure: 5 minutes)
+    - Полная теория:
+      - CI/CD concepts (Continuous Integration, Delivery, Deployment)
+      - GitHub Actions architecture (workflows, jobs, steps, runners, triggers)
+      - Workflow syntax (on, jobs, steps, needs, environment)
+      - Deployment strategies (rolling, blue-green, canary)
+      - Rollback strategies (one-command recovery, automation)
+      - Testing in CI/CD (unit, integration, E2E, smoke tests)
+      - Monitoring (error rate, latency, resource usage)
+      - Best practices (test pyramid, environment protection, rollback testing)
+    - Персонажи: Hans Müller (CCC, CI/CD expert, returns), Dmitry Orlov (breaks production, learns from mistake)
+    - Hans's wisdom: "If it hurts, automate it. If it still hurts, you automated the wrong thing."
+    - Hans on incident: "Automation is power tool. You can build house in one day. Or destroy house in one second."
+    - Lesson: "Tests can pass, but code still broken. Staging must be identical to production. Always have rollback plan."
+    - Философия: "Automate carefully" — automation amplifies both success and failure
+  - starter.sh (224 строки) — шаблон с TODO для всех 9 задач
+  - solution/cicd_setup.sh (675 строк) — complete reference implementation:
+    - GitHub Actions workflows (ci-cd.yml, rollback.yml)
+    - Automated test suite (Dockerfile validation, build, health checks)
+    - Docker configuration (Dockerfile, nginx.conf, docker-compose.yml)
+    - Documentation (CICD.md — workflow guide, secrets, troubleshooting)
+    - Git initialization with proper .gitignore
+    - CI/CD setup report (comprehensive summary)
+  - artifacts/README.md (394 строки) — testing guide, secrets configuration, monitoring, incident response checklist
+  - tests/test.sh (486 строк) — 10 test categories:
+    1. Project structure (directories, workflows, tests, docs)
+    2. GitHub Actions workflows (ci-cd.yml, jobs, syntax)
+    3. Automated tests (test script, executable, content checks)
+    4. Docker configuration (Dockerfile, HEALTHCHECK, docker-compose.yml)
+    5. Workflow syntax (YAML validation with yamllint)
+    6. Deployment configuration (staging, production, environments, secrets)
+    7. Rollback strategy (rollback.yml, version input, health checks)
+    8. Documentation (CICD.md or README.md, setup report)
+    9. Git configuration (repository, commits, .gitignore, secrets protection)
+    10. Best practices (job dependencies, conditionals, caching, PR validation, health checks)
+  - **Total:** 2,876 строк — CI/CD automation with incident response!
+
+### v0.4.1 — Episode 14: Docker Basics 🐳🇳🇱
+- [x] **Season 4 Episode 14** (100%) — Docker Basics (Amsterdam, Netherlands, дни 27-28)
+  - Интегрированный README.md (1,352 строки):
+    - Сюжет: Amsterdam Science Park, Sophie van Dijk (Docker architect, ex-Docker Inc.)
+    - ИНЦИДЕНТ (15:30): Supply chain attack! Compromised Docker image (viktor/crypto-toolkit:latest)
+    - Backdoor detection (Tor exit node 185.220.101.52 — Krylov!), emergency response с Sophie
+    - 9 практических заданий:
+      1. Install Docker (Docker Engine + Docker Compose)
+      2. Create Dockerfile для nginx (Alpine-based, HEALTHCHECK, custom config)
+      3. Build and run container (docker build, docker run, port mapping)
+      4. Docker networking (custom networks, container-to-container connectivity)
+      5. Docker volumes (data persistence, named volumes)
+      6. Multi-stage builds (optimization: builder stage → minimal runtime)
+      7. Docker Compose (web + database + cache, multi-container orchestration)
+      8. Security scanning (Trivy для vulnerability detection)
+      9. INCIDENT: Detect compromised image (stop containers, scan, rebuild from clean source, Docker Content Trust)
+    - Полная теория:
+      - Containers vs VMs (isolation without overhead, shared kernel)
+      - Docker architecture (client, daemon, images, containers, registry)
+      - Dockerfile syntax (FROM, RUN, COPY, CMD, HEALTHCHECK, multi-stage)
+      - Docker networking (bridge, host, custom networks)
+      - Docker volumes (persistence, named volumes vs bind mounts)
+      - docker-compose.yml (services, networks, volumes, dependencies)
+      - Security best practices (Alpine images, non-root user, Trivy scanning, Content Trust)
+      - Supply chain attacks (image verification, checksums, signatures)
+    - Персонажи: Sophie van Dijk (pragmatic Dutch approach, Docker expert), Dmitry Orlov (DevOps mentor)
+    - Sophie's wisdom: "Containers zijn als LEGO. Build once, run anywhere. But verify everything."
+    - Anna forensics: Docker Hub phishing attack, password reuse, backdoor от Krylov
+    - Философия: "Build once, run anywhere — but secure everywhere"
+  - starter.sh (311 строк) — шаблон с TODO для всех 9 задач
+  - solution/docker_setup.sh (655 строк) — complete reference implementation:
+    - Docker installation (prerequisites, GPG keys, repository setup)
+    - Dockerfile creation (nginx with custom config, HTML, health check)
+    - Docker networking (custom bridge networks, connectivity tests)
+    - Volumes (create, mount, verify persistence)
+    - Multi-stage build (builder → runtime, size optimization)
+    - Docker Compose (multi-container stack: web + postgres + redis)
+    - Trivy security scanning (vulnerability detection)
+    - Docker audit report (comprehensive system check)
+    - Completion report with Sophie's assessment
+  - artifacts/README.md (439 строк) — testing guide, security notes, commands cheat sheet
+  - tests/test.sh (516 строк) — 9 test categories:
+    1. Docker installation (command available, daemon running, Compose)
+    2. Project structure (directories, Dockerfiles, compose files)
+    3. Docker images (built, operation-shadow images, Alpine-based)
+    4. Docker containers (running, shadow-web container)
+    5. Docker networking (custom networks, connectivity)
+    6. Docker volumes (shadow-data, compose volumes, persistence)
+    7. Docker Compose (syntax validation, services running)
+    8. Security (Trivy installed, non-root containers, audit script)
+    9. Best practices (multi-stage, health checks, .dockerignore, disk usage)
+  - **Total:** 3,273 строки — Docker containerization complete!
+
+### v0.4.0 — Episode 13: Git & Version Control 📦🇩🇪 (SEASON 4 PREMIERE! 🎉)
+- [x] **Season 4 Episode 13** (100%) — Git & Version Control (Berlin, Germany, дни 25-26) **SEASON 4 STARTS!**
+  - Интегрированный README.md (5,800+ строк):
+    - Сюжет: Переезд в Берлин, Chaos Computer Club, Hans Müller (CCC member, DevOps expert)
+    - Инцидент: Password leak в Git (21:30), emergency cleanup (git filter-branch), Anna помогает
+    - 9 практических заданий:
+      1. Initialize Git repository (git init, config)
+      2. Create directory structure (ansible/, docker/, terraform/, scripts/, docs/)
+      3. Create .gitignore (secrets protection, *.pem, *.key, .env)
+      4. Branching strategy (main, development, feature/* branches)
+      5. Proper commit messages (Conventional Commits format)
+      6. Simulate merge conflict (Max vs Dmitry, resolve manually)
+      7. Secrets management (.env.example, git-crypt, HashiCorp Vault)
+      8. INCIDENT: Find and remove leaked secret (BFG Repo-Cleaner, git filter-branch)
+      9. Generate Git audit report (comprehensive security check)
+    - Полная теория:
+      - Git basics: repository, commits, branches, merge, rebase
+      - .gitignore patterns (secrets, logs, OS files, temporary)
+      - Branching strategies: Feature Branch, GitFlow, Trunk-Based Development
+      - Conventional Commits (feat, fix, docs, chore, style, refactor)
+      - Merge conflicts resolution
+      - Remote repositories (GitHub, GitLab, SSH keys)
+      - Secrets management (git-crypt, .env files, Vault, CI/CD secrets)
+      - Infrastructure as Code (IaC) best practices
+      - Emergency procedures (leaked secrets removal)
+    - Персонажи: Hans Müller (CCC, German precision, Git/CI/CD expert), Dmitry Orlov (DevOps mentor)
+    - Hans's wisdom: "Code is law. Version control is constitution. Git is not optional. Git is life."
+    - Dmitry's philosophy: "В России: 'Работает — не трогай.' В DevOps: 'Работает — автоматизируй.'"
+    - Философия: Infrastructure as Code, version everything, automate everything
+  - starter.sh (427 строк) — шаблон с TODO для всех 9 задач
+  - solution/version_control.sh (907 строк) — complete reference implementation:
+    - Git initialization with proper configuration
+    - Full directory structure (ansible, docker, terraform, scripts, docs)
+    - Comprehensive .gitignore (60+ patterns)
+    - Branching strategy with documentation
+    - Sample infrastructure files (Ansible playbooks, Dockerfiles)
+    - Secrets management (.env.example, .env ignored)
+    - Git audit report generator (security checks, file statistics)
+    - EPISODE13_COMPLETION.md summary
+    - Color output, logging, comprehensive error handling
+  - artifacts/README.md (418 строк) — testing guide, security notes, learning objectives
+  - tests/test.sh (713 строк) — 10 test categories:
+    1. Repository initialization (Git init, config, commits)
+    2. Directory structure (all required directories)
+    3. .gitignore configuration (patterns, committed)
+    4. Branching strategy (main, development, feature branches, docs)
+    5. Commit quality (count, Conventional Commits, descriptive messages)
+    6. Infrastructure files (Ansible, Docker, scripts)
+    7. Secrets management (.env.example committed, .env ignored)
+    8. Git audit (script exists, executable, report generated)
+    9. Documentation (README, BRANCHING_STRATEGY, SECRETS_MANAGEMENT)
+    10. Best practices (no large files, reasonable repo size)
+  - **Total:** ~8,265 строк — Season 4 PREMIERE!
+  - **Season 4 README.md** (736 строк) — comprehensive season overview:
+    - Geography: Amsterdam 🇳🇱 + Berlin 🇩🇪
+    - Context: DevOps automation, 50→100 servers scaling
+    - 4 episodes plan (Git, Docker, CI/CD, Ansible)
+    - Local experts: Hans Müller, Sophie van Dijk, Klaus Schmidt
+    - Narrative arc: Manual → Automated, Crisis under fire, Supply chain attack subplot
+    - Technologies: Git, Docker, GitHub Actions, Ansible
+    - Philosophy: "Automate or die at scale"
 
 ### v0.3.3 — Episode 12: Backup & Recovery 💾🇪🇪 (SEASON 3 FINALE! 🎉)
 - [x] **Season 3 Episode 12** (100%) — Backup & Recovery (Tallinn, Estonia, дни 23-24) **SEASON 3 COMPLETE!**
@@ -290,7 +521,7 @@
 | **1** | Shell & Foundations | 01-04 | 100% | ✅ Complete! (Days 2-8) |
 | **2** | Networking | 05-08 | 100% | ✅ Complete! (Days 9-16) 🎉 |
 | **3** | System Administration | 09-12 | 100% | ✅ Complete! (Days 17-24) 🇷🇺🇪🇪🎉 |
-| **4** | DevOps & Automation | 13-16 | 0% | 🚧 Not started |
+| **4** | DevOps & Automation | 13-16 | 100% | ✅ Complete! (Days 25-32) 🇩🇪🇳🇱🎉 |
 | **5** | Security & Pentesting | 17-20 | 0% | 🚧 Not started |
 | **6** | Embedded Linux | 21-24 | 0% | 🚧 Not started |
 | **7** | Advanced Topics | 25-28 | 0% | 🚧 Not started |
@@ -426,7 +657,7 @@
 - **Сложность:** ⭐⭐⭐☆☆ (incident response под давлением!)
 - **Структура:** Emergency Incident Response (time pressure, real-world scenario)
 - **Финальный проект:** Complete firewall setup с DDoS mitigation + audit report
-- **Особенность:** 
+- **Особенность:**
   - Первый REAL incident (не симуляция)
   - 5-минутный deadline (Load Average 47 → 2)
   - Удалённое администрирование (SSH из самолёта, 1200ms latency)
@@ -847,10 +1078,10 @@ cd ../../tests/
 **Season 1: Shell & Foundations — 100% COMPLETE! 🎉**
 **Season 2: Networking — 50% (Episodes 05-06 Ready!) 🇸🇪**
 
-**Текущая локация:** Стокгольм, Швеция 🇸🇪 → Москва 🇷🇺  
-**День операции:** 10-12 из 60  
-**Персонажи:** Erik Johansson, Katarina Lindström  
-**Достижение:** DNS spoofing обнаружен, DNSSEC проверен ✓  
+**Текущая локация:** Стокгольм, Швеция 🇸🇪 → Москва 🇷🇺
+**День операции:** 10-12 из 60
+**Персонажи:** Erik Johansson, Katarina Lindström
+**Достижение:** DNS spoofing обнаружен, DNSSEC проверен ✓
 **Следующая остановка:** Москва (возврат) — Firewalls & iptables (Episode 07) 🇷🇺
 
 </div>
