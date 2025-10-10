@@ -2,6 +2,14 @@
 
 ## 📚 Структура: 8 Сезонов • 32 Эпизода • ~120-160 часов
 
+**KERNEL SHADOWS** — исчерпывающий курс по Linux для:
+- 🔧 **Системных администраторов** — конфигурация, управление, troubleshooting
+- 🚀 **DevOps инженеров** — Docker, Kubernetes, CI/CD, IaC
+- 🔐 **Пентестеров и белых хакеров** — Kali tools, OWASP, forensics
+- 🌐 **Сетевых инженеров** — TCP/IP, DNS, VPN, firewall
+- 🤖 **Embedded разработчиков** — Raspberry Pi, IoT, UART/I2C/SPI
+- 💾 **Database администраторов** — SQL, performance tuning, backup
+
 > **См. также:**
 > - [SCENARIO.md](SCENARIO.md) — полный сценарий операции
 > - [CHARACTERS.md](CHARACTERS.md) — детальные биографии всех персонажей
@@ -32,6 +40,12 @@
 **Локация:** 🇷🇺 Новосибирск, Россия (Академгородок)
 **Время:** 12-15 часов (дни 2-8 операции)
 **Сложность:** ⭐☆☆☆☆
+
+**Технологии:**
+- 📝 Bash scripting (automation)
+- 📄 Text files (.txt, .log)
+- ⚙️ Basic configs (/etc/hosts, bashrc)
+- 🔍 Regex (grep, awk, sed)
 
 **Контекст:**
 Max работает удалённо из дома в Академгородке. Сибирская зима, -20°C, тишина снежного леса за окном. Домашний home lab (Dell PowerEdge server, Raspberry Pi). Встречи с локальными сисадминами в кафе "Под Интегралом".
@@ -179,6 +193,14 @@ Max работает удалённо из дома в Академгородк�
 **Локации:** 🇷🇺 Москва → 🇸🇪 Стокгольм, Швеция
 **Время:** 15-18 часов (дни 9-16 операции)
 **Сложность:** ⭐⭐☆☆☆
+
+**Технологии:**
+- 🌐 Network configs (/etc/network/interfaces, /etc/hosts, resolv.conf)
+- 🔐 SSH configs (sshd_config, authorized_keys)
+- 🔥 Firewall rules (ufw, iptables)
+- 📦 Network packets (tcpdump, Wireshark .pcap)
+- 🔑 SSL certificates (openssl)
+- 🐍 Python (network automation, API)
 
 **Контекст:**
 Алекс: *"Макс, у нас проблема. Крылов знает о нас. Приезжай в Москву."* Макс впервые выезжает из Новосибирска. Москва — штаб-квартира Виктора, ЦОД "Москва-1", напряжение. Затем — первый раз за границей: Стокгольм. Холодная скандинавская эстетика, Bahnhof nuclear bunker datacenter. Культурный шок × 2.
@@ -338,6 +360,15 @@ Max работает удалённо из дома в Академгородк�
 **Время:** 15-18 часов (дни 17-24 операции)
 **Сложность:** ⭐⭐⭐☆☆
 
+**Технологии:**
+- ⚙️ systemd units (.service files)
+- ⏰ Crontab (cron.d/, crontab -e)
+- 📁 System configs (fstab, sudoers, sysctl.conf)
+- 📊 journald logs (journalctl)
+- 💾 Backup formats (tar, rsync, dd)
+- 🗄️ SQL (MySQL/PostgreSQL admin)
+- 🐍 Python (advanced automation)
+
 **Контекст:**
 Кризис: один из серверов взломан (backdoor от Krylov). Anna: *"Нужен полный контроль над системами."* Max едет в СПб (Unix старая школа), затем в Таллин (e-Government expertise). Белые ночи СПб, средневековый Таллин, контраст истории и технологий.
 
@@ -496,6 +527,16 @@ Max работает удалённо из дома в Академгородк�
 **Время:** 18-22 часа (дни 25-32 операции)
 **Сложность:** ⭐⭐⭐⭐☆
 
+**Технологии:**
+- 🐳 YAML (Docker Compose, Kubernetes, Ansible, CI/CD)
+- 📦 Dockerfile & docker-compose.yml
+- 🔧 Makefile (build automation)
+- 🔑 Environment files (.env, EnvironmentFile)
+- 📝 Templates (Jinja2 для Ansible)
+- 🌳 Git (.gitignore, hooks, workflows)
+- 🚀 CI/CD configs (.gitlab-ci.yml, GitHub Actions)
+- 📊 JSON (API, configs)
+
 **Контекст:**
 Dmitry: *"50 серверов вручную? Нет. Docker, Ansible, CI/CD. Едем в Европу — Амстердам и Берлин, DevOps столицы."* Max знакомится с европейской DevOps культурой: pragmatic Dutch approach (Amsterdam) + hacker culture (Berlin CCC). Контейнеризация, автоматизация, CI/CD pipeline. Supply chain attack twist — кто-то предатель?
 
@@ -632,6 +673,16 @@ Dmitry: *"50 серверов вручную? Нет. Docker, Ansible, CI/CD. Е
 **Персонажи:** Eva Zimmerman (UBS security), Marcus Weber (финансист), Jean-Pierre Dubois, Dr. Heinrich Bauer (CERN), Isabella Rossi (Interpol)
 **Время:** 18-22 часа (дни 33-40 операции)
 **Сложность:** ⭐⭐⭐⭐⭐
+
+**Технологии:**
+- 🔐 Kali tools (nmap, metasploit, burp suite)
+- 🔑 Certificates & Keys (SSL/TLS, SSH, GPG)
+- 📦 Network packets (tcpdump, Wireshark analysis)
+- 🔍 Regex (log analysis, pattern matching)
+- 📊 JSON (API security testing)
+- 🐍 Python (exploit scripts, automation)
+- 🛡️ WAF configs (ModSecurity)
+- 🔒 Hardening configs (SELinux, AppArmor, fail2ban)
 
 **Контекст:**
 Алекс: *"Krylov использует zero-day. Едем в Швейцарию — лучшие security эксперты."* Цюрих — banking security (UBS underground datacenter), Женева — CERN + Interpol. Banking paranoia, максимальный уровень security. **КРИЗИС:** APT атака на Viktor сервер (backdoor, rootkit). Isabella Rossi помогает с forensics. Marcus Weber подозревается в предательстве (red herring). Напряжение maximum.
@@ -772,6 +823,15 @@ Dmitry: *"50 серверов вручную? Нет. Docker, Ansible, CI/CD. Е
 **Время:** 15-18 часов (дни 41-48 операции)
 **Сложность:** ⭐⭐⭐☆☆
 
+**Технологии:**
+- 🤖 C/C++ (GPIO control, device drivers)
+- 🐍 Python (IoT automation, MQTT)
+- 📊 JSON (MQTT payloads, configs)
+- 🔧 Device configs (config.txt, device tree)
+- 📡 UART/I2C/SPI protocols
+- 🚁 MAVLink протокол
+- 📝 Shell scripts (startup automation)
+
 **Контекст:**
 Viktor: *"Нужна разведка. Дроны. Летишь в Шэньчжэнь — hardware Silicon Valley."* Max в Китае. Культурный шок × 100. Huaqiangbei electronics market — можно купить ВСЁ. Li Wei (ex-DJI) обучает embedded Linux. Неоновый киберпанк IRL. Сборка дронов, Raspberry Pi, IoT, MQTT. **ОПАСНОСТЬ:** Krylov пытается перехватить drone во время разведки — шифрование команд спасает. Китайская слежка. Быстрый выезд после миссии.
 
@@ -904,6 +964,19 @@ Viktor: *"Нужна разведка. Дроны. Летишь в Шэньчж�
 **Персонажи:** Björn Sigurdsson (Kubernetes SRE, ex-EVE Online), Guðrún Ásta (monitoring), Þorsteinn Jónsson (security hardening)
 **Время:** 18-22 часа (дни 49-56 операции)
 **Сложность:** ⭐⭐⭐⭐⭐
+
+**Технологии:**
+- 📦 Kubernetes YAML (deployments, services, ingress)
+- 📊 Monitoring configs (prometheus.yml, grafana dashboards)
+- 🔍 PromQL (Prometheus queries)
+- 🗄️ SQL (database performance tuning)
+- ⚙️ sysctl configs (kernel tuning)
+- 🔒 Hardening configs (SELinux, AppArmor, auditd)
+- 🏗️ Terraform (IaC) — Infrastructure as Code
+- 🔧 Makefile (automation)
+- 🐍 Python (performance profiling scripts)
+- 💡 C (system calls понимание) — опционально
+- 🧩 eBPF (kernel tracing) — упоминание
 
 **Контекст:**
 Anna: *"Финальная атака близко. Едем в Исландию — наши production серверы. Последний рубеж."* Вerne Global datacenter (бывшая военная база НАТО), ЦОД в лавовых пещерах, geothermal energy, free cooling. Изоляция — край света. Kubernetes production кластер, Prometheus + Grafana, максимальный hardening. **НАПРЯЖЕНИЕ:** Viktor: *"'Новая Эра' готовит что-то большое. Неделя. Может меньше."* Северное сияние над datacenter. Подготовка к финалу. Max размышляет: *"Как я здесь оказался?"*
@@ -1040,6 +1113,17 @@ Anna: *"Финальная атака близко. Едем в Исландию
 **Персонажи:** Вся команда + все local experts помогают
 **Время:** 15-20 часов (дни 57-60 операции)
 **Сложность:** ⭐⭐⭐⭐⭐
+
+**Технологии:**
+- 🌟 ВСЕ технологии из Seasons 1-7 одновременно!
+- 🔧 Bash, Python, YAML, SQL, Regex, JSON
+- 🐳 Docker, Kubernetes, Terraform
+- 🔐 Pentesting tools, hardening configs
+- 📊 Monitoring, alerting, incident response
+- 🌐 Network configs, firewall rules, VPN
+- ⚙️ systemd, cron, all Linux configs
+- 📝 Real-time coordination scripts
+- 🚀 Emergency automation
 
 **Контекст:**
 Viktor: *"Они идут. Krylov + 'Новая Эра'. Одновременно. Всё или ничего."* **ФИНАЛЬНАЯ БИТВА:** DDoS 100+ Gbps на все локации, zero-day exploits, APT backdoors, physical threat (Krylov в Москве). Команда распределена по часовым поясам: Max (Исландия — command center), Alex (Москва — offensive), Anna (Цюрих — defense), Dmitry (Берлин — automation). Local experts помогают (Erik, Björn, Li Wei). 72 часа без сна. **TWIST:** Marcus НЕ предатель. The Architect раскрывается. Все атаки отражены. 50 серверов целы. Sunrise over Iceland. Операция завершена. Max возвращается в Новосибирск. Но Viktor: *"Есть ещё одна операция..."*

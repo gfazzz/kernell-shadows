@@ -286,12 +286,349 @@ find . -name "$filename" || { echo "Not found"; exit 1; }
 - Примеры: systemd service setup, firewall config, SSH hardening
 - Фокус: использовать и конфигурировать, не переписывать
 
+### ⚡ Принцип рефакторинга "Меньше .sh, больше Linux" (КРИТИЧНО):
+
+**Даже в Type A episodes (bash automation):**
+- ✅ 60-70% времени: изучение Linux команд/концептов
+- ✅ 30-40% времени: bash для автоматизации этих команд
+- ❌ НЕ 90% bash scripting!
+
+**.sh = инструмент автоматизации, НЕ замена Linux tools**
+
+Примеры правильного баланса:
+```
+Episode 01 (Type A):
+- 6 циклов (60-90 мин): pwd, ls, cd, find, cat — LINUX COMMANDS
+- 1 цикл (30-45 мин): bash скрипт — AUTOMATION
+
+Episode 04 (Type B):
+- 6 циклов: apt, dpkg, systemctl, service management — LINUX ADMIN
+- 1 цикл: НЕТ bash скрипта, только конфигурация
+```
+
+**Всегда спрашивай:** "Есть ли готовый инструмент вместо bash?"
+- Log rotation? → `logrotate`, НЕ bash
+- Cron jobs? → `cron/systemd timer`, НЕ while loop
+- Monitoring? → `monit/systemd`, НЕ ping script
+
 ### Когда студент работает над эпизодом:
 - Направляй к **README.md** сначала — там всё: сюжет, задание, теория
 - **artifacts/README.md** содержит инструкции по использованию тестовых данных
 - **НЕ показывай solution/** напрямую!
 - Можешь подсказать где искать в README.md (например, "Смотри Цикл 3")
 - Можешь запустить tests/test.sh для проверки решения
+
+---
+
+## 🗂️ Типы файлов и технологий по сезонам
+
+**ВАЖНО:** KERNEL SHADOWS — исчерпывающий курс по Linux для:
+- 🔧 Системных администраторов
+- 🚀 DevOps инженеров
+- 🔐 Пентестеров и белых хакеров
+- 🌐 Сетевых инженеров
+- 🤖 Embedded разработчиков
+- 💾 Database администраторов
+
+### ✅ MUST HAVE (высокий приоритет)
+
+#### 1. **Конфигурационные файлы Linux**
+```bash
+# System Configuration
+/etc/ssh/sshd_config          # SSH server
+/etc/systemd/system/*.service # systemd units
+/etc/cron.d/*                 # cron jobs
+/etc/sysctl.conf              # kernel parameters
+/etc/fstab                    # filesystem mounts
+/etc/sudoers, /etc/sudoers.d/ # sudo config
+
+# Networking
+/etc/hosts, /etc/resolv.conf  # DNS
+/etc/network/interfaces       # network interfaces
+/etc/ufw/*, /etc/iptables/*   # firewall rules
+/etc/nginx/nginx.conf         # web server
+/etc/fail2ban/jail.local      # security
+
+# Services
+/etc/logrotate.d/*            # log rotation
+/etc/prometheus/prometheus.yml # monitoring
+/etc/grafana/grafana.ini      # dashboards
+```
+
+**Сезоны:** 2 (Networking), 3 (System Admin), 7 (Production)
+
+#### 2. **Bash скрипты** (автоматизация)
+```bash
+#!/bin/bash
+# Для комбинирования команд, НЕ замены инструментов
+# Best practices: shebang, кавычки, проверка ошибок
+```
+
+**Сезоны:** 1 (Shell), 2 (Network scripts), 3 (Admin automation)
+
+#### 3. **Python** (сложная автоматизация)
+```python
+# Когда bash становится слишком сложным:
+# - API интеграции (requests)
+# - Парсинг JSON/XML
+# - Database queries
+# - Многопоточность
+# - Exception handling
+```
+
+**Сезоны:** 2 (Log parsing), 3 (Advanced automation), 6 (IoT)
+
+#### 4. **YAML** (DevOps конфиги)
+```yaml
+# Docker Compose
+version: '3.8'
+services:
+  web:
+    image: nginx
+    ports:
+      - "80:80"
+
+# Kubernetes
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-app
+
+# Ansible
+---
+- name: Configure servers
+  hosts: webservers
+  tasks:
+    - name: Install nginx
+      apt:
+        name: nginx
+        state: present
+
+# CI/CD
+stages:
+  - test
+  - build
+  - deploy
+```
+
+**Сезоны:** 4 (DevOps), 7 (Kubernetes)
+
+#### 5. **SQL** (базы данных)
+```sql
+-- Администрирование MySQL/PostgreSQL
+CREATE DATABASE app_db;
+GRANT ALL ON app_db.* TO 'user'@'localhost';
+-- Backup/restore, performance tuning
+```
+
+**Сезоны:** 3 (Data management), 7 (Performance)
+
+#### 6. **Regex** (фильтрация, парсинг)
+```bash
+# grep, sed, awk с regex
+grep -E '^[0-9]{1,3}(\.[0-9]{1,3}){3}' access.log
+sed -E 's/pattern/replacement/' file
+awk '/ERROR|CRITICAL/ {print $0}' app.log
+```
+
+**Сезоны:** 1 (Text processing), 5 (Log analysis)
+
+#### 7. **JSON** (API, конфиги, логи)
+```json
+{
+  "config": {
+    "port": 8080,
+    "database": "mongodb://localhost:27017"
+  }
+}
+
+# jq для парсинга
+cat data.json | jq '.users[] | select(.active == true)'
+```
+
+**Сезоны:** 4 (CI/CD), 5 (API), 6 (IoT)
+
+#### 8. **Dockerfile & docker-compose.yml**
+```dockerfile
+FROM ubuntu:22.04
+RUN apt-get update && apt-get install -y nginx
+COPY nginx.conf /etc/nginx/nginx.conf
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
+```
+
+**Сезоны:** 4 (Docker), 7 (Kubernetes)
+
+### 📋 SHOULD HAVE (средний приоритет)
+
+#### 9. **Crontab** (планировщик)
+```cron
+# /etc/crontab или crontab -e
+0 2 * * * /usr/local/bin/backup.sh
+*/15 * * * * /usr/local/bin/check_health.sh
+```
+
+**Сезоны:** 3 (System Admin), 7 (Automation)
+
+#### 10. **Makefile** (автоматизация сборки)
+```makefile
+.PHONY: test deploy clean
+test:
+	shellcheck scripts/*.sh
+	./tests/run_tests.sh
+deploy:
+	rsync -avz dist/ user@server:/var/www/
+```
+
+**Сезоны:** 4 (DevOps), 7 (CI/CD)
+
+#### 11. **Terraform** (Infrastructure as Code)
+```hcl
+resource "aws_instance" "web" {
+  ami           = "ami-0c55b159cbfafe1f0"
+  instance_type = "t2.micro"
+}
+```
+
+**Сезоны:** 7 (IaC), 8 (Production)
+
+#### 12. **Certificates & Keys**
+```bash
+# SSL/TLS
+openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem
+
+# SSH keys
+ssh-keygen -t ed25519 -C "admin@example.com"
+
+# GPG keys
+gpg --gen-key
+```
+
+**Сезоны:** 2 (Networking), 5 (Security)
+
+#### 13. **Network packets** (tcpdump, Wireshark)
+```bash
+# Capture and analyze
+tcpdump -i eth0 -w capture.pcap
+tshark -r capture.pcap -Y 'http.request.method == "POST"'
+```
+
+**Сезоны:** 2 (Networking), 5 (Pentesting)
+
+#### 14. **Log форматы** (syslog, journald)
+```bash
+# journalctl
+journalctl -u nginx.service --since "1 hour ago"
+
+# Structured logs (JSON)
+{"timestamp": "2025-10-10T12:00:00", "level": "ERROR"}
+```
+
+**Сезоны:** 3 (System Admin), 7 (Monitoring)
+
+#### 15. **Archive formats** (backup)
+```bash
+# tar, rsync, dd
+tar -czf backup.tar.gz /data/
+rsync -avz --progress source/ dest/
+dd if=/dev/sda of=backup.img bs=4M
+```
+
+**Сезоны:** 3 (Backup), 7 (Disaster Recovery)
+
+#### 16. **Environment files** (.env)
+```bash
+# .env для конфигурации
+DATABASE_URL=postgresql://user:pass@localhost/db
+API_KEY=secret123
+
+# systemd EnvironmentFile
+EnvironmentFile=/etc/myapp/.env
+```
+
+**Сезоны:** 4 (DevOps), 7 (Production)
+
+#### 17. **Templates** (Jinja2)
+```jinja2
+# Ansible template
+server {
+    listen {{ http_port }};
+    server_name {{ domain }};
+}
+```
+
+**Сезоны:** 4 (Ansible), 7 (IaC)
+
+#### 18. **PromQL** (Prometheus queries)
+```promql
+rate(http_requests_total[5m])
+up{job="node-exporter"}
+```
+
+**Сезоны:** 7 (Monitoring)
+
+### 💡 NICE TO HAVE (упомянуть, но не обязательно)
+
+#### 19. **C/C++** (системное программирование)
+```c
+// Понимание системных вызовов
+#include <unistd.h>
+int main() {
+    pid_t pid = fork();
+    execl("/bin/ls", "ls", "-l", NULL);
+}
+```
+
+**Сезоны:** 6 (Embedded), 7 (Performance)
+
+#### 20. **Assembly** (низкий уровень)
+```asm
+; Для понимания как работает CPU
+mov eax, 4    ; sys_write
+int 0x80      ; syscall
+```
+
+**Сезоны:** 7 (Advanced), упоминание
+
+#### 21. **Lua** (nginx, Redis)
+```lua
+-- nginx lua module
+location /api {
+    content_by_lua_block {
+        ngx.say("Hello!")
+    }
+}
+```
+
+**Сезоны:** 7 (Advanced), опционально
+
+#### 22. **eBPF** (kernel tracing)
+```c
+// BPF программа для трейсинга
+int trace_open(struct pt_regs *ctx) {
+    bpf_trace_printk("open called\n");
+}
+```
+
+**Сезоны:** 7 (Advanced), упоминание
+
+#### 23. **Perl** (legacy)
+```perl
+# Text processing (встречается в старых системах)
+perl -ne 'print if /ERROR/' /var/log/syslog
+```
+
+**Сезоны:** Упоминание как legacy
+
+#### 24. **Ruby** (Chef, Vagrant)
+```ruby
+# Vagrantfile
+Vagrant.configure("2") do |config|
+  config.vm.box = "ubuntu/focal64"
+end
+```
+
+**Сезоны:** Упоминание, опционально
 
 ---
 
