@@ -3,203 +3,160 @@
 ################################################################################
 # OPERATION KERNEL SHADOWS
 # Episode 04: Package Management
-# Script: install_toolkit.sh
+# Script: starter.sh (Type B Template)
 #
-# Mission: Установить необходимые инструменты для операции
-# Author: Max Sokolov (you!)
-# Date: $(date +%Y-%m-%d)
+# Mission: Generate installation report
+# Author: Max Sokolov (Student Template)
+# Date: 7 октября 2025
 #
 # Description:
-#   Автоматизированная установка security & networking инструментов
-#   из списка required_tools.txt
+#   Type B episode: 95% apt/dpkg commands, 5% bash
+#
+#   ВАЖНО: Это НЕ скрипт для УСТАНОВКИ пакетов!
+#   Для установки используй apt команды напрямую:
+#
+#   sudo apt update
+#   sudo apt install nmap tcpdump htop ...
+#
+#   Этот скрипт ТОЛЬКО для генерации отчёта в конце.
 ################################################################################
 
-# TODO: Добавить строгий режим (set -e, set -u, set -o pipefail)
-# Это остановит скрипт при первой ошибке
-
+set -euo pipefail
 
 # === CONFIGURATION ===
 
-# TODO: Определить переменную TOOLS_FILE (путь к required_tools.txt)
-# По умолчанию: "required_tools.txt"
-TOOLS_FILE=""
+TOOLS_FILE="${1:-artifacts/required_tools.txt}"
+REPORT_FILE="install_report.txt"
 
-# TODO: Определить переменную LOG_FILE (путь к лог-файлу)
-# По умолчанию: "install.log"
-LOG_FILE=""
+# === TODO 1: Validate input file ===
+# Проверь что файл существует
+# Подсказка: if [[ ! -f "$TOOLS_FILE" ]]; then
 
-# TODO: Определить переменную BACKUP_DIR (где хранить backup'ы)
-# По умолчанию: "./backups"
-BACKUP_DIR=""
-
-# TODO: Определить переменную REPORT_FILE (отчёт об установке)
-# По умолчанию: "install_report.txt"
-REPORT_FILE=""
+# TODO: Твой код здесь
 
 
-# === FUNCTIONS ===
+# === TODO 2: Start report generation ===
+# Открой блок { } для записи в файл
+# Всё внутри {} будет записано в $REPORT_FILE
+# Подсказка: { ... } > "$REPORT_FILE"
 
-# TODO: Функция log_message()
-# Логирует сообщение в файл и выводит на экран
-# Параметры: $1 - сообщение
-# Формат: [YYYY-MM-DD HH:MM:SS] MESSAGE
-log_message() {
-    # Подсказка: используйте $(date '+%Y-%m-%d %H:%M:%S')
-    echo "TODO: Implement logging"
-}
+{
+  # === TODO 3: Header ===
+  # Создай красивый header с:
+  # - Заголовок "PACKAGE INSTALLATION REPORT"
+  # - Дата: $(date '+%d %B %Y, %H:%M')
+  # - System info: $(lsb_release -ds)
+  # - Kernel: $(uname -r)
+  # - Architecture: $(dpkg --print-architecture)
 
-# TODO: Функция check_root()
-# Проверяет, запущен ли скрипт с правами root (sudo)
-# Если нет — выводит ошибку и завершает работу
-check_root() {
-    # Подсказка: проверьте переменную $EUID (0 = root)
-    echo "TODO: Check if running as root"
-}
+  echo "═══════════════════════════════════════════════════════════════"
+  echo "           PACKAGE INSTALLATION REPORT"
+  echo "═══════════════════════════════════════════════════════════════"
+  echo ""
 
-# TODO: Функция backup_sources_list()
-# Создаёт backup файла /etc/apt/sources.list
-# Сохраняет в $BACKUP_DIR/sources.list.backup.TIMESTAMP
-backup_sources_list() {
-    # Подсказка: используйте cp и $(date +%Y%m%d_%H%M%S)
-    echo "TODO: Backup /etc/apt/sources.list"
-}
-
-# TODO: Функция update_package_lists()
-# Выполняет apt update для обновления списков пакетов
-# Логирует результат
-update_package_lists() {
-    echo "TODO: Run apt update"
-}
-
-# TODO: Функция parse_tools_list()
-# Читает required_tools.txt и извлекает названия пакетов
-# Фильтрует:
-#   - Пустые строки
-#   - Строки, начинающиеся с #
-#   - Закомментированные пакеты (# в начале имени пакета)
-# Возвращает список пакетов (по одному на строку)
-parse_tools_list() {
-    # Подсказка: используйте grep для фильтрации
-    # grep -v '^#' — исключить строки, начинающиеся с #
-    # grep -v '^$' — исключить пустые строки
-    # awk '{print $1}' — взять первое слово (имя пакета)
-    echo "TODO: Parse tools list"
-}
-
-# TODO: Функция check_package_installed()
-# Проверяет, установлен ли пакет
-# Параметры: $1 - имя пакета
-# Возвращает: 0 если установлен, 1 если нет
-check_package_installed() {
-    local package="$1"
-    # Подсказка: используйте dpkg -l или dpkg-query
-    # dpkg -l | grep -q "^ii  $package"
-    echo "TODO: Check if package installed"
-}
-
-# TODO: Функция install_package()
-# Устанавливает пакет через apt install
-# Параметры: $1 - имя пакета
-# Логирует результат установки
-# Возвращает exit code apt install
-install_package() {
-    local package="$1"
-    # Подсказка: apt install -y (автоматическое подтверждение)
-    # Проверяйте $? после установки
-    echo "TODO: Install package"
-}
-
-# TODO: Функция generate_report()
-# Создаёт отчёт об установке в REPORT_FILE
-# Формат:
-#   KERNEL SHADOWS - Installation Report
-#   Date: ...
-#
-#   INSTALLED PACKAGES:
-#   - package1 (version)
-#   - package2 (version)
-#
-#   FAILED PACKAGES:
-#   - package3 (reason)
-#
-#   TOTAL: X installed, Y failed
-generate_report() {
-    echo "TODO: Generate installation report"
-}
-
-# TODO: Функция verify_installations()
-# Проверяет, что все установленные пакеты работают
-# Пытается запустить каждый с --version или --help
-verify_installations() {
-    echo "TODO: Verify installed packages"
-}
+  # TODO: Добавь date, system info, kernel, architecture
 
 
-# === MAIN LOGIC ===
+  echo ""
+  echo "───────────────────────────────────────────────────────────────"
+  echo "INSTALLED PACKAGES FROM required_tools.txt"
+  echo "───────────────────────────────────────────────────────────────"
+  echo ""
 
-main() {
-    # TODO: Вывести приветствие
-    echo "========================================"
-    echo "KERNEL SHADOWS - Toolkit Installation"
-    echo "========================================"
-    echo ""
+  # === TODO 4: Process each package ===
+  # Прочитай файл построчно с while read
+  # Подсказка: while read -r pkg; do ... done < "$TOOLS_FILE"
 
-    # TODO: Проверить права root
-    # check_root
+  while read -r pkg; do
+    # === TODO 5: Skip comments and empty lines ===
+    # Пропусти строки начинающиеся с # и пустые
+    # Подсказка: [[ "$pkg" =~ ^#.*$ || -z "$pkg" ]] && continue
 
-    # TODO: Проверить существование TOOLS_FILE
-    # if [[ ! -f "$TOOLS_FILE" ]]; then
-    #     echo "ERROR: $TOOLS_FILE not found"
-    #     exit 1
+    # TODO: Твой код здесь
+
+
+    # === TODO 6: Check if package installed ===
+    # Используй dpkg для проверки: dpkg -l "$pkg" 2>/dev/null | grep -q "^ii"
+    # Если установлен (статус "ii"):
+    #   - Получи version: dpkg -l "$pkg" | grep "^ii" | awk '{print $3}'
+    #   - Получи repo: apt-cache policy "$pkg" | grep -A 1 "Installed:" | tail -1 | awk '{print $2}'
+    #   - Выведи: ✓ $pkg, Version: $version, Repository: $repo
+    # Если НЕ установлен:
+    #   - Выведи: ✗ $pkg — NOT INSTALLED
+
+    # TODO: Твой код здесь
+    # Пример структуры:
+    # if dpkg -l "$pkg" 2>/dev/null | grep -q "^ii"; then
+    #   version=$(...)
+    #   repo=$(...)
+    #   echo "  ✓ $pkg"
+    #   echo "    Version: $version"
+    #   echo "    Repository: $repo"
+    #   echo ""
+    # else
+    #   echo "  ✗ $pkg — NOT INSTALLED"
+    #   echo ""
     # fi
 
-    # TODO: Создать директорию для backup'ов
-    # mkdir -p "$BACKUP_DIR"
 
-    # TODO: Создать/очистить лог-файл
-    # > "$LOG_FILE"
+  done < "$TOOLS_FILE"
 
-    # TODO: Сделать backup sources.list
-    # backup_sources_list
+  echo "───────────────────────────────────────────────────────────────"
+  echo "STATISTICS"
+  echo "───────────────────────────────────────────────────────────────"
+  echo ""
 
-    # TODO: Обновить списки пакетов
-    # update_package_lists
+  # === TODO 7: Total packages in system ===
+  # Посчитай все установленные пакеты
+  # Подсказка: dpkg -l | grep "^ii" | wc -l
 
-    # TODO: Распарсить список инструментов
-    # tools=$(parse_tools_list)
+  total_system=0  # TODO: Замени на реальный подсчёт
+  echo "Total packages in system: $total_system"
 
-    # TODO: Подсчитать количество пакетов
-    # total=$(echo "$tools" | wc -l)
+  # === TODO 8: Packages from required list ===
+  # Посчитай сколько пакетов из required_tools.txt установлено
+  # Подсказка: while read loop + счётчик
 
-    # TODO: Для каждого пакета:
-    # while IFS= read -r package; do
-    #     1. Проверить, установлен ли
-    #     2. Если нет — установить
-    #     3. Логировать результат
-    # done <<< "$tools"
+  installed_count=0
+  # TODO: Посчитай установленные из списка
 
-    # TODO: Сгенерировать отчёт
-    # generate_report
+  required_count=$(grep -v "^#" "$TOOLS_FILE" | grep -v "^$" | wc -l)
+  echo "Packages from required list: $installed_count / $required_count"
 
-    # TODO: Проверить установки
-    # verify_installations
+  # === TODO 9: Disk usage ===
+  # Покажи размер apt cache
+  # Подсказка: du -sh /var/cache/apt/archives/
 
-    # TODO: Вывести итоговую статистику
-    echo ""
-    echo "Installation complete!"
-    echo "Check $LOG_FILE for details"
-    echo "Check $REPORT_FILE for summary"
-}
+  cache_size="N/A"  # TODO: Получи реальный размер
+  echo "Disk usage (apt cache): $cache_size"
+  echo ""
 
+  # === TODO 10: Footer ===
+  echo "═══════════════════════════════════════════════════════════════"
+  echo "                      END OF REPORT"
+  echo "═══════════════════════════════════════════════════════════════"
+  echo ""
+  echo "Generated by: Max Sokolov"
+  echo "For: Viktor Petrov (OPERATION KERNEL SHADOWS)"
 
-# === ENTRY POINT ===
+} > "$REPORT_FILE"
 
-# TODO: Раскомментируйте, когда готовы к тестированию
-# main "$@"
-
-# Пока заглушка:
-echo "Starter template loaded."
-echo "Complete the TODOs to make this script functional."
+# === TODO 11: Show result ===
+echo "✓ Report saved: $REPORT_FILE"
 echo ""
-echo "Hint: Start with log_message() and check_root() functions."
+echo "Preview:"
+echo "───────────────────────────────────────────────────────────────"
+cat "$REPORT_FILE"
 
+################################################################################
+# ПОДСКАЗКИ:
+#
+# 1. dpkg -l "$pkg" | grep "^ii" — проверить статус пакета (ii = installed)
+# 2. awk '{print $3}' — взять 3-ю колонку (version)
+# 3. apt-cache policy — показать откуда установлен пакет
+# 4. while read -r pkg; do ... done < file — читать построчно
+# 5. [[ "$var" =~ ^# ]] — проверить начинается ли с #
+# 6. 2>/dev/null — подавить ошибки
+#
+# Смотри README.md → Цикл 7 для примеров!
+################################################################################
