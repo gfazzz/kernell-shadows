@@ -21,7 +21,7 @@
 
 ### Сюжет vs Практика
 
-**В сюжете:** Max настраивает VPN сервер в Цюрихе (Швейцария) для защиты команды от прослушки Krylov.
+**В сюжете:** Макс настраивает VPN сервер в Цюрихе (Швейцария) для защиты команды от прослушки Крылова.
 
 **На практике:** Вы будете работать с SSH конфигурацией, ключами и симулировать VPN setup локально.
 
@@ -112,47 +112,47 @@ docker run -d --name wireguard \
 
 ### День 15, 10:00 — Briefing в Москве
 
-**Офис Viktor. Вся команда в сборе: Viktor, Alex, Anna, Dmitry, Max.**
+**Офис Виктора. Вся команда в сборе: Виктор, Алекс, Анна, Дмитрий, Макс.**
 
-Viktor (серьёзно):
-> *"После вчерашней атаки всё изменилось. Krylov оставил сообщение. Он знает про Alex и Max лично. Это уже не просто операция — это охота."*
+Виктор (серьёзно):
+> *"После вчерашней атаки всё изменилось. Крылов оставил сообщение. Он знает про Алекса и Макса лично. Это уже не просто операция — это охота."*
 
 Anna (показывает анализ на экране):
 > *"Я проанализировала трафик за последние 48 часов. Krylov не просто атакует — он прослушивает. Deep Packet Inspection на уровне провайдера. Он видит ВСЁ."*
 
-Max (шокирован):
+Макс (шокирован):
 > *"Всё? Даже наши разговоры?"*
 
-Alex (кивает):
+Алекс (кивает):
 > *"Всё. Каждый незашифрованный пакет. Это его стиль. Он работал в Управлении 'К' — техническая разведка ФСБ. Перехват — его специализация."*
 
-Viktor:
+Виктор:
 > *"С этого момента — только защищённые каналы. VPN для всего. SSH туннели для доступа. Zero Trust."*
 
 **Dmitry (DevOps):**
 > *"У меня есть сервер в Цюрихе. Швейцария, нейтральная территория, строгие законы о приватности. Настроим его как VPN шлюз."*
 
-Viktor:
-> *"Max, это твоя задача. Настрой VPN для всей команды. У нас 24 часа. Alex поможет с security."*
+Виктор:
+> *"Макс, это твоя задача. Настрой VPN для всей команды. У нас 24 часа. Алекс поможет с security."*
 
 ---
 
 ### 14:00 — Поездка в Стокгольм
 
-**Max летит обратно в Стокгольм. Консультация с Katarina Lindström.**
+**Макс летит обратно в Стокгольм. Консультация с Katarina Lindström.**
 
 **Stockholm University, кафедра криптографии. Katarina за доской с математическими формулами.**
 
 Katarina (не отрывается от доски):
 > *"VPN без понимания криптографии — самообман. Encryption is mathematics. Mathematics doesn't lie. Unlike people."*
 
-Max:
+Макс:
 > *"Мне нужно защитить коммуникации команды. OpenVPN или WireGuard?"*
 
 Katarina (поворачивается):
 > *"WireGuard. Новый, быстрый, аудирован. 4000 строк кода против 400,000 у OpenVPN. Меньше кода = меньше багов. Меньше багов = больше безопасности."*
 
-Max:
+Макс:
 > *"Но OpenVPN проверен временем..."*
 
 Katarina:
@@ -189,7 +189,7 @@ Katarina (впервые улыбается):
 
 ### 18:00 — Возвращение в Москву. Разговор с Alex
 
-**Вечер. Офис пуст. Только Max и Alex. На экранах — конфигурационные файлы VPN.**
+**Вечер. Офис пуст. Только Макс и Алекс. На экранах — конфигурационные файлы VPN.**
 
 Alex (молча смотрит в окно):
 > *"Ты знаешь почему я покинул ФСБ?"*
@@ -202,29 +202,29 @@ Alex (поворачивается):
 
 **Пауза.**
 
-Alex:
+Алекс:
 > *"...на практике он фабриковал дела. Подбрасывал улики. Превращал обычных программистов в 'хакеров'. Quota. Каждый месяц нужны были аресты. Статистика важнее правды."*
 
-Max:
+Макс:
 > *"И ты отказался."*
 
-Alex:
+Алекс:
 > *"Я отказался сажать невиновных. Была одна девочка, 19 лет, студентка. Krylov хотел обвинить её в краже данных. Я увидел логи — она не виновата. Отказался подписывать протокол."*
 
 **Alex сжимает кулаки.**
 
-Alex:
+Алекс:
 > *"На следующий день меня вызвали наверх. Предложили 'переосмыслить позицию'. Я подал рапорт об увольнении. Krylov сказал: 'Предатель. Ты пожалеешь.' И вот мы здесь."*
 
-Max:
+Макс:
 > *"Он охотится на тебя из мести?"*
 
-Alex:
+Алекс:
 > *"Не только на меня. На всех кто со мной. Viktor взял меня когда никто не хотел — ex-FSB. Dmitry, Anna — они стали семьёй. Теперь Krylov угрожает им. И тебе. Мой брат."*
 
 **Silence.**
 
-Alex:
+Алекс:
 > *"Поэтому VPN — это не просто технология. Это защита людей которых я люблю. Настрой его правильно. Пожалуйста."*
 
 Max (кладёт руку на плечо):
@@ -258,7 +258,7 @@ Max (кладёт руку на плечо):
 2. Alex Sokolov (security lead)
 3. Anna Kovaleva (forensics)
 4. Dmitry Orlov (DevOps)
-5. Max Sokolov (sysadmin, ты!)
+5. Макс Соколов (sysadmin, ты!)
 
 **Требования:**
 - 🔒 End-to-end encryption
@@ -280,7 +280,7 @@ Max (кладёт руку на плечо):
 ### Задание 1: Генерация SSH ключей ⭐
 
 **Контекст:**
-Alex: *"Первое — SSH ключи. Password authentication устарел. Krylov может bruteforce. Нужны ed25519 ключи — 256 бит, современная криптография."*
+Алекс: *"Первое — SSH ключи. Password authentication устарел. Krylov может bruteforce. Нужны ed25519 ключи — 256 бит, современная криптография."*
 
 **Задача:**
 Сгенерируйте SSH ключи для себя и членов команды.
@@ -295,7 +295,7 @@ Alex: *"Первое — SSH ключи. Password authentication устарел.
 <details>
 <summary>💡 Подсказка 1 (если застряли > 3 минуты)</summary>
 
-**Alex:**
+**Алекс:**
 > *"Команда `ssh-keygen`. Алгоритм `-t ed25519`. Comment с email: `-C 'user@email'`. По умолчанию сохранит в `~/.ssh/id_ed25519`."*
 
 Попробуйте:
@@ -620,7 +620,7 @@ done
 ### Задание 2: SSH Config — автоматизация подключений ⭐⭐
 
 **Контекст:**
-Alex: *"Теперь SSH config. Вместо `ssh -i key -p 2222 user@long-hostname`, пишешь просто `ssh viktor`. Автоматизация = меньше ошибок."*
+Алекс: *"Теперь SSH config. Вместо `ssh -i key -p 2222 user@long-hostname`, пишешь просто `ssh viktor`. Автоматизация = меньше ошибок."*
 
 **Задача:**
 Создайте `~/.ssh/config` для упрощения подключений к серверам команды.
@@ -637,7 +637,7 @@ Alex: *"Теперь SSH config. Вместо `ssh -i key -p 2222 user@long-host
 <details>
 <summary>💡 Подсказка 1 (если застряли > 5 минут)</summary>
 
-**Alex:**
+**Алекс:**
 > *"Файл `~/.ssh/config`. Формат простой: Host nickname, HostName IP, User username, IdentityFile path/to/key. Можно также Port, ForwardAgent, ProxyJump."*
 
 Пример:
@@ -1273,64 +1273,64 @@ case "$TUNNEL_TYPE" in
             echo "Error: local forward requires 4 arguments"
             usage
         fi
-        
+
         echo "=== LOCAL PORT FORWARD ==="
         echo "localhost:$LOCAL_PORT → $REMOTE_HOST:$REMOTE_PORT (via $SSH_SERVER)"
         echo ""
-        
+
         # Check if port is already in use
         if lsof -Pi :$LOCAL_PORT -sTCP:LISTEN -t >/dev/null 2>&1 ; then
             echo "⚠ Warning: Port $LOCAL_PORT is already in use"
             exit 1
         fi
-        
+
         echo "Starting tunnel..."
         ssh -L $LOCAL_PORT:$REMOTE_HOST:$REMOTE_PORT -N $SSH_SERVER &
-        
+
         PID=$!
         echo "✓ Tunnel started (PID: $PID)"
         echo "  Access: http://localhost:$LOCAL_PORT"
         echo ""
         echo "To stop: kill $PID"
-        
+
         # Save PID
         echo $PID > /tmp/ssh_tunnel_$LOCAL_PORT.pid
         ;;
-        
+
     remote)
         if [ $# -lt 4 ]; then
             echo "Error: remote forward requires 4 arguments"
             usage
         fi
-        
+
         echo "=== REMOTE PORT FORWARD ==="
         echo "$SSH_SERVER:$LOCAL_PORT → localhost:$REMOTE_PORT"
         echo ""
-        
+
         echo "Starting reverse tunnel..."
         ssh -R $LOCAL_PORT:$REMOTE_HOST:$REMOTE_PORT -N $SSH_SERVER &
-        
+
         PID=$!
         echo "✓ Reverse tunnel started (PID: $PID)"
         echo "  On $SSH_SERVER: curl localhost:$LOCAL_PORT"
         echo ""
         echo "To stop: kill $PID"
         ;;
-        
+
     dynamic)
         echo "=== DYNAMIC FORWARD (SOCKS) ==="
         echo "SOCKS proxy: localhost:$LOCAL_PORT"
         echo ""
-        
+
         # Check if port is already in use
         if lsof -Pi :$LOCAL_PORT -sTCP:LISTEN -t >/dev/null 2>&1 ; then
             echo "⚠ Warning: Port $LOCAL_PORT is already in use"
             exit 1
         fi
-        
+
         echo "Starting SOCKS proxy..."
         ssh -D $LOCAL_PORT -N $SSH_SERVER &
-        
+
         PID=$!
         echo "✓ SOCKS proxy started (PID: $PID)"
         echo ""
@@ -1340,11 +1340,11 @@ case "$TUNNEL_TYPE" in
         echo "  Proxy port: $LOCAL_PORT"
         echo ""
         echo "To stop: kill $PID"
-        
+
         # Save PID
         echo $PID > /tmp/ssh_socks_$LOCAL_PORT.pid
         ;;
-        
+
     *)
         echo "Error: Unknown type '$TUNNEL_TYPE'"
         usage
@@ -1635,7 +1635,7 @@ curl http://localhost:3000
 ### Задание 4: SSH Dynamic Forward — SOCKS Proxy ⭐⭐
 
 **Контекст:**
-Alex: *"Krylov может анализировать DNS запросы — он узнает какие сайты ты посещаешь. SOCKS proxy через VPN решает эту проблему. Весь браузерный трафик пойдёт через зашифрованный туннель."*
+Алекс: *"Krylov может анализировать DNS запросы — он узнает какие сайты ты посещаешь. SOCKS proxy через VPN решает эту проблему. Весь браузерный трафик пойдёт через зашифрованный туннель."*
 
 **Задача:**
 Создайте SOCKS proxy для безопасного веб-сёрфинга.
@@ -1649,7 +1649,7 @@ Alex: *"Krylov может анализировать DNS запросы — он
 <details>
 <summary>💡 Подсказка 1 (если застряли > 3 минуты)</summary>
 
-**Alex:**
+**Алекс:**
 > *"Флаг `-D`. Формат: `ssh -D port server`. Добавь `-N` чтобы не открывать shell. Пример: `ssh -D 1080 -N vpn-zurich`."*
 
 Попробуйте:
@@ -1725,38 +1725,38 @@ start_proxy() {
         echo "  PID: $(cat $PID_FILE)"
         exit 1
     fi
-    
+
     # Check if port is in use
     if lsof -Pi :$SOCKS_PORT -sTCP:LISTEN -t >/dev/null 2>&1 ; then
         echo "⚠ Port $SOCKS_PORT is already in use"
         exit 1
     fi
-    
+
     echo "=== STARTING SOCKS5 PROXY ==="
     echo "Port: $SOCKS_PORT"
     echo "Server: $SSH_SERVER"
     echo ""
-    
+
     # Start proxy
     ssh -D $SOCKS_PORT -N -f $SSH_SERVER
-    
+
     # Wait a bit
     sleep 2
-    
+
     # Get PID
     PID=$(pgrep -f "ssh -D $SOCKS_PORT")
-    
+
     if [ -z "$PID" ]; then
         echo "✗ Failed to start proxy"
         exit 1
     fi
-    
+
     echo $PID > "$PID_FILE"
-    
+
     echo "✓ SOCKS proxy started"
     echo "  PID: $PID"
     echo ""
-    
+
     echo "=== CONFIGURATION ==="
     echo ""
     echo "Browser settings:"
@@ -1765,15 +1765,15 @@ start_proxy() {
     echo "  Proxy port: $SOCKS_PORT"
     echo "  ✓ Enable 'Proxy DNS when using SOCKS v5'"
     echo ""
-    
+
     echo "Test with curl:"
     echo "  curl --socks5 localhost:$SOCKS_PORT http://ifconfig.me"
     echo ""
-    
+
     echo "Environment variable:"
     echo "  export ALL_PROXY=socks5://localhost:$SOCKS_PORT"
     echo ""
-    
+
     echo "Stop proxy:"
     echo "  $0 stop"
 }
@@ -1783,25 +1783,25 @@ stop_proxy() {
         echo "⚠ SOCKS proxy is not running (no PID file)"
         exit 1
     fi
-    
+
     PID=$(cat "$PID_FILE")
-    
+
     if ! kill -0 $PID 2>/dev/null; then
         echo "⚠ Process $PID is not running"
         rm -f "$PID_FILE"
         exit 1
     fi
-    
+
     echo "Stopping SOCKS proxy (PID: $PID)..."
     kill $PID
-    
+
     sleep 1
-    
+
     if kill -0 $PID 2>/dev/null; then
         echo "⚠ Process still running, forcing kill..."
         kill -9 $PID
     fi
-    
+
     rm -f "$PID_FILE"
     echo "✓ SOCKS proxy stopped"
 }
@@ -1811,9 +1811,9 @@ status_proxy() {
         echo "SOCKS proxy: NOT RUNNING"
         exit 1
     fi
-    
+
     PID=$(cat "$PID_FILE")
-    
+
     if kill -0 $PID 2>/dev/null; then
         echo "SOCKS proxy: RUNNING"
         echo "  PID: $PID"
@@ -1829,7 +1829,7 @@ status_proxy() {
 test_proxy() {
     echo "=== TESTING SOCKS PROXY ==="
     echo ""
-    
+
     # Test 1: Port listening
     echo "[1] Port check:"
     if lsof -Pi :$SOCKS_PORT -sTCP:LISTEN -t >/dev/null 2>&1 ; then
@@ -1838,7 +1838,7 @@ test_proxy() {
         echo "  ✗ Port $SOCKS_PORT is NOT listening"
         exit 1
     fi
-    
+
     # Test 2: Connection test
     echo ""
     echo "[2] Connection test:"
@@ -1848,16 +1848,16 @@ test_proxy() {
         echo "  ✗ SOCKS proxy failed"
         exit 1
     fi
-    
+
     # Test 3: IP leak test
     echo ""
     echo "[3] IP leak test:"
     REAL_IP=$(curl -s http://ifconfig.me)
     PROXY_IP=$(curl --socks5 localhost:$SOCKS_PORT -s http://ifconfig.me)
-    
+
     echo "  Your IP: $REAL_IP"
     echo "  Via SOCKS: $PROXY_IP"
-    
+
     if [ "$REAL_IP" = "$PROXY_IP" ]; then
         echo "  ⚠ WARNING: IP is the same! Proxy might not be working."
     else
@@ -1927,7 +1927,7 @@ curl --socks5 localhost:1080 https://dnsleaktest.com/
 ### Задание 5: VPN Configuration — OpenVPN vs WireGuard ⭐⭐⭐⭐
 
 **Контекст:**
-Viktor: *"Пора настраивать VPN. У нас есть сервер в Цюрихе. Katarina рекомендует WireGuard, но OpenVPN тоже вариант. Выбирай."*
+Виктор: *"Пора настраивать VPN. У нас есть сервер в Цюрихе. Katarina рекомендует WireGuard, но OpenVPN тоже вариант. Выбирай."*
 
 **Задача:**
 Изучите конфигурацию VPN. Создайте config файлы для OpenVPN или WireGuard.
@@ -2123,7 +2123,7 @@ for member in "${TEAM[@]}"; do
         wg genkey | tee "$CONFIGS_DIR/${member}_private.key" | wg pubkey > "$CONFIGS_DIR/${member}_public.key"
         chmod 600 "$CONFIGS_DIR/${member}_private.key"
     fi
-    
+
     CLIENT_PUBLIC[$member]=$(cat "$CONFIGS_DIR/${member}_public.key")
     echo "  ✓ $member keys ready"
 done
@@ -2176,9 +2176,9 @@ IP_INDEX=2
 for member in "${TEAM[@]}"; do
     MEMBER_PRIVATE=$(cat "$CONFIGS_DIR/${member}_private.key")
     MEMBER_IP="${VPN_NETWORK}.${IP_INDEX}"
-    
+
     echo "[$member] Creating ${member}.conf..."
-    
+
     cat > "$CONFIGS_DIR/${member}.conf" << EOF
 # WireGuard Client Config
 # User: $member
@@ -2631,14 +2631,14 @@ check_vpn_status() {
     echo -e "${CYAN}║         VPN MONITORING & STATUS CHECK                    ║${NC}"
     echo -e "${CYAN}╚═══════════════════════════════════════════════════════════╝${NC}"
     echo ""
-    
+
     # Check if VPN is running
     if ! ip link show $INTERFACE &>/dev/null; then
         echo -e "${RED}✗ VPN interface $INTERFACE not found${NC}"
         echo "  Start VPN: sudo wg-quick up $INTERFACE"
         exit 1
     fi
-    
+
     echo -e "${GREEN}✓ VPN interface $INTERFACE is UP${NC}"
     echo ""
 }
@@ -2646,7 +2646,7 @@ check_vpn_status() {
 show_peers() {
     echo -e "${YELLOW}=== ACTIVE PEERS ===${NC}"
     echo ""
-    
+
     # Get peers info
     while IFS= read -r line; do
         if [[ $line =~ ^peer:\ (.+) ]]; then
@@ -2657,7 +2657,7 @@ show_peers() {
         elif [[ $line =~ latest\ handshake:\ (.+) ]]; then
             HANDSHAKE="${BASH_REMATCH[1]}"
             echo "  Last handshake: $HANDSHAKE"
-            
+
             # Check if peer is stale
             if [[ "$HANDSHAKE" == *"minute"* ]] || [[ "$HANDSHAKE" == *"hour"* ]] || [[ "$HANDSHAKE" == *"day"* ]]; then
                 echo -e "  ${YELLOW}⚠ Peer might be inactive${NC}"
@@ -2676,10 +2676,10 @@ show_peers() {
 test_connectivity() {
     echo -e "${YELLOW}=== CONNECTIVITY TEST ===${NC}"
     echo ""
-    
+
     # Ping VPN gateway
     VPN_GATEWAY=$(ip route | grep $INTERFACE | head -1 | awk '{print $1}' | cut -d'/' -f1)
-    
+
     if [ -z "$VPN_GATEWAY" ]; then
         echo -e "${RED}✗ Can't determine VPN gateway${NC}"
     else
@@ -2696,12 +2696,12 @@ test_connectivity() {
 test_ip_leak() {
     echo -e "${YELLOW}=== IP LEAK TEST ===${NC}"
     echo ""
-    
+
     echo "Your public IP:"
     PUBLIC_IP=$(curl -s --max-time 5 http://ifconfig.me)
     if [ -n "$PUBLIC_IP" ]; then
         echo "  $PUBLIC_IP"
-        
+
         # Check if it's VPN server IP (would need to be configured)
         # For now, just show it
         echo ""
@@ -2716,7 +2716,7 @@ test_ip_leak() {
 test_dns_leak() {
     echo -e "${YELLOW}=== DNS LEAK TEST ===${NC}"
     echo ""
-    
+
     echo "Current DNS servers:"
     if command -v resolvectl &>/dev/null; then
         resolvectl status | grep "DNS Servers" | head -3
@@ -2724,27 +2724,27 @@ test_dns_leak() {
         cat /etc/resolv.conf | grep nameserver
     fi
     echo ""
-    
+
     echo "Expected: VPN DNS (1.1.1.1 or VPN server)"
     echo "If showing ISP DNS → ${RED}DNS LEAK!${NC}"
     echo ""
-    
+
     echo "Online test: https://dnsleaktest.com/"
 }
 
 show_bandwidth() {
     echo -e "${YELLOW}=== BANDWIDTH USAGE ===${NC}"
     echo ""
-    
+
     sudo wg show $INTERFACE transfer | while read peer rx tx; do
         if [ "$peer" != "peer:" ]; then
             continue
         fi
-        
+
         # Parse received/sent
         RX_BYTES=$(echo $rx | numfmt --from=iec)
         TX_BYTES=$(echo $tx | numfmt --from=iec)
-        
+
         echo "Peer: ${peer:0:20}..."
         echo "  Downloaded: $(numfmt --to=iec-i --suffix=B $RX_BYTES)"
         echo "  Uploaded:   $(numfmt --to=iec-i --suffix=B $TX_BYTES)"
@@ -2754,7 +2754,7 @@ show_bandwidth() {
 
 generate_report() {
     REPORT_FILE="artifacts/vpn_status_report.txt"
-    
+
     {
         echo "╔═══════════════════════════════════════════════════════════╗"
         echo "║         VPN STATUS REPORT                                ║"
@@ -2763,22 +2763,22 @@ generate_report() {
         echo "Generated: $(date)"
         echo "Interface: $INTERFACE"
         echo ""
-        
+
         echo "=== PEERS ==="
         sudo wg show $INTERFACE
         echo ""
-        
+
         echo "=== ROUTING ==="
         ip route | grep $INTERFACE
         echo ""
-        
+
         echo "=== FIREWALL ==="
         sudo iptables -t nat -L POSTROUTING | grep wg0
         echo ""
-        
+
         echo "END OF REPORT"
     } > "$REPORT_FILE"
-    
+
     echo -e "${GREEN}✓ Report saved: $REPORT_FILE${NC}"
 }
 
@@ -2861,7 +2861,7 @@ cat /etc/resolv.conf
 
 **День 16, 22:00 — Финальная встреча команды**
 
-**Офис Viktor. Вся команда собралась: Viktor, Alex, Anna, Dmitry, Max. На экранах — статистика VPN, графики мониторинга.**
+**Офис Виктора. Вся команда собралась: Виктор, Алекс, Анна, Дмитрий, Макс. На экранах — статистика VPN, графики мониторинга.**
 
 Viktor (довольно):
 > *"Два дня назад Krylov атаковал нас 50 тысячами пакетов в секунду. Сегодня — все коммуникации зашифрованы. Это победа."*
@@ -2872,10 +2872,10 @@ Anna (показывает анализ):
 Dmitry:
 > *"VPN стабилен. 5 членов команды, 100% uptime. Latency добавилась минимальная — 15ms через Цюрих. Приемлемо."*
 
-Alex (смотрит на Max):
-> *"Max, ты сделал это. За 16 дней ты прошёл путь от junior до... well, почти senior. Firewall, VPN, SSH tunneling — всё работает."*
+Алекс (смотрит на Макса):
+> *"Макс, ты сделал это. За 16 дней ты прошёл путь от junior до... well, почти senior. Firewall, VPN, SSH tunneling — всё работает."*
 
-**Max молчит. Смотрит на команду. Эти люди стали семьёй.**
+**Макс молчит. Смотрит на команду. Эти люди стали семьёй.**
 
 **Задача:**
 Создайте финальный security audit report — итог Season 2.
@@ -2939,12 +2939,12 @@ Security Layers:
      - Default deny policy
      - Rate limiting (20 conn/IP)
      - Botnet IP blocking (847 IPs)
-     
+
   2. VPN (Layer 3)
      - WireGuard (Curve25519 + ChaCha20)
      - Server: Zürich, Switzerland (neutral)
      - Clients: 5 team members
-     
+
   3. SSH (Layer 7)
      - Key-based authentication (ed25519)
      - Tunneling capabilities
@@ -2978,7 +2978,7 @@ Attack Timeline:
 
 Current Status: ACTIVE THREAT
   - Krylov knows locations (Moscow, Stockholm, Zürich)
-  - Personal threat to Alex and Max
+  - Personal threat to Алекс and Макс
   - Escalation expected
 
 ════════════════════════════════════════════════════════════════
@@ -3017,7 +3017,7 @@ Episode 08: VPN & SSH Tunneling
 [5] SKILLS ACQUIRED
 ════════════════════════════════════════════════════════════════
 
-Technical Skills (Max Sokolov):
+Technical Skills (Макс Соколов):
   ✓ TCP/IP model (7 layers)
   ✓ IP addressing & subnetting
   ✓ DNS (dig, DNSSEC, DoT)
@@ -3046,7 +3046,7 @@ Character Development:
 [6] LESSONS LEARNED
 ════════════════════════════════════════════════════════════════
 
-From Alex:
+From Алекс:
   "Security — это не продукт. Это процесс. Krylov не остановится.
    Мы должны быть всегда на шаг впереди."
 
@@ -3058,7 +3058,7 @@ From Episode 07 (DDoS):
   - Always allow SSH BEFORE enabling firewall
   - Rate limiting > IP blocking (IPs change)
   - Monitor logs (Krylov leaves messages)
-  
+
 From Episode 08 (VPN):
   - Simpler is better (WireGuard > OpenVPN for new setups)
   - Neutral location matters (Switzerland = privacy)
@@ -3120,16 +3120,16 @@ New Allies:
 Viktor Petrov:
   Role: Coordinator
   Status: Satisfied with progress
-  Quote: "Max, ты оправдал доверие."
+  Quote: "Макс, ты оправдал доверие."
 
 Alex Sokolov:
-  Role: Security Lead, Max's cousin
+  Role: Security Lead, двоюродный брат Макса
   Status: Proud, but worried about Krylov
   Quote: "Спасибо, брат. Ты спас нас всех."
 
 Anna Kovaleva:
   Role: Forensics Expert
-  Status: Impressed with Max's growth
+  Status: Impressed with ростом Макса
   Quote: "От junior до incident response за 16 дней. Impressive."
 
 Dmitry Orlov:
@@ -3203,7 +3203,7 @@ EOF
 
     # Replace $TIMESTAMP
     sed -i "s/\$TIMESTAMP/$TIMESTAMP/g" "$REPORT_FILE"
-    
+
     echo "✓ Final audit report generated: $REPORT_FILE"
 }
 
@@ -3243,7 +3243,7 @@ echo ""
 
 ### 23:00 — После meeting
 
-**Max один в офисе. Смотрит на экраны. VPN работает. Firewall держит. SSH туннели активны.**
+**Макс один в офисе. Смотрит на экраны. VPN работает. Firewall держит. SSH туннели активны.**
 
 **LILITH (финальное сообщение):**
 ```
@@ -3280,7 +3280,7 @@ Stay sharp. Stay hidden. Stay alive.
 — LILITH v2.0
 ```
 
-**Max выключает свет. Идёт к выходу. Телефон вибрирует — SMS от Alex:**
+**Макс выключает свет. Идёт к выходу. Телефон вибрирует — SMS от Алекса:**
 ```
 Завтра выходной. Отдохни.
 Через 2 дня — Санкт-Петербург.
@@ -3290,7 +3290,7 @@ P.S. Спасибо за всё. Seriously.
 — Alex
 ```
 
-**Max улыбается. Первый раз за 16 дней.**
+**Макс улыбается. Первый раз за 16 дней.**
 
 ---
 
@@ -3446,9 +3446,9 @@ Before moving to Season 3, ensure you understand:
 
 ---
 
-*"The best firewall is useless if the VPN leaks your IP.  
-The best VPN is useless if your SSH key is compromised.  
-Security is a chain. Every link must be strong."*  
+*"The best firewall is useless if the VPN leaks your IP.
+The best VPN is useless if your SSH key is compromised.
+Security is a chain. Every link must be strong."*
 — Alex Sokolov
 
 **Season 2: Networking — COMPLETE!** ✓

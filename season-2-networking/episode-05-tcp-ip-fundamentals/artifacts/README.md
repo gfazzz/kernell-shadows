@@ -7,7 +7,7 @@
 ### Файлы:
 
 #### 1. `network_map.txt`
-**Описание:** Карта сети операции Viktor
+**Описание:** Карта сети операции Виктора
 
 **Содержимое:**
 - IP адреса всех серверов операции в ЦОД "Москва-1"
@@ -30,7 +30,7 @@ awk '{print $1}' artifacts/network_map.txt | grep -E "^10\."
 **Формат:**
 ```
 IP_ADDRESS  HOSTNAME  DESCRIPTION
-10.50.1.100  shadow-server-02.ops.internal  Viktor Primary Server
+10.50.1.100  shadow-server-02.ops.internal  Viktor Primary Server (техническое имя сервера)
 ```
 
 ---
@@ -39,8 +39,8 @@ IP_ADDRESS  HOSTNAME  DESCRIPTION
 **Описание:** Отчёт network audit (генерируется вашим скриптом)
 
 **Должен содержать:**
-- IP адрес рабочей станции Max
-- IP сервера Viktor
+- IP адрес рабочей станции Макса
+- IP сервера Viktor (shadow-server)
 - Результаты ping
 - Traceroute маршрут
 - Открытые порты (локально и на сервере Viktor)
@@ -53,7 +53,7 @@ IP_ADDRESS  HOSTNAME  DESCRIPTION
 ═══════════════════════════════════════════════════════════════
 
 Date:     2025-10-11 14:30:00
-Operator: Max Sokolov
+Operator: max_sokolov
 Location: ЦОД "Москва-1", Россия
 
 [1] WORKSTATION IP ADDRESS

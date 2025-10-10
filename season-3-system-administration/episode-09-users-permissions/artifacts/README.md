@@ -85,7 +85,7 @@ sudo -u dmitry rm /var/operations/shared/viktor_file.txt  # Should FAIL (sticky 
 
 ---
 
-## Notes from Andrei Volkov
+## Notes from Андрея Волкова
 
 > *"Testing - это не просто проверка, что код работает. Это проверка, что security работает правильно. Тестируй не только позитивные сценарии (что должно работать), но и негативные (что НЕ должно работать)."*
 
@@ -275,7 +275,7 @@ man setfacl
 
 **"Root — это не привилегия. Это ответственность."**
 
-— Andrei Volkov, LETI
+— Андрей Волков, LETI
 
 </div>
 

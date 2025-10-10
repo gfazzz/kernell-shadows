@@ -9,7 +9,7 @@
 ```
 test_environment/
 ├── documents/
-│   ├── briefing.txt           # Основной briefing от Viktor
+│   ├── briefing.txt           # Основной briefing от Виктора
 │   └── .secret_location       # Скрытый файл с координатами
 └── .next_server               # Скрытый файл с IP адресом
 ```
@@ -67,7 +67,7 @@ nano ~/test_environment/find_files.sh
 #### 4. Проверьте результат:
 
 Если всё сделано правильно, вы найдёте:
-- ✅ `briefing.txt` — briefing от Viktor
+- ✅ `briefing.txt` — briefing от Виктора
 - ✅ `.secret_location` — координаты 55.7558°N, 37.6173°E (Красная площадь)
 - ✅ `.next_server` — IP 185.192.45.119 для Episode 02
 

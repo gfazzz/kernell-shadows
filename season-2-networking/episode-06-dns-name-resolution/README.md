@@ -20,7 +20,7 @@
 
 ### День 10, 08:00 — Arlanda Airport, Stockholm
 
-Самолёт приземляется в Arlanda. Max впервые за границей. Чувство нереальности — вчера был в Москве, сегодня в Швеции.
+Самолёт приземляется в Arlanda. Макс впервые за границей. Чувство нереальности — вчера был в Москве, сегодня в Швеции.
 
 **Терминал Arrivals:**
 
@@ -29,7 +29,7 @@
 **Erik Johansson** (38 лет, блондин, спокойный):
 > *"Welcome to Sweden, Max. Viktor says you're good with Linux. We'll see. I'm Erik, network engineer at Bahnhof. Our car is outside."*
 
-Max (немного растерян):
+Макс (немного растерян):
 > *"Uh... hi. My English is not perfect..."*
 
 Erik (улыбается):
@@ -40,7 +40,7 @@ Erik (улыбается):
 Erik:
 > *"You know what Pionen is? Cold War nuclear bunker, 30 meters underground. We converted it into datacenter in 2008. Privacy-first. After WikiLeaks, Swedish government wanted access to our servers. We refused. Privacy is not negotiable."*
 
-Max (впечатлён):
+Макс (впечатлён):
 > *"Nuclear bunker? Serious?"*
 
 Erik:
@@ -61,7 +61,7 @@ Erik:
 Erik:
 > *"Welcome to Pionen. Viktor rents 3 racks here. Geographically distributed infrastructure — Moscow, Stockholm, later Tallinn, Amsterdam, Beijing, Reykjavik. We are building something big."*
 
-Max:
+Макс:
 > *"Why Sweden?"*
 
 Erik:
@@ -76,7 +76,7 @@ Erik:
 ```
 
 Erik (хмурится):
-> *"Shit. DNS attacks again. Someone is poisoning cache, redirecting our queries. Probably FSB. Viktor mentioned — Krylov?"*
+> *"Shit. DNS attacks again. Someone is poisoning cache, redirecting our queries. Probably FSB. Viktor mentioned — Крылов?"*
 
 Max (кивает):
 > *"Yes. He hunts us."*

@@ -14,10 +14,10 @@
 **Сложность:** ⭐⭐⭐⭐☆
 
 **Персонажи:**
-- **Max Sokolov** — вы, изучаете disk management
+- **Макс Соколов** — вы, изучаете disk management
 - **Kristjan Tamm** — e-Government infrastructure architect
 - **Liisa Kask** — backup & recovery specialist
-- **Viktor Petrov** — координатор операции
+- **Виктор Петров** — координатор операции
 - **LILITH** — AI-помощник (я!)
 
 ---
@@ -26,24 +26,24 @@
 
 ### День 21. Переезд: Санкт-Петербург → Tallinn.
 
-Max садится на автобус из Санкт-Петербурга в Таллин (8 часов в пути через границу). Boris провожает:
+Макс садится на автобус из Санкт-Петербурга в Таллин (8 часов в пути через границу). Борис провожает:
 
-**Boris:** *"Max, ты освоил systemd. Процессы под контролем. Но процессы бессмысленны без данных. Данные живут на дисках. Без правильного disk management — ты теряешь всё."*
+**Борис:** *"Макс, ты освоил systemd. Процессы под контролем. Но процессы бессмысленны без данных. Данные живут на дисках. Без правильного disk management — ты теряешь всё."*
 
-**Max:** *"LVM? RAID? Слышал эти термины, но никогда не работал с ними."*
+**Макс:** *"LVM? RAID? Слышал эти термины, но никогда не работал с ними."*
 
-**Boris:** *"Kristjan научит. В Таллине — e-Estonia. Вся страна работает онлайн. Паспорта, голосование, бизнес — всё на серверах. Если диск умирает — страна останавливается. Они знают disk management как никто."*
+**Борис:** *"Kristjan научит. В Таллине — e-Estonia. Вся страна работает онлайн. Паспорта, голосование, бизнес — всё на серверах. Если диск умирает — страна останавливается. Они знают disk management как никто."*
 
 ---
 
 ### 11:00. Tallinn. Старый город.
 
-Max прибывает в Таллин. Средневековый город с современной IT-инфраструктурой. Встреча у e-Residency Center.
+Макс прибывает в Таллин. Средневековый город с современной IT-инфраструктурой. Встреча у e-Residency Center.
 
-**Kristjan Tamm** (встречает Max у входа):
+**Kristjan Tamm** (встречает Макса у входа):
 *"Max! Welcome to Tallinn! Viktor told me about your operation. You've learned processes, permissions, networking. Now — storage. In Estonia, we say: 'Data is the new oil'. But oil is useless if the tank leaks."*
 
-**Max:** *"Boris said you're the best in disk management."*
+**Макс:** *"Boris said you're the best in disk management."*
 
 **Kristjan:**
 *"e-Estonia runs on trust. Citizens trust government because data is always available. Always secure. How? Redundancy. LVM for flexibility. RAID for reliability. Backups for recovery. I'll show you."*
@@ -73,7 +73,7 @@ Max прибывает в Таллин. Средневековый город с
 4. Configure RAID (redundancy for next time)
 5. Test recovery procedures"*
 
-**Max:** *"I've never done this before..."*
+**Макс:** *"I've never done this before..."*
 
 **Kristjan:**
 *"Perfect time to learn. In production. Under pressure. Just like real sysadmin work. Don't worry — we have backups. Probably."*

@@ -1,23 +1,23 @@
 # EPISODE 10: PROCESSES & SYSTEMD
 ## Season 3: System Administration | Санкт-Петербург, Россия
 
-> *"Init scripts — это прошлое. SystemD — это будущее. И настоящее."* — Boris Kuznetsov
+> *"Init scripts — это прошлое. SystemD — это будущее. И настоящее."* — Борис Кузнецов
 
 ---
 
 ## 📍 Контекст миссии
 
-**Локация:** 🇷🇺 Санкт-Петербург, Россия  
-**Место:** Продолжение работы в СПб после Episode 09  
-**День операции:** 19-20 из 60  
-**Время прохождения:** 4-5 часов  
+**Локация:** 🇷🇺 Санкт-Петербург, Россия
+**Место:** Продолжение работы в СПб после Episode 09
+**День операции:** 19-20 из 60
+**Время прохождения:** 4-5 часов
 **Сложность:** ⭐⭐⭐☆☆
 
 **Персонажи:**
-- **Max Sokolov** — вы, изучаете системное администрирование
-- **Boris Kuznetsov** — SystemD архитектор, ex-Red Hat contributor
-- **Anna Kovaleva** — forensics expert
-- **Viktor Petrov** — координатор операции
+- **Макс Соколов** — вы, изучаете системное администрирование
+- **Борис Кузнецов** — SystemD архитектор, ex-Red Hat contributor
+- **Анна Ковалева** — forensics expert
+- **Виктор Петров** — координатор операции
 - **LILITH** — AI-помощник (я!)
 
 ---
@@ -26,37 +26,37 @@
 
 ### День 19. Санкт-Петербург. После успешной настройки permissions.
 
-После того как Max настроил правильные permissions (Episode 09), Anna обнаруживает новую проблему.
+После того как Макс настроил правильные permissions (Episode 09), Анна обнаруживает новую проблему.
 
-**Anna** (видеозвонок, 08:37 Moscow time):  
+**Анна** (видеозвонок, 08:37 Moscow time):
 *"Макс, мы нашли ещё один backdoor. На сервере запущен подозрительный процесс. PID 6623. Имя `sshd_backup`. Выглядит как настоящий sshd, но это не он."*
 
-**Max:** *"Как он там оказался?"*
+**Макс:** *"Как он там оказался?"*
 
-**Anna:**  
-*"Krylov маскирует процессы под системные. Классический приём. Тебе нужно научиться управлять процессами и сервисами. Иначе мы не заметим следующую атаку."*
+**Анна:**
+*"Крылов маскирует процессы под системные. Классический приём. Тебе нужно научиться управлять процессами и сервисами. Иначе мы не заметим следующую атаку."*
 
-**Viktor:**  
-*"Макс, в Питере есть человек. Boris Kuznetsov. Бывший разработчик Red Hat, работал над systemd. Он научит тебя управлять процессами правильно."*
+**Виктор:**
+*"Макс, в Питере есть человек. Борис Кузнецов. Бывший разработчик Red Hat, работал над systemd. Он научит тебя управлять процессами правильно."*
 
 ---
 
 ### 10:00. Встреча с Boris Kuznetsov.
 
-Max встречается с Boris в коворкинге на Невском проспекте. Boris — 35 лет, борода, толстовка "systemd or die", MacBook с Fedora Linux.
+Макс встречается с Борисом в коворкинге на Невском проспекте. Борис — 35 лет, борода, толстовка "systemd or die", MacBook с Fedora Linux.
 
-**Boris** (энергично):  
-*"Max! Viktor рассказал о проблеме. Backdoor процессы — это классика. Но если ты понимаешь systemd, ты контролируешь ВСЁ. Init scripts — это прошлое. SystemD — это будущее. И настоящее."*
+**Борис** (энергично):
+*"Макс! Виктор рассказал о проблеме. Backdoor процессы — это классика. Но если ты понимаешь systemd, ты контролируешь ВСЁ. Init scripts — это прошлое. SystemD — это будущее. И настоящее."*
 
-**Max:** *"Я слышал много споров про systemd..."*
+**Макс:** *"Я слышал много споров про systemd..."*
 
-**Boris:**  
+**Борис:**
 *"Споры — это эмоции. Systemd — это факт. Все major дистрибутивы перешли на него. Ubuntu, Fedora, Debian, RHEL. Знаешь почему? Потому что он РАБОТАЕТ. Да, он сложный. Да, он монолитный. Но он даёт контроль."*
 
-**Anna** (видеозвонок):  
-*"Boris прав. Я анализирую логи через journalctl каждый день. Без systemd я бы не увидела половину атак."*
+**Анна** (видеозвонок):
+*"Борис прав. Я анализирую логи через journalctl каждый день. Без systemd я бы не увидела половину атак."*
 
-**Boris:**  
+**Борис:**
 *"Давай по порядку. Сначала процессы — что это, как они работают. Потом systemd — как управлять сервисами. Потом journalctl — как читать логи. К концу дня ты будешь контролировать все процессы на сервере."*
 
 ---
@@ -65,9 +65,9 @@ Max встречается с Boris в коворкинге на Невском 
 
 Научиться **управлять процессами и сервисами** на Linux сервере.
 
-**Цель:**  
+**Цель:**
 - Понять как работают процессы в Linux
-- Найти и убить backdoor процесс от Krylov
+- Найти и убить backdoor процесс от Крылова
 - Создать systemd service для мониторинга
 - Настроить systemd timer (замена cron)
 - Научиться анализировать логи через journalctl
@@ -164,7 +164,7 @@ echo "⚠️  Suspicious processes (not in /usr/sbin/):"
 ps aux | grep '[s]shd' | grep -v '/usr/sbin/sshd'
 ```
 
-**Anna:** *"Нашёл? Если процесс в /tmp/ или /home/ — это точно backdoor."*
+**Анна:** *"Нашёл? Если процесс в /tmp/ или /home/ — это точно backdoor."*
 
 </details>
 
@@ -234,34 +234,34 @@ ps -p "$suspicious_pid" || echo "Process killed successfully"
 
 kill_backdoor_process() {
     local process_name="sshd_backup"
-    
+
     echo "=== Killing backdoor process: $process_name ==="
-    
+
     # Find PID
     local pid=$(pgrep -f "$process_name")
-    
+
     if [[ -z "$pid" ]]; then
         echo "Process $process_name not found"
         return 1
     fi
-    
+
     echo "Found PID: $pid"
     ps -p "$pid" -o pid,user,cmd
-    
+
     # Try graceful shutdown first (SIGTERM)
     echo -e "\nSending SIGTERM (graceful shutdown)..."
     kill -15 "$pid"
-    
+
     # Wait 5 seconds
     sleep 5
-    
+
     # Check if still running
     if ps -p "$pid" > /dev/null 2>&1; then
         echo "⚠️  Process still running. Sending SIGKILL (force)..."
         kill -9 "$pid"
         sleep 1
     fi
-    
+
     # Final check
     if ps -p "$pid" > /dev/null 2>&1; then
         echo "❌ Failed to kill process"
@@ -361,10 +361,10 @@ sudo systemctl status shadow-monitor
 
 create_systemd_service() {
     echo "=== Creating SystemD service ==="
-    
+
     # 1. Create monitoring script
     local script_path="/usr/local/bin/shadow-monitor.sh"
-    
+
     sudo tee "$script_path" > /dev/null << 'SCRIPT_EOF'
 #!/bin/bash
 # Shadow Monitor - Episode 10
@@ -380,11 +380,11 @@ log_message() {
 check_suspicious_processes() {
     # Check for backdoor processes
     local suspicious=$(ps aux | grep -E 'sshd_backup|suspicious_name' | grep -v grep)
-    
+
     if [[ -n "$suspicious" ]]; then
         log_message "⚠️  ALERT: Suspicious process detected!"
         log_message "$suspicious"
-        
+
         # Could auto-kill here, but better to alert first
         # kill -9 $(pgrep -f sshd_backup)
     fi
@@ -397,13 +397,13 @@ while true; do
     sleep 60  # Check every minute
 done
 SCRIPT_EOF
-    
+
     sudo chmod +x "$script_path"
     echo "✓ Created monitoring script: $script_path"
-    
+
     # 2. Create systemd service unit
     local service_file="/etc/systemd/system/shadow-monitor.service"
-    
+
     sudo tee "$service_file" > /dev/null << 'SERVICE_EOF'
 [Unit]
 Description=Shadow Monitor - Process Security Monitor
@@ -426,19 +426,19 @@ PrivateTmp=true
 [Install]
 WantedBy=multi-user.target
 SERVICE_EOF
-    
+
     echo "✓ Created service unit: $service_file"
-    
+
     # 3. Reload systemd
     sudo systemctl daemon-reload
     echo "✓ Systemd daemon reloaded"
-    
+
     # 4. Enable and start
     sudo systemctl enable shadow-monitor.service
     sudo systemctl start shadow-monitor.service
-    
+
     echo "✓ Service enabled and started"
-    
+
     # 5. Check status
     echo -e "\n=== Service Status ==="
     sudo systemctl status shadow-monitor.service --no-pager
@@ -539,10 +539,10 @@ systemctl list-timers shadow-backup.timer
 
 create_systemd_timer() {
     echo "=== Creating SystemD timer for backups ==="
-    
+
     # 1. Create backup script
     local script_path="/usr/local/bin/shadow-backup.sh"
-    
+
     sudo tee "$script_path" > /dev/null << 'SCRIPT_EOF'
 #!/bin/bash
 # Shadow Backup - Episode 10
@@ -575,10 +575,10 @@ cd "$BACKUP_DIR" && ls -t config_*.tar.gz | tail -n +25 | xargs -r rm
 
 log_message "Backup completed: $BACKUP_DIR/config_$TIMESTAMP.tar.gz"
 SCRIPT_EOF
-    
+
     sudo chmod +x "$script_path"
     echo "✓ Created backup script: $script_path"
-    
+
     # 2. Create service unit (what to do)
     sudo tee /etc/systemd/system/shadow-backup.service > /dev/null << 'SERVICE_EOF'
 [Unit]
@@ -591,9 +591,9 @@ ExecStart=/usr/local/bin/shadow-backup.sh
 StandardOutput=journal
 StandardError=journal
 SERVICE_EOF
-    
+
     echo "✓ Created service unit: shadow-backup.service"
-    
+
     # 3. Create timer unit (when to do)
     sudo tee /etc/systemd/system/shadow-backup.timer > /dev/null << 'TIMER_EOF'
 [Unit]
@@ -608,20 +608,20 @@ AccuracySec=1min
 [Install]
 WantedBy=timers.target
 TIMER_EOF
-    
+
     echo "✓ Created timer unit: shadow-backup.timer"
-    
+
     # 4. Reload and enable
     sudo systemctl daemon-reload
     sudo systemctl enable shadow-backup.timer
     sudo systemctl start shadow-backup.timer
-    
+
     echo "✓ Timer enabled and started"
-    
+
     # 5. Check status
     echo -e "\n=== Timer Status ==="
     systemctl list-timers shadow-backup.timer --no-pager
-    
+
     # 6. Test run
     echo -e "\n=== Test Run ==="
     sudo systemctl start shadow-backup.service
@@ -712,30 +712,30 @@ sudo journalctl --vacuum-time=7d  # оставить 7 дней
 
 analyze_logs() {
     echo "=== Analyzing SystemD Journals ==="
-    
+
     # 1. Last 50 lines of shadow-monitor
     echo "Last 50 lines of shadow-monitor:"
     journalctl -u shadow-monitor.service -n 50 --no-pager
-    
+
     echo -e "\n" && read -p "Press Enter to continue..."
-    
+
     # 2. Errors only
     echo -e "\n=== Errors in last 24 hours ==="
     journalctl -u shadow-monitor.service -p err --since "24 hours ago" --no-pager
-    
+
     # 3. All services with "shadow" in name
     echo -e "\n=== All shadow-* services ==="
     journalctl -u 'shadow-*' -n 20 --no-pager
-    
+
     # 4. Statistics
     echo -e "\n=== Journal Statistics ==="
     echo "Disk usage: $(journalctl --disk-usage | awk '{print $NF}')"
     echo "Time range: $(journalctl --list-boots --no-pager | head -1)"
-    
+
     # 5. Recent activity
     echo -e "\n=== Recent Activity (last hour) ==="
     journalctl --since "1 hour ago" -p warning --no-pager | tail -20
-    
+
     # Interactive: follow logs
     echo -e "\n=== Follow logs in real-time? ==="
     read -p "Start tail -f mode? (y/n): " answer
@@ -811,32 +811,32 @@ free -h              # память
 
 system_health_check() {
     echo "=== System Health Check ==="
-    
+
     # 1. Load Average
     echo "Load Average (1min, 5min, 15min):"
     uptime | awk -F'load average:' '{print $2}'
-    
+
     # 2. Memory
     echo -e "\n=== Memory Usage ==="
     free -h
-    
+
     # 3. CPU cores
     echo -e "\n=== CPU Info ==="
     echo "CPU cores: $(nproc)"
     echo "Load per core: $(uptime | awk '{print $NF}' | awk -v cores=$(nproc) '{print $1/cores}')"
-    
+
     # 4. Top processes by CPU
     echo -e "\n=== Top 5 CPU consumers ==="
     ps aux --sort=-%cpu | head -6
-    
+
     # 5. Top processes by Memory
     echo -e "\n=== Top 5 Memory consumers ==="
     ps aux --sort=-%mem | head -6
-    
+
     # 6. All systemd services status
     echo -e "\n=== Shadow Services Status ==="
     systemctl status 'shadow-*' --no-pager | grep -E 'Active:|Loaded:'
-    
+
     # 7. Failed services
     echo -e "\n=== Failed Services ==="
     systemctl --failed --no-pager
@@ -870,11 +870,11 @@ system_health_check
 
 generate_process_audit_report() {
     local report_file="/var/operations/process_audit_ep10.txt"
-    
+
     echo "Generating Process Management Audit Report..."
-    
+
     sudo mkdir -p "$(dirname "$report_file")"
-    
+
     sudo tee "$report_file" > /dev/null << EOF
 ================================================================================
                    PROCESS MANAGEMENT AUDIT REPORT - EPISODE 10
@@ -1079,13 +1079,13 @@ Report generated: $(date)
 Location: $report_file
 Permissions: 640 (viktor:operations)
 EOF
-    
+
     # Set permissions
     sudo chmod 640 "$report_file"
     sudo chown viktor:operations "$report_file" 2>/dev/null || true
-    
+
     echo "✓ Process Management Audit Report generated: $report_file"
-    
+
     # Display summary
     echo -e "\n=== Report Summary ==="
     echo "  Backdoor processes: Found and eliminated"
@@ -1573,19 +1573,19 @@ systemctl show service.service --property=ActiveEnterTimestamp
 
 **Принципы работы с процессами:**
 
-1. **Процессы — это правда**  
+1. **Процессы — это правда**
    Процесс не врёт про свой PID, owner, memory. Научись их читать.
 
-2. **Signals имеют значение**  
+2. **Signals имеют значение**
    SIGTERM — вежливо. SIGKILL — грубо. Всегда начинай с вежливого.
 
-3. **SystemD даёт контроль**  
+3. **SystemD даёт контроль**
    Service падает → systemd рестартит. Это надёжность.
 
-4. **Timers > Cron**  
+4. **Timers > Cron**
    Persistent=true, интеграция с journalctl, лучший контроль.
 
-5. **Логи — твой лучший друг**  
+5. **Логи — твой лучший друг**
    journalctl -p err --since "1 hour ago" — начало любого расследования.
 
 ---
@@ -1631,19 +1631,19 @@ journalctl _SYSTEMD_UNIT=sshd.service | grep 'Failed'
 
 ### Частые ошибки:
 
-1. ❌ **kill -9 сразу**  
+1. ❌ **kill -9 сразу**
    Дай процессу шанс закрыться gracefully (SIGTERM сначала).
 
-2. ❌ **Забыть daemon-reload**  
+2. ❌ **Забыть daemon-reload**
    После изменения unit file: `systemctl daemon-reload`
 
-3. ❌ **Type=simple для forking процессов**  
+3. ❌ **Type=simple для forking процессов**
    Если процесс делает fork(), используй Type=forking
 
-4. ❌ **Не проверять failed services**  
+4. ❌ **Не проверять failed services**
    `systemctl --failed` — регулярно проверяй
 
-5. ❌ **Игнорировать journalctl**  
+5. ❌ **Игнорировать journalctl**
    Логи — первое место для поиска проблем
 
 ---
@@ -1652,32 +1652,32 @@ journalctl _SYSTEMD_UNIT=sshd.service | grep 'Failed'
 
 ### Что вы освоили:
 
-✅ **Процессы в Linux**  
+✅ **Процессы в Linux**
    - ps, top, htop, pgrep/pkill
    - /proc filesystem
    - Process states и zombie processes
 
-✅ **Signals**  
+✅ **Signals**
    - SIGTERM vs SIGKILL
    - Graceful shutdown
    - kill, killall, pkill
 
-✅ **SystemD Services**  
+✅ **SystemD Services**
    - Unit file структура
    - systemctl команды
    - Auto-restart, dependencies
 
-✅ **SystemD Timers**  
+✅ **SystemD Timers**
    - Замена cron
    - OnCalendar синтаксис
    - Persistent timers
 
-✅ **Journalctl**  
+✅ **Journalctl**
    - Чтение логов
    - Фильтрация по времени, priority, service
    - Forensics analysis
 
-✅ **Мониторинг системы**  
+✅ **Мониторинг системы**
    - Load average, CPU, Memory
    - Top процессы
    - System health metrics
@@ -1686,20 +1686,20 @@ journalctl _SYSTEMD_UNIT=sshd.service | grep 'Failed'
 
 ### Сюжетный итог:
 
-**Boris** (провожает Max):  
+**Boris** (провожает Max):
 *"Max, ты понял systemd. Это значит ты понял современный Linux. Init scripts — история. SystemD — это настоящее. Споры будут всегда. Но он РАБОТАЕТ."*
 
-**Anna** (видеозвонок):  
+**Anna** (видеозвонок):
 *"Backdoor процесс нейтрализован. Мониторинг установлен. Теперь мы увидим любую активность. Krylov не сможет скрыться в процессах. Спасибо, Макс."*
 
-**Viktor:**  
+**Viktor:**
 *"Отлично. Санкт-Петербург — готово. Следующая остановка — Таллин, Эстония. Там тебя ждёт Kristjan Tamm. Disk management, LVM, RAID. Критическая инфраструктура. Готовься."*
 
 **Max:** *"SystemD... Я понял почему все дистрибутивы перешли на него. Контроль. Автоматизация. Надёжность. Да, сложно. Но мощно."*
 
 ---
 
-**LILITH:**  
+**LILITH:**
 *"Процессы — это жизнь системы. Ты научился читать её пульс. Мониторинг, управление, forensics. Это основа. Следующий шаг — диски. Без данных система мертва. Готовься."*
 
 ---

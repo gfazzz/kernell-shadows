@@ -20,7 +20,7 @@ IP - - [timestamp] "METHOD /path HTTP/1.1" status size "referer" "user-agent"
 Один IP на строку.
 
 ### `report_template.txt`
-Шаблон для финального отчёта Anna Kovaleva.
+Шаблон для финального отчёта Анны Ковалевой.
 
 ---
 
