@@ -18,14 +18,17 @@ FAILED=0
 
 echo "╔═══════════════════════════════════════════════════════════════╗"
 echo "║  KERNEL SHADOWS — Episode 01 Test Suite                      ║"
+echo "║  LILITH will evaluate your skills...                          ║"
 echo "╚═══════════════════════════════════════════════════════════════╝"
+echo ""
+echo "🔍 LILITH: \"Покажи что ты способен. Время тестов.\""
 echo ""
 
 # Функция проверки
 check_test() {
     local test_name="$1"
     local test_result=$2
-    
+
     if [ $test_result -eq 0 ]; then
         echo -e "${GREEN}✓${NC} $test_name"
         PASSED=$((PASSED + 1))
@@ -52,7 +55,7 @@ fi
 # TEST 2: Проверка briefing.txt
 if [ -f "../artifacts/test_environment/documents/briefing.txt" ]; then
     check_test "briefing.txt exists" 0
-    
+
     # Проверка содержимого
     if grep -q "OPERATION KERNEL SHADOWS" "../artifacts/test_environment/documents/briefing.txt"; then
         check_test "briefing.txt contains correct data" 0
@@ -66,7 +69,7 @@ fi
 # TEST 3: Проверка .secret_location
 if [ -f "../artifacts/test_environment/documents/.secret_location" ]; then
     check_test ".secret_location exists" 0
-    
+
     # Проверка координат
     if grep -q "55.7558" "../artifacts/test_environment/documents/.secret_location"; then
         check_test ".secret_location contains coordinates" 0
@@ -80,7 +83,7 @@ fi
 # TEST 4: Проверка .next_server
 if [ -f "../artifacts/test_environment/.next_server" ]; then
     check_test ".next_server exists" 0
-    
+
     # Проверка IP
     if grep -q "185.192.45.119" "../artifacts/test_environment/.next_server"; then
         check_test ".next_server contains IP address" 0
@@ -94,14 +97,14 @@ fi
 # TEST 5: Проверка скрипта (если существует)
 if [ -f "../solution/find_files.sh" ]; then
     check_test "Solution script exists" 0
-    
+
     # Проверка shebang
     if head -1 "../solution/find_files.sh" | grep -q "#!/bin/bash"; then
         check_test "Script has correct shebang" 0
     else
         check_test "Script has correct shebang" 1
     fi
-    
+
     # Проверка прав на выполнение
     if [ -x "../solution/find_files.sh" ]; then
         check_test "Script is executable" 0
@@ -146,15 +149,22 @@ if [ $PERCENTAGE -eq 100 ]; then
     echo -e "${GREEN}✓✓✓ ALL TESTS PASSED! Mission Success! ✓✓✓${NC}"
     echo -e "${GREEN}═══════════════════════════════════════════════════════════════${NC}"
     echo ""
-    echo "Вы готовы к Episode 02!"
+    echo "🔍 LILITH: \"Отлично. Ты не подвел. Готов к Episode 02.\""
+    echo ""
+    echo "Следующее задание: Server Monitoring Script"
+    echo "Viktor ждет результатов."
     exit 0
 elif [ $PERCENTAGE -ge 75 ]; then
     echo -e "${YELLOW}⚠ Good, but some issues remain ⚠${NC}"
-    echo "Review failed tests and try again."
+    echo ""
+    echo "🔍 LILITH: \"Почти. Но есть ошибки. Проверь failed tests.\""
+    echo "Вернись когда исправишь."
     exit 1
 else
     echo -e "${RED}✗✗✗ MISSION FAILED ✗✗✗${NC}"
-    echo "Review the mission.md and README.md"
+    echo ""
+    echo "🔍 LILITH: \"Слабо. Перечитай README.md и попробуй снова.\""
+    echo "Viktor не примет такой результат."
     exit 1
 fi
 
