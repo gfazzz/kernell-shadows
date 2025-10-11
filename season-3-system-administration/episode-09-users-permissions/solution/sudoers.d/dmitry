@@ -1,0 +1,79 @@
+# KERNEL SHADOWS: Episode 09 — Sudo Configuration for Dmitry Orlov
+# /etc/sudoers.d/dmitry
+#
+# DevOps Engineer: Docker, systemd, deployment access
+# Saint Petersburg, Russia (LETI)
+
+# ============================================================================
+# DevOps Commands Alias (Dmitry's authorized commands)
+# ============================================================================
+Cmnd_Alias DEVOPSCMDS = /usr/bin/docker, \
+                         /usr/bin/docker-compose, \
+                         /usr/bin/systemctl, \
+                         /usr/bin/journalctl, \
+                         /usr/sbin/service, \
+                         /usr/bin/apt install, \
+                         /usr/bin/apt update, \
+                         /usr/bin/apt upgrade, \
+                         /usr/bin/rsync, \
+                         /usr/bin/git, \
+                         /usr/local/bin/deploy.sh
+
+# ============================================================================
+# Dmitry's Permissions
+# ============================================================================
+# Dmitry can run DevOps commands without password (for CI/CD automation)
+dmitry ALL=(root) NOPASSWD: DEVOPSCMDS
+
+# ============================================================================
+# Explicit Denials
+# ============================================================================
+# Dmitry CANNOT manage users, modify firewall, or destroy system
+dmitry ALL=(root) !/usr/sbin/useradd, \
+                  !/usr/sbin/userdel, \
+                  !/usr/sbin/usermod, \
+                  !/usr/sbin/visudo, \
+                  !/usr/sbin/ufw, \
+                  !/usr/sbin/iptables, \
+                  !/bin/rm -rf /, \
+                  !/usr/bin/rm -rf /
+
+# ============================================================================
+# Notes:
+#
+# 1. Why These Commands?
+#    - docker/docker-compose: Container management (core DevOps task)
+#    - systemctl: Start/stop/restart services
+#    - journalctl: View service logs (troubleshooting)
+#    - apt: Install packages for deployments
+#    - rsync: Deploy files to production
+#    - git: Pull code updates
+#
+# 2. NOPASSWD Rationale:
+#    - CI/CD pipelines need non-interactive sudo
+#    - Example: ./deploy.sh runs automatically after git push
+#    - Alternative: Use SSH keys + systemd timers (more secure)
+#
+# 3. Security Concerns:
+#    - docker = root access (can escape containers)
+#    - systemctl restart = DoS potential
+#    - Mitigation: Audit Dmitry's actions, use AppArmor/SELinux
+#
+# 4. Alternative (More Restrictive):
+#    Only allow specific services:
+#    Cmnd_Alias SERVICECMDS = /usr/bin/systemctl start web-app, \
+#                              /usr/bin/systemctl stop web-app, \
+#                              /usr/bin/systemctl restart web-app
+#    dmitry ALL=(root) NOPASSWD: SERVICECMDS
+#
+# 5. Testing Dmitry's Access:
+#    - Login as dmitry: sudo -i -u dmitry
+#    - Test allowed: sudo docker ps
+#    - Test allowed: sudo systemctl restart nginx
+#    - Test denied: sudo useradd test (should fail)
+#
+# ============================================================================
+# Andrei Volkov: "Dmitry deploys code. Docker + systemd access, but not
+#                 user management. Separation of duties."
+# ============================================================================
+

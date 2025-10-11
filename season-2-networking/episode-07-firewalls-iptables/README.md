@@ -1571,6 +1571,46 @@ sudo ufw enable        # THEN!
 
 ---
 
+## 📁 Solution Files (Type B)
+
+Ваше решение должно включать:
+
+```
+solution/
+├── configs/
+│   ├── ufw_rules.sh             # UFW configuration (NOT wrapper!)
+│   └── iptables_backup.sh       # iptables alternative (advanced)
+├── scripts/
+│   └── generate_firewall_report.sh  # Report generator (~100 lines)
+└── README.md                    # Type B documentation
+```
+
+**Философия:** Прямые команды UFW/iptables, НЕ bash wrappers!
+
+**Проверка решения:**
+```bash
+# 1. Применить UFW rules
+sudo ./solution/configs/ufw_rules.sh
+
+# 2. Или использовать iptables
+sudo ./solution/configs/iptables_backup.sh
+
+# 3. Проверка
+sudo ufw status verbose
+sudo iptables -L -v -n
+
+# 4. Generate report
+./solution/scripts/generate_firewall_report.sh
+```
+
+**Type B Success Criteria:**
+- ✅ Использовал ufw/iptables напрямую (не wrapper!)
+- ✅ Bash loop для bulk operations (OK!)
+- ✅ Production-ready конфиги
+- ✅ Report generator < 150 строк
+
+---
+
 ## 📖 Ресурсы
 
 **Man pages:**

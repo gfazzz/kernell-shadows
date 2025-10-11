@@ -1829,6 +1829,44 @@ Erik провожает до выхода из бункера:
 
 ---
 
+## 📁 Solution Files (Type B)
+
+Ваше решение должно включать:
+
+```
+solution/
+├── configs/
+│   ├── resolv.conf              # /etc/resolv.conf — DNS resolvers
+│   ├── hosts                    # /etc/hosts — local DNS overrides
+│   └── systemd-resolved.conf   # /etc/systemd/resolved.conf
+├── scripts/
+│   └── generate_dns_report.sh   # Minimal report generator (~80 lines)
+└── README.md                    # Type B documentation
+```
+
+**Философия:** Реальные конфиги вместо bash wrappers!
+
+**Проверка решения:**
+```bash
+# 1. Конфиги созданы
+ls -la solution/configs/
+
+# 2. Можно применить на систему
+sudo cp solution/configs/systemd-resolved.conf /etc/systemd/resolved.conf
+sudo systemctl restart systemd-resolved
+
+# 3. Minimal helper (НЕ wrapper!)
+./solution/scripts/generate_dns_report.sh
+```
+
+**Type B Success Criteria:**
+- ✅ Использовал dig/resolvectl напрямую (не bash wrapper)
+- ✅ Создал production-ready конфиги
+- ✅ Report generator < 150 строк (minimal!)
+- ✅ Документация понятна
+
+---
+
 ## 🎓 Что вы изучили
 
 ### DNS Fundamentals:

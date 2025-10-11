@@ -1,0 +1,94 @@
+# KERNEL SHADOWS: Episode 09 — Sudo Configuration for Alex Sokolov
+# /etc/sudoers.d/alex
+#
+# Principle of Least Privilege: Alex can ONLY run network administration commands
+# Saint Petersburg, Russia (LETI) — Professor Andrei Volkov's guidance
+
+# ============================================================================
+# Network Commands Alias (Alex's authorized commands)
+# ============================================================================
+Cmnd_Alias NETCMDS = /usr/sbin/ip, \
+                      /usr/bin/ss, \
+                      /bin/ss, \
+                      /usr/bin/netstat, \
+                      /bin/netstat, \
+                      /usr/sbin/tcpdump, \
+                      /usr/sbin/iptables, \
+                      /usr/sbin/ip6tables, \
+                      /usr/sbin/ufw, \
+                      /usr/bin/nmap, \
+                      /usr/sbin/route, \
+                      /sbin/route
+
+# ============================================================================
+# Alex's Permissions
+# ============================================================================
+# Alex can run network commands as root without password
+# (Required for emergency network troubleshooting during operations)
+alex ALL=(root) NOPASSWD: NETCMDS
+
+# ============================================================================
+# Explicit Denials (Defense in Depth)
+# ============================================================================
+# Even if Alex somehow gains broader sudo access, these are explicitly blocked
+alex ALL=(root) !/usr/sbin/visudo, \
+                !/usr/bin/passwd root, \
+                !/bin/passwd root, \
+                !/bin/rm -rf /, \
+                !/usr/bin/rm -rf /, \
+                !/usr/bin/dd, \
+                !/bin/dd, \
+                !/usr/bin/mkfs*, \
+                !/sbin/mkfs*, \
+                !/usr/sbin/userdel, \
+                !/usr/sbin/usermod root
+
+# ============================================================================
+# Notes:
+#
+# 1. File Permissions:
+#    - Must be 0440 (r--r-----)
+#    - Owner: root
+#    - Group: root
+#    - Command: sudo chmod 440 /etc/sudoers.d/alex
+#
+# 2. Syntax Validation:
+#    - ALWAYS test before deploying: visudo -c -f /etc/sudoers.d/alex
+#    - Invalid syntax can lock you out of sudo!
+#
+# 3. Security Considerations:
+#    - NOPASSWD: Convenient but risky
+#    - Alternative: require password for most commands, NOPASSWD for read-only
+#    - Example: alex ALL=(root) PASSWD: NETCMDS (better for production)
+#
+# 4. Logging:
+#    - All sudo commands logged to /var/log/auth.log
+#    - Check: sudo grep alex /var/log/auth.log
+#
+# 5. Testing Alex's Access:
+#    - Login as alex: sudo -i -u alex
+#    - Test allowed: sudo ip addr show
+#    - Test denied: sudo useradd test (should fail)
+#
+# 6. Why These Commands?
+#    - ip: Configure network interfaces, routes
+#    - ss/netstat: Check connections, listening ports
+#    - tcpdump: Capture packets (troubleshooting)
+#    - iptables/ufw: Manage firewall rules
+#    - nmap: Scan network (security audits)
+#    - route: View/modify routing table
+#
+# 7. Principle of Least Privilege:
+#    - Alex is Network Administrator, NOT System Administrator
+#    - Can manage network, CANNOT:
+#      → Create/delete users
+#      → Modify system files
+#      → Install packages
+#      → Reboot system
+#      → Access other users' files (unless group permissions)
+#
+# ============================================================================
+# Andrei Volkov: "Least privilege — Alex gets network tools, nothing more.
+#                 If compromised, damage is contained. That's security."
+# ============================================================================
+
