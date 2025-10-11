@@ -4,6 +4,41 @@
 # Episode 08: VPN & SSH Tunneling — SOLUTION
 # Season 2: Networking (FINAL)
 # ════════════════════════════════════════════════════════════════
+#
+# 🎯 TYPE A EPISODE: Workflow Automation
+#
+# Философия:
+#   - Это Type A: bash АВТОМАТИЗИРУЕТ multi-step workflow
+#   - НЕ Type A: bash НЕ ПЕРЕПИСЫВАЕТ существующие инструменты
+#
+# Что делает скрипт:
+#   ✓ USES ssh-keygen (не пишет свой key generator!)
+#   ✓ USES wg/wg-quick (не пишет свой VPN!)
+#   ✓ AUTOMATES workflow:
+#       1. Generate SSH keys × 5 team members
+#       2. Create SSH config (координация aliases + keys)
+#       3. Generate WireGuard keys × 6 (server + 5 clients)
+#       4. Create WireGuard configs × 6 (coordination!)
+#       5. Generate audit report (collection)
+#
+# Почему Type A appropriate здесь:
+#   - Multi-step process (5+ steps)
+#   - Repetitive tasks (generate keys × 5)
+#   - Coordination needed (server config needs client public keys)
+#   - NO single tool exists for "setup VPN for team of 5"
+#   - Bash fills the gap: orchestration, NOT replacement
+#
+# Сравнение:
+#   Episode 07 (Type B): ufw exists for firewall → use ufw directly
+#   Episode 08 (Type A): NO tool for "team VPN setup" → bash workflow
+#
+# LILITH:
+#   "Type A ≠ плохо. Type A = когда bash appropriate для automation.
+#    Этот скрипт НЕ пытается быть WireGuard. Он использует wg.
+#    Просто автоматизирует 50+ manual commands в один workflow.
+#    Smart automation."
+#
+# ════════════════════════════════════════════════════════════════
 
 set -e
 

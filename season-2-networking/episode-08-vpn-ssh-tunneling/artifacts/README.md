@@ -1,19 +1,20 @@
-# Episode 08: VPN & SSH Tunneling — Artifacts
+# Episode 08: Artifacts — SSH & VPN Reference
 
-**Season 2 Finale**
+**KERNEL SHADOWS — Season 2, Episode 08**
 
-Эта директория содержит конфигурационные файлы и примеры для Episode 08.
+Этот каталог содержит сгенерированные конфиги и reference guides для SSH и VPN setup.
 
 ---
 
-## 📁 Структура
+## 📁 Структура файлов
+
+После запуска `solution/vpn_setup.sh`:
 
 ```
 artifacts/
-├── README.md                   (этот файл)
-├── ssh_keys/                   (генерируется скриптом)
-│   ├── viktor_key
-│   ├── viktor_key.pub
+├── ssh_keys/              # SSH ключи для команды
+│   ├── viktor_key         # Viktor private key
+│   ├── viktor_key.pub     # Viktor public key
 │   ├── alex_key
 │   ├── alex_key.pub
 │   ├── anna_key
@@ -23,394 +24,723 @@ artifacts/
 │   ├── max_key
 │   └── max_key.pub
 │
-├── wireguard/                  (генерируется скриптом)
-│   ├── server_wg0.conf         (server config)
-│   ├── viktor.conf             (client configs)
-│   ├── alex.conf
-│   ├── anna.conf
-│   ├── dmitry.conf
-│   ├── max.conf
-│   ├── server_private.key      (keys)
-│   ├── server_public.key
-│   └── ...
+├── wireguard/             # WireGuard конфиги
+│   ├── wg0-server.conf    # Server config
+│   ├── wg0-viktor.conf    # Viktor client
+│   ├── wg0-alex.conf      # Alex client
+│   ├── wg0-anna.conf      # Anna client
+│   ├── wg0-dmitry.conf    # Dmitry client
+│   └── wg0-max.conf       # Max client
 │
-├── ssh_config                  (генерируется скриптом)
-└── season2_final_audit.txt     (генерируется скриптом)
+├── ssh_config             # SSH config (copy to ~/.ssh/config)
+└── season2_final_audit.txt # Final audit report
 ```
 
 ---
 
-## 🔑 SSH Keys
+## 🔑 SSH Keys Guide
 
-**Генерация:**
+### Generation (already done by solution script)
+
 ```bash
-./starter.sh
-# или
-./solution/vpn_setup.sh
+# Generate ed25519 key
+ssh-keygen -t ed25519 -C "user@example.com" -f ~/.ssh/my_key
+
+# Параметры:
+#   -t ed25519      : Algorithm (modern, fast, secure)
+#   -C "comment"    : Comment (обычно email)
+#   -f filename     : Output file
+#   -N ""           : No passphrase (опционально)
 ```
 
-**Алгоритм:** ed25519 (256-bit, современная эллиптическая криптография)
+### Key Security
 
-**Использование:**
+**Private key permissions (CRITICAL!):**
 ```bash
-# Скопировать ключи
-cp artifacts/ssh_keys/max_key ~/.ssh/
-chmod 600 ~/.ssh/max_key
-
-# Скопировать public key на сервер
-ssh-copy-id -i ~/.ssh/max_key.pub user@server
-
-# Подключение
-ssh -i ~/.ssh/max_key user@server
+chmod 600 ~/.ssh/my_key        # Private: только ты можешь читать
+chmod 644 ~/.ssh/my_key.pub    # Public: все могут читать
 ```
 
-**Security:**
-- ✅ **Private keys** (без .pub) — СЕКРЕТНЫЕ! Никогда не публикуйте
-- ✅ **Public keys** (.pub) — можно публиковать безопасно
-- ✅ Permissions: private key = 600, public key = 644
+**Если permissions неправильные:**
+```
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@         WARNING: UNPROTECTED PRIVATE KEY FILE!          @
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+Permissions 0644 for '~/.ssh/id_rsa' are too open.
+```
+
+### Deploy Public Key to Server
+
+```bash
+# Method 1: ssh-copy-id (automatic)
+ssh-copy-id -i ~/.ssh/my_key.pub user@server
+
+# Method 2: Manual
+cat ~/.ssh/my_key.pub | ssh user@server "cat >> ~/.ssh/authorized_keys"
+
+# Method 3: Paste directly
+# 1. cat ~/.ssh/my_key.pub (копируешь вывод)
+# 2. ssh user@server
+# 3. nano ~/.ssh/authorized_keys (вставляешь)
+# 4. chmod 600 ~/.ssh/authorized_keys
+```
+
+### Test SSH Key Authentication
+
+```bash
+# Test connection
+ssh -i ~/.ssh/my_key user@server
+
+# Success: подключается БЕЗ пароля ✓
+
+# Debug connection issues
+ssh -v -i ~/.ssh/my_key user@server
+# -v = verbose (показывает что происходит)
+
+# More verbose
+ssh -vvv -i ~/.ssh/my_key user@server
+```
 
 ---
 
-## ⚙️ SSH Config
+## 📝 SSH Config Guide
 
-**Файл:** `artifacts/ssh_config`
+### Basic Structure
 
-**Установка:**
 ```bash
-# Backup текущего конфига (если есть)
-cp ~/.ssh/config ~/.ssh/config.backup
+# ~/.ssh/config
 
-# Установить новый
-cp artifacts/ssh_config ~/.ssh/config
+Host alias-name
+    HostName actual-hostname-or-ip
+    User username
+    Port port-number
+    IdentityFile path-to-key
+```
+
+### Real Example
+
+```bash
+Host zurich
+    HostName vpn-zurich.kernel-shadows.com
+    User max
+    Port 22
+    IdentityFile ~/.ssh/kernel_shadows_key
+    ServerAliveInterval 60
+    
+# Now you can: ssh zurich
+# Instead of: ssh -i ~/.ssh/kernel_shadows_key max@vpn-zurich.kernel-shadows.com
+```
+
+### Advanced Options
+
+```bash
+# Jump Host (Bastion)
+Host production-db
+    HostName 10.0.0.100
+    ProxyJump bastion-server
+    # Connects: you → bastion → production-db
+
+# Wildcard Patterns
+Host *.kernel-shadows.com
+    User admin
+    IdentityFile ~/.ssh/team_key
+    # Applies to all servers in domain
+
+# Connection Multiplexing (faster!)
+Host *
+    ControlMaster auto
+    ControlPath ~/.ssh/sockets/%r@%h:%p
+    ControlPersist 10m
+    # Reuses existing connections (no re-authentication)
+
+# Keep-Alive
+Host *
+    ServerAliveInterval 60
+    ServerAliveCountMax 3
+    # Send keep-alive every 60 sec, disconnect after 3 failures
+```
+
+### Config Permissions
+
+```bash
 chmod 600 ~/.ssh/config
-```
-
-**Использование:**
-```bash
-# Простое подключение
-ssh vpn              # Вместо ssh -i ~/.ssh/max_key max@195.14.20.10
-ssh shadow-02        # Автоматически через VPN!
-ssh viktor           # Через VPN jump
-
-# Port forwarding (уже настроен в config)
-ssh shadow-02
-# Теперь localhost:8080 → shadow-02:80
-```
-
-**Проверка:**
-```bash
-# Показать что будет использовано
-ssh -G shadow-02 | grep -E 'user|hostname|identityfile|proxyjump'
+# SSH won't use config if permissions too open!
 ```
 
 ---
 
-## 🔐 WireGuard VPN
+## 🔀 SSH Tunneling Guide
 
-### Server Setup
+### Local Forward (-L)
 
-**Файл:** `artifacts/wireguard/server_wg0.conf`
+**Access remote service через tunnel:**
 
-**Установка на сервере (Zürich):**
 ```bash
-# 1. Install WireGuard
-sudo apt update
-sudo apt install wireguard
+ssh -L [local_port]:[target_host]:[target_port] ssh_server
 
-# 2. Copy config
-sudo cp artifacts/wireguard/server_wg0.conf /etc/wireguard/wg0.conf
-sudo chmod 600 /etc/wireguard/wg0.conf
+# Example: Access remote PostgreSQL
+ssh -L 5432:localhost:5432 moscow
 
-# 3. Enable IP forwarding
-echo "net.ipv4.ip_forward=1" | sudo tee -a /etc/sysctl.conf
-echo "net.ipv6.conf.all.forwarding=1" | sudo tee -a /etc/sysctl.conf
-sudo sysctl -p
+# Now: psql -h localhost -p 5432
+# Actually connects to: moscow:5432 через encrypted tunnel
+```
 
-# 4. Start VPN
+**Use cases:**
+- Database access через firewall
+- Web admin panels (internal only)
+- Any TCP service за firewall
+
+### Remote Forward (-R)
+
+**Expose local service to remote:**
+
+```bash
+ssh -R [remote_port]:[local_host]:[local_port] ssh_server
+
+# Example: Expose local webhook
+ssh -R 8080:localhost:3000 moscow
+
+# Now: curl moscow:8080
+# Actually connects to: your localhost:3000 через tunnel
+```
+
+**Use cases:**
+- Webhook development (GitHub → your localhost)
+- Demo local app (client → your localhost)
+- Temporary service exposure
+
+### Dynamic Forward (-D)
+
+**SOCKS proxy для ALL traffic:**
+
+```bash
+ssh -D [local_port] ssh_server
+
+# Example: SOCKS proxy
+ssh -D 1080 moscow
+
+# Configure browser:
+#   SOCKS Host: localhost
+#   Port: 1080
+#   SOCKS v5: ☑
+#   Proxy DNS: ☑ (CRITICAL for DNS leak prevention!)
+
+# Now ALL browser traffic goes through moscow
+```
+
+**Use cases:**
+- Browse corporate network
+- Access multiple internal services
+- VPN-like experience without VPN
+
+### Useful Options
+
+```bash
+# Background mode (-f)
+ssh -L 5432:localhost:5432 moscow -f
+# Runs in background, terminal free
+
+# No shell (-N)
+ssh -L 5432:localhost:5432 moscow -N
+# Only tunnel, no interactive shell (efficient!)
+
+# Combined
+ssh -L 5432:localhost:5432 moscow -N -f
+# Background tunnel, no shell
+
+# Kill background tunnel
+pkill -f "ssh -L 5432"
+```
+
+---
+
+## 🔐 WireGuard Guide
+
+### Config Structure
+
+**Server config (`/etc/wireguard/wg0.conf`):**
+
+```ini
+[Interface]
+PrivateKey = <server-private-key>
+Address = 10.8.0.1/24
+ListenPort = 51820
+PostUp = iptables -A FORWARD -i wg0 -j ACCEPT
+PostDown = iptables -D FORWARD -i wg0 -j ACCEPT
+
+[Peer]  # Client 1
+PublicKey = <client1-public-key>
+AllowedIPs = 10.8.0.2/32
+
+[Peer]  # Client 2
+PublicKey = <client2-public-key>
+AllowedIPs = 10.8.0.3/32
+```
+
+**Client config (`wg0.conf`):**
+
+```ini
+[Interface]
+PrivateKey = <your-private-key>
+Address = 10.8.0.2/24
+DNS = 1.1.1.1
+
+[Peer]
+PublicKey = <server-public-key>
+Endpoint = vpn-server.com:51820
+AllowedIPs = 0.0.0.0/0
+PersistentKeepalive = 25
+```
+
+### Key Generation
+
+```bash
+# Generate private key
+wg genkey > private.key
+
+# Generate public key from private
+wg pubkey < private.key > public.key
+
+# Or one-liner
+wg genkey | tee private.key | wg pubkey > public.key
+```
+
+### Start/Stop VPN
+
+```bash
+# Start VPN
 sudo wg-quick up wg0
 
-# 5. Enable on boot
-sudo systemctl enable wg-quick@wg0
+# Stop VPN
+sudo wg-quick down wg0
+
+# Status
+sudo wg show
+
+# Detailed status
+sudo wg show wg0
 ```
 
-**Проверка:**
+### Check Connection
+
 ```bash
-sudo wg show
-sudo systemctl status wg-quick@wg0
+# Ping VPN server
+ping 10.8.0.1
+
+# Check your external IP (should be VPN server IP)
+curl https://ifconfig.me
+
+# Check DNS (should use VPN DNS)
+cat /etc/resolv.conf
+
+# WireGuard status
+sudo wg
+
+# Should show:
+#   interface: wg0
+#   latest handshake: X seconds ago
+#   transfer: X GB received, X GB sent
+```
+
+### Troubleshooting
+
+**No handshake:**
+```bash
+# Check if server port open
+nc -zvu vpn-server.com 51820
+
+# Check firewall
+sudo ufw allow 51820/udp
+
+# Check server logs
+sudo journalctl -u wg-quick@wg0 -f
+```
+
+**DNS not working:**
+```bash
+# Check /etc/resolv.conf
+cat /etc/resolv.conf
+# Should show VPN DNS (1.1.1.1)
+
+# If not, add to client config:
+[Interface]
+DNS = 1.1.1.1
+PostUp = echo "nameserver 1.1.1.1" > /etc/resolv.conf
+```
+
+**Slow connection:**
+```bash
+# Check MTU
+ip link show wg0
+
+# Reduce MTU if needed (in config):
+[Interface]
+MTU = 1420  # Default: 1420, try 1380 if issues
 ```
 
 ---
 
-### Client Setup
+## 🛡️ Security Best Practices
 
-**Файлы:** `artifacts/wireguard/{viktor,alex,anna,dmitry,max}.conf`
+### SSH Keys
 
-**Установка на клиенте:**
+✅ **DO:**
+- Use ed25519 (modern, fast, secure)
+- Set permissions: 600 private, 644 public
+- Use passphrase for extra security
+- Rotate keys periodically (every 6-12 months)
+- Keep private keys on encrypted disk
+- Use different keys for different purposes
+
+❌ **DON'T:**
+- Share private keys
+- Commit private keys to git
+- Email private keys
+- Use weak algorithms (DSA, RSA < 2048-bit)
+- Reuse same key everywhere
+
+### SSH Config
+
+✅ **DO:**
+- Set permissions: 600
+- Use ServerAliveInterval (keep-alive)
+- Use ControlMaster (connection reuse)
+- Document aliases
+
+❌ **DON'T:**
+- Store passwords in config
+- Use weak ciphers
+- Allow root login (in sshd_config)
+
+### WireGuard
+
+✅ **DO:**
+- Keep private keys SECRET (chmod 600)
+- Use strong VPN network (10.0.0.0/8 private range)
+- Enable PostUp/PostDown firewall rules
+- Monitor connections: `wg show`
+- Use PersistentKeepalive for NAT
+- Test for DNS leaks: https://dnsleaktest.com
+
+❌ **DON'T:**
+- Share private keys
+- Use weak AllowedIPs (0.0.0.0/0 only if needed)
+- Expose WireGuard port unnecessarily
+- Forget firewall rules
+
+### General
+
+✅ **DO:**
+- Use encryption always (SSH, VPN)
+- Test security: DNS leaks, IP leaks
+- Monitor logs: journalctl, auth.log
+- Keep software updated: apt update && apt upgrade
+- Use fail2ban for SSH brute-force protection
+
+❌ **DON'T:**
+- Trust unencrypted connections
+- Ignore security warnings
+- Use default passwords
+- Disable firewall "for testing"
+
+---
+
+## 🔧 Troubleshooting Common Issues
+
+### SSH: Permission Denied
+
 ```bash
-# 1. Install WireGuard
-sudo apt update
-sudo apt install wireguard
+# Check key permissions
+ls -la ~/.ssh/
+# Private keys: 600, Public keys: 644, Config: 600
 
-# 2. Copy your config (example: max)
-sudo cp artifacts/wireguard/max.conf /etc/wireguard/max.conf
-sudo chmod 600 /etc/wireguard/max.conf
+# Fix permissions
+chmod 700 ~/.ssh
+chmod 600 ~/.ssh/id_*
+chmod 644 ~/.ssh/id_*.pub
+chmod 600 ~/.ssh/config
 
-# 3. Start VPN
-sudo wg-quick up max
+# Check server: authorized_keys permissions
+ssh user@server "ls -la ~/.ssh/authorized_keys"
+# Should be: 600
 
-# 4. Enable on boot (optional)
-sudo systemctl enable wg-quick@max
+# Fix server
+ssh user@server "chmod 700 ~/.ssh && chmod 600 ~/.ssh/authorized_keys"
 ```
 
-**Проверка:**
+### SSH: Connection Timeout
+
+```bash
+# Check if server reachable
+ping server-hostname
+
+# Check if SSH port open
+nc -zv server-hostname 22
+
+# Try different port (if non-standard)
+ssh -p 2222 user@server
+
+# Check firewall
+sudo ufw status
+```
+
+### SSH Tunnel: Connection Refused
+
+```bash
+# Check if service running on remote
+ssh server "netstat -tlnp | grep PORT"
+
+# Check tunnel created
+ps aux | grep "ssh -L"
+
+# Try with verbose
+ssh -v -L 8080:localhost:80 server
+```
+
+### WireGuard: No Handshake
+
+```bash
+# Check server running
+ssh server "sudo wg show"
+
+# Check client config
+cat /etc/wireguard/wg0.conf
+# Verify: server public key, endpoint, port
+
+# Check firewall
+sudo ufw allow 51820/udp
+
+# Check server logs
+ssh server "sudo journalctl -u wg-quick@wg0 -f"
+
+# Test connection
+nc -zvu server-hostname 51820
+```
+
+### WireGuard: DNS Leak
+
+```bash
+# Test DNS leak
+curl https://dnsleaktest.com
+
+# If leaked, fix client config:
+[Interface]
+DNS = 1.1.1.1
+PostUp = echo "nameserver 1.1.1.1" > /etc/resolv.conf
+
+# Or use systemd-resolved
+[Interface]
+DNS = 1.1.1.1
+PostUp = resolvectl dns wg0 1.1.1.1
+```
+
+---
+
+## 📊 Monitoring & Testing
+
+### SSH Connection Monitoring
+
+```bash
+# Active SSH connections
+who
+
+# SSH login history
+last -a
+
+# Failed SSH attempts
+sudo grep "Failed password" /var/log/auth.log
+
+# SSH connection logs
+sudo journalctl -u ssh -f
+```
+
+### VPN Monitoring
+
 ```bash
 # WireGuard status
 sudo wg show
 
-# Ping VPN gateway
-ping 10.8.0.1
+# Connection details
+sudo wg show wg0
 
-# Check IP (should show VPN server IP)
-curl http://ifconfig.me
-
-# DNS leak test
-curl https://dnsleaktest.com/
-```
-
-**Остановка:**
-```bash
-sudo wg-quick down max
-```
-
----
-
-## 📊 Мониторинг
-
-### VPN Status
-
-```bash
-# Активные peers
-sudo wg show
-
-# Transfer statistics
+# Traffic stats
 sudo wg show wg0 transfer
 
-# Interface status
+# Client list
+sudo wg show wg0 peers
+
+# Check VPN interface
 ip addr show wg0
 
-# Routes
-ip route | grep wg0
+# Check VPN routing
+ip route show | grep wg0
 ```
 
-### SSH Tunnels
+### Security Testing
 
 ```bash
-# Активные SSH tunnels
-ps aux | grep 'ssh -[LRD]'
+# Test DNS leak
+curl https://dnsleaktest.com
+# Should show VPN DNS, NOT ISP DNS
 
-# Открытые порты
-lsof -i -P | grep ssh | grep LISTEN
+# Test IP leak
+curl https://ifconfig.me
+# Should show VPN server IP
+
+# Test IPv6 leak (if IPv6 enabled)
+curl -6 https://ifconfig.co
+# Should fail OR show VPN IPv6
+
+# Test WebRTC leak (browser)
+# Visit: https://browserleaks.com/webrtc
+# Should NOT show your real IP
+
+# Full VPN test
+# Visit: https://www.dnsleaktest.com/
+# Run Extended Test → should show VPN provider only
+```
+
+---
+
+## 📖 Reference Commands
+
+### SSH Essentials
+
+```bash
+# Generate key
+ssh-keygen -t ed25519 -C "user@example.com" -f ~/.ssh/key
+
+# Copy key to server
+ssh-copy-id -i ~/.ssh/key.pub user@server
+
+# Connect with key
+ssh -i ~/.ssh/key user@server
+
+# Test config
+ssh -T git@github.com
+
+# Remove host from known_hosts
+ssh-keygen -R hostname
+```
+
+### SSH Tunneling
+
+```bash
+# Local forward
+ssh -L local_port:target:target_port server
+
+# Remote forward
+ssh -R remote_port:localhost:local_port server
+
+# Dynamic forward (SOCKS)
+ssh -D local_port server
+
+# Background + no shell
+ssh -L 5432:localhost:5432 server -N -f
 
 # Kill tunnel
-kill $(pgrep -f 'ssh -L 3000')
+pkill -f "ssh -L"
 ```
 
-### Security Tests
+### WireGuard
 
 ```bash
-# Public IP check
-curl http://ifconfig.me
+# Generate keys
+wg genkey | tee private.key | wg pubkey > public.key
 
-# DNS servers
-cat /etc/resolv.conf
+# Start VPN
+sudo wg-quick up wg0
 
-# DNS leak test (online)
-# Visit: https://dnsleaktest.com/
-```
-
----
-
-## 🎯 Common Tasks
-
-### Create SSH Tunnel (Local Forward)
-
-```bash
-# Grafana access
-ssh -L 3000:localhost:3000 -N -f shadow-02
-
-# PostgreSQL access
-ssh -L 5432:10.50.1.25:5432 -N -f shadow-02
-
-# Web service
-ssh -L 8080:localhost:80 -N -f shadow-02
-```
-
-### Create SOCKS Proxy
-
-```bash
-# Start proxy
-ssh -D 1080 -N -f vpn-zurich
-
-# Configure browser:
-#   Proxy: SOCKS5
-#   Host: localhost
-#   Port: 1080
-
-# Test
-curl --socks5 localhost:1080 http://ifconfig.me
-```
-
-### VPN Reconnect
-
-```bash
-# Restart VPN
-sudo wg-quick down max
-sudo wg-quick up max
-
-# Force reload
-sudo systemctl restart wg-quick@max
-```
-
----
-
-## 🐛 Troubleshooting
-
-### SSH Issues
-
-**Problem:** `Permission denied (publickey)`
-```bash
-# Check key permissions
-ls -la ~/.ssh/
-chmod 600 ~/.ssh/max_key
-chmod 644 ~/.ssh/max_key.pub
-
-# Verify key on server
-ssh-copy-id -i ~/.ssh/max_key.pub user@server
-```
-
-**Problem:** `Connection refused`
-```bash
-# Check SSH service
-sudo systemctl status ssh
-
-# Check port
-ss -tulpn | grep :22
-```
-
----
-
-### VPN Issues
-
-**Problem:** `wg-quick: wg0 already exists`
-```bash
-# Stop existing
+# Stop VPN
 sudo wg-quick down wg0
 
-# Restart
+# Status
+sudo wg show
+
+# Reload config
+sudo wg syncconf wg0 <(wg-quick strip wg0)
+```
+
+---
+
+## 🎓 Learning Resources
+
+### Man Pages
+
+```bash
+man ssh           # SSH client
+man ssh_config    # SSH config format
+man ssh-keygen    # Key generation
+man sshd_config   # SSH server config
+man wg            # WireGuard
+man wg-quick      # WireGuard quick setup
+```
+
+### Online Resources
+
+- **SSH:** https://www.ssh.com/academy/ssh
+- **SSH Tunneling:** https://www.ssh.com/academy/ssh/tunneling
+- **WireGuard:** https://www.wireguard.com/
+- **WireGuard Quickstart:** https://www.wireguard.com/quickstart/
+- **DNS Leak Test:** https://dnsleaktest.com
+- **IP Check:** https://ifconfig.me
+
+---
+
+## ✅ Quick Reference
+
+### SSH Key Setup (3 steps)
+
+```bash
+# 1. Generate
+ssh-keygen -t ed25519 -C "user@example.com"
+
+# 2. Copy to server
+ssh-copy-id user@server
+
+# 3. Connect
+ssh user@server  # No password!
+```
+
+### SSH Config (copy-paste)
+
+```bash
+Host myserver
+    HostName 192.168.1.100
+    User admin
+    Port 22
+    IdentityFile ~/.ssh/my_key
+```
+
+### SSH Tunnel (quick start)
+
+```bash
+# Access remote DB
+ssh -L 5432:localhost:5432 server
+
+# Use SOCKS proxy
+ssh -D 1080 server
+# Configure browser: SOCKS5 localhost:1080
+```
+
+### WireGuard (quick start)
+
+```bash
+# Generate keys
+wg genkey | tee private.key | wg pubkey > public.key
+
+# Copy configs from artifacts/wireguard/
+
+# Start VPN
 sudo wg-quick up wg0
-```
 
-**Problem:** `Cannot resolve host name`
-```bash
-# Check DNS
-cat /etc/resolv.conf
-
-# Use IP instead of hostname in Endpoint
-# Edit: /etc/wireguard/max.conf
-# Change: Endpoint = vpn-zurich.com:51820
-# To:     Endpoint = 195.14.20.10:51820
-```
-
-**Problem:** `No internet through VPN`
-```bash
-# Check IP forwarding (on server)
-cat /proc/sys/net/ipv4/ip_forward  # Should be 1
-
-# Check iptables (on server)
-sudo iptables -t nat -L POSTROUTING
-
-# Check routes (on client)
-ip route
+# Check
+sudo wg show
+curl https://ifconfig.me  # Should show VPN IP
 ```
 
 ---
 
-### DNS Leak
+**Успехов в Episode 08!** 🚀
 
-**Problem:** DNS shows ISP servers
-```bash
-# Edit VPN config
-sudo nano /etc/wireguard/max.conf
-
-# Add/check:
-[Interface]
-DNS = 1.1.1.1
-
-# Restart
-sudo wg-quick down max
-sudo wg-quick up max
-```
-
----
-
-## 🔒 Security Best Practices
-
-### SSH Keys
-
-- ✅ Use ed25519 (or RSA 4096 for legacy)
-- ✅ Set passphrase for private keys
-- ✅ Rotate keys annually
-- ✅ Revoke compromised keys immediately
-- ✅ Use different keys for different servers (advanced)
-
-### VPN
-
-- ✅ Use WireGuard (modern, fast, audited)
-- ✅ Enable DNS through VPN
-- ✅ Test for leaks (IP, DNS, WebRTC)
-- ✅ Monitor connections
-- ✅ Log access (but not traffic content)
-
-### General
-
-- ✅ Keep software updated
-- ✅ Use firewall (UFW/iptables)
-- ✅ Monitor logs
-- ✅ Document everything
-- ✅ Test backups
-
----
-
-## 📖 References
-
-- [WireGuard Official Docs](https://www.wireguard.com/)
-- [SSH Config Man Page](https://man.openbsd.org/ssh_config)
-- [iptables Tutorial](https://www.netfilter.org/documentation/)
-- [DNS Leak Test](https://dnsleaktest.com/)
-
----
-
-## ✅ Checklist
-
-Before deploying to production:
-
-- [ ] SSH keys generated and secured (chmod 600)
-- [ ] SSH config tested (ssh -G hostname)
-- [ ] WireGuard server config reviewed
-- [ ] WireGuard client configs distributed
-- [ ] IP forwarding enabled on server
-- [ ] Firewall allows UDP 51820 (WireGuard)
-- [ ] VPN tested (ping, internet access)
-- [ ] DNS leak tested
-- [ ] IP leak tested
-- [ ] Documentation complete
-- [ ] Team trained
-
----
-
-*"Security through obscurity is not security. Security through strong cryptography is."*  
-— Katarina Lindström
-
-**Episode 08: VPN & SSH Tunneling — Season 2 Finale** ✓
-
----
+*"Encryption — не paranoia. Encryption — hygiene. Как чистить зубы. Не делаешь — проблемы."* — LILITH

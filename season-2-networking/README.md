@@ -201,65 +201,80 @@ KERNEL SHADOWS — Season 2
 ---
 
 ### Episode 08: VPN & SSH Tunneling ✅
-**Локация:** 🇸🇪 Стокгольм → 🇷🇺 Москва → 🇨🇭 Цюрих
+**Локация:** 🇨🇭 Цюрих (Switzerland) — Season 2 Finale
 **День:** 15-16 из 60
-**Время:** 4-5ч
-**Сложность:** ⭐⭐⭐☆☆
-**Статус:** ✅ COMPLETE (Season 2 Finale!)
+**Время:** 6-7ч (8 micro-cycles)
+**Сложность:** ⭐⭐⭐⭐☆
+**Статус:** ✅ COMPLETE + REFACTORED (v0.4.5.8)
+**Тип:** Type A (Workflow Automation)
 
-**Миссия:** Настроить VPN для безопасной коммуникации команды.
+**Миссия:** Настроить VPN для безопасной коммуникации команды после угрозы DPI от Крылова.
 
-**Что изучим:**
-- SSH keys (ed25519, RSA, генерация, management)
-- SSH config (~/.ssh/config, автоматизация, ProxyJump)
-- SSH tunneling (Local, Remote, Dynamic forward)
-- SOCKS proxy (browser через SSH)
-- VPN концепты (зачем, как работает)
-- OpenVPN vs WireGuard (сравнение, выбор)
-- WireGuard setup (server + clients, полная конфигурация)
-- VPN monitoring (peers, bandwidth, connectivity)
-- Security testing (IP leak, DNS leak, WebRTC)
-- Final Security Audit (итог всего Season 2)
+**🎯 Type A Episode:**
+- Workflow automation для VPN setup (5 членов команды)
+- Multi-step process: SSH keys × 5 → configs → WireGuard × 6 → coordination
+- Bash автоматизирует, НЕ заменяет инструменты (ssh-keygen, wg, wg-quick)
+- 60-70% времени: изучение SSH/VPN концептов
+- 30-40% времени: bash для автоматизации workflow
+
+**Что изучим (8 micro-cycles):**
+- **Цикл 1:** SSH Keys Basics (ed25519 > RSA, public/private, security)
+- **Цикл 2:** SSH Config Advanced (~/.ssh/config, ProxyJump, multiplexing)
+- **Цикл 3:** SSH Local Forward (remote → local, database access)
+- **Цикл 4:** SSH Remote Forward (local → remote, webhook exposure)
+- **Цикл 5:** Dynamic Forward (SOCKS proxy, all traffic tunneling)
+- **Цикл 6:** VPN Concepts (OpenVPN vs WireGuard, kernel vs userspace)
+- **Цикл 7:** WireGuard Setup (automated workflow, server + 5 clients)
+- **Цикл 8:** Final Audit (Season 2 Summary, security posture)
 
 **Практика:**
-- Генерация SSH ключей для команды (5 членов)
-- Создание SSH config с автоматизацией
-- SSH tunnel для Grafana, PostgreSQL
-- SOCKS proxy для браузера
-- WireGuard VPN сервер в Цюрихе
-- Клиентские конфиги для команды
-- VPN мониторинг и тестирование
+- Генерация SSH ключей для команды (ed25519, permissions, fingerprints)
+- SSH config automation (aliases, jump hosts, connection reuse)
+- SSH tunneling: Local/Remote/Dynamic forward
+- SOCKS proxy для браузера (DNS leak prevention)
+- WireGuard VPN server в Цюрихе (ChaCha20-Poly1305 encryption)
+- Client configs для 5 членов (Viktor, Alex, Anna, Dmitry, Max)
+- Security testing (IP leak, DNS leak, WebRTC leak)
 - Comprehensive Season 2 Audit Report
 
 **Персонажи:**
-- **Viktor Petrov** — координатор, принимает решения
-- **Алекс Соколов** — security lead, эмоциональный backstory
-- **Анна Ковалева** — forensics, анализ угроз
-- **Дмитрий Орлов** — DevOps, VPN infrastructure
-- **Katarina Lindström** — криптография (Stockholm University)
-- **LILITH v2.0** — Security Mode, encryption focused
+- **Виктор Петров** — координатор, решение о VPN в Цюрихе
+- **Алекс Соколов** — security expert, эмоциональная предыстория
+- **Анна Ковалева** — forensics, обнаружила DPI угрозу
+- **Дмитрий Орлов** — DevOps, VPN infrastructure setup
+- **Макс Соколов** — главный герой, junior → competent (16 дней)
+- **LILITH v2.5** — Security Mode (синий режим — encryption)
 
 **Сюжет (Season 2 Finale):**
-- Алекс: "Крылов перехватывает трафик. Все коммуникации через VPN. Сейчас."
-- Виктор: "У меня есть сервер в Цюрихе. Настрой его как VPN шлюз."
-- Max летит в Стокгольм → консультация с Katarina (WireGuard vs OpenVPN)
-- Katarina: "Encryption is mathematics. Mathematics doesn't lie."
-- **Эмоциональный момент:** Алекс открывается Максу о прошлом:
-  - Работал в ФСБ Управление "К" (киберпреступления)
-  - Крылов (его начальник) фабриковал дела против невиновных
-  - Алекс отказался подписывать протокол → увольнение
-  - Крылов: "Предатель. Ты пожалеешь."
-  - Теперь Крылов охотится на Алекса, Виктора, и всю команду
-- Результат: Безопасная коммуникация через швейцарский сервер
-- **Season 2 Complete:** Команда защищена, но Крылов ещё активен
+- **День 15, 08:00** — Emergency meeting в Цюрихе
+- Анна обнаружила DPI (Deep Packet Inspection) от Крылова
+- Алекс: "Firewall блокирует атаки. Но НЕ шифрует трафик."
+- Виктор: "VPN сервер в Цюрихе. Швейцария — нейтральная территория."
+- Макс настраивает WireGuard для 5 членов команды
+- **23:00** — VPN operational, весь трафик зашифрован
+- Крылов пытался DPI → увидел только ChaCha20 encrypted data
+- **Season 2 Complete:** 4 episodes, Max: junior → competent
+- Character development: Confidence 35% → 78%
 - Next: Season 3 — System Administration (Санкт-Петербург → Таллин 🇪🇪)
 
-**Файлы:**
-- `README.md` — 3,458 строк (самый большой эпизод!)
-- `starter.sh` — 400+ строк
-- `solution/vpn_setup.sh` — 600+ строк
-- `artifacts/README.md` — 450+ строк (installation guide)
-- `tests/test.sh` — 650+ строк (10 test categories)
+**Педагогика (CS50-style):**
+- ✅ 8 micro-cycles (interleaving каждые 12-15 минут)
+- ✅ 6 метафор (SSH Keys = Дом+Замок, Config = Телефонная книга, etc.)
+- ✅ 5+ ASCII diagrams (key generation flow, tunnel flow, VPN encryption)
+- ✅ 15+ LILITH quotes (интегрированы В теорию!)
+- ✅ 8 "Think before checking" упражнений
+- ✅ Type A philosophy explicit (таблица, сравнение с Episode 07)
+- ✅ Русские персонажи говорят на русском ✓
+
+**Файлы (после рефакторинга v0.4.5.8):**
+- `README.md` — 1,863 строк (было 3,458, **-46% size!**)
+- `solution/vpn_setup.sh` — 695 строк (Type A automation)
+- `artifacts/README.md` — 670 строк (было ~100, **+570%!**)
+- `starter.sh` — Type A aligned
+- `tests/test.sh` — comprehensive validation
+- `README.md.backup` — старая версия (reference)
+
+**Season 2 Balance:** 2 Type A (Episodes 05, 08) / 2 Type B (Episodes 06, 07) = 50/50 ✅
 
 ---
 
@@ -435,9 +450,29 @@ wireguard         # Современный VPN
 ## 📖 Рекомендуемые ресурсы
 
 ### Книги:
-- **TCP/IP Illustrated** by W. Richard Stevens — классика
-- **Practical Packet Analysis** by Chris Sanders — Wireshark
-- **The Practice of Network Security Monitoring** by Richard Bejtlich
+
+**📘 Теория (академические учебники):**
+- **Олифер В.Г., Олифер Н.А. — Компьютерные сети** (6-е изд., 2020) 🇷🇺
+  - Лучший русскоязычный учебник по сетям
+  - Архитектура, маршрутизация, протоколы, безопасность
+  - Обязательная литература для Season 2
+- **Kurose & Ross — Computer Networking: A Top-Down Approach** (8th ed., 2021)
+  - Самый популярный академический учебник в мире
+  - Top-Down подход (от приложений к физике)
+  - Wireshark labs, современные темы (HTTP/3, QUIC, SDN)
+- **W. Richard Stevens — TCP/IP Illustrated, Volume 1** (2nd ed., 2011)
+  - Классика, детальный разбор TCP/IP
+  - Packet analysis, troubleshooting
+
+**🛠️ Практика (администрирование):**
+- **Craig Hunt — TCP/IP Network Administration** (O'Reilly, 3rd ed., 2002)
+  - Практический подход: "как настроить"
+  - DNS (BIND), DHCP, routing на Linux/Unix
+  - Реальные конфигурационные файлы
+- **Chris Sanders — Practical Packet Analysis** (Wireshark)
+  - Анализ трафика, troubleshooting
+- **Richard Bejtlich — The Practice of Network Security Monitoring**
+  - Security monitoring, incident response
 
 ### Онлайн курсы:
 - [Introduction to Networking](https://www.coursera.org/learn/computer-networking) (Coursera)
