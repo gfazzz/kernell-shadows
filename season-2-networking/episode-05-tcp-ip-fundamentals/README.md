@@ -1338,7 +1338,7 @@ backup_hosts() {
         echo "  Размер: $(du -h "$backup_file" | awk '{print $1}')"
 
         # Показать содержимое
-        echo ""
+echo ""
         echo "  Содержимое /etc/hosts:"
         head -n 10 "$backup_file" | sed 's/^/    /'
 
@@ -1754,8 +1754,8 @@ show_routing_table() {
 
     echo ""
     local gateway=$(ip route | grep default | awk '{print $3}' | head -n1)
-    if [ -n "$gateway" ]; then
-        echo "✓ Default gateway: $gateway"
+if [ -n "$gateway" ]; then
+    echo "✓ Default gateway: $gateway"
     fi
 }
 
@@ -2139,7 +2139,7 @@ scan_viktor_server() {
         echo "✓ Обнаружено 3 открытых порта"
     fi
 
-    echo ""
+        echo ""
     echo "Analysis:"
     echo "  ✓ SSH (22) — OK (нужен для управления)"
     echo "  ⚠ HTTP (80) — зачем? Должен быть только HTTPS"

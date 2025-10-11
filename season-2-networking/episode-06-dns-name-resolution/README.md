@@ -544,7 +544,7 @@ $ dig TXT google.com +short
 ```
 
 **Используется для:**
-- SPF (защита от спама)
+  - SPF (защита от спама)
 - DKIM (подпись email)
 - Domain verification (доказать владение доменом)
 - Site verification
@@ -1685,7 +1685,7 @@ dig google.com | grep "Query time"
 
 ```
 ═══════════════════════════════════════════════════
-          DNS SECURITY AUDIT REPORT
+           DNS SECURITY AUDIT REPORT
 ═══════════════════════════════════════════════════
 
 Date:       2025-10-11 14:30:00
