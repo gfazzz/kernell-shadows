@@ -1,12 +1,18 @@
-# KERNEL SHADOWS: Episode 09 — Sudo Configuration for Alex Sokolov
-# /etc/sudoers.d/alex
+# Алекс Соколов — Сетевое администрирование
+# Episode 09: Пользователи и права доступа
+# Операция KERNEL SHADOWS
 #
-# Principle of Least Privilege: Alex can ONLY run network administration commands
-# Saint Petersburg, Russia (LETI) — Professor Andrei Volkov's guidance
+# Принцип минимальных привилегий (Principle of Least Privilege):
+# Алекс может выполнять ТОЛЬКО сетевые команды, ничего больше.
+#
+# Ментор: Андрей Волков, ЛЭТИ
+# "Root access как заряженный пистолет. Не давай его кому попало."
 
 # ============================================================================
-# Network Commands Alias (Alex's authorized commands)
+# СЕТЕВЫЕ КОМАНДЫ (Network Commands)
 # ============================================================================
+
+# Алиасы команд для удобства организации
 Cmnd_Alias NETCMDS = /usr/sbin/ip, \
                       /usr/bin/ss, \
                       /bin/ss, \
@@ -18,77 +24,132 @@ Cmnd_Alias NETCMDS = /usr/sbin/ip, \
                       /usr/sbin/ufw, \
                       /usr/bin/nmap, \
                       /usr/sbin/route, \
-                      /sbin/route
+                      /sbin/route, \
+                      /usr/bin/traceroute, \
+                      /usr/bin/mtr
 
 # ============================================================================
-# Alex's Permissions
+# РАЗРЕШЕНИЯ ДЛЯ АЛЕКСА
 # ============================================================================
-# Alex can run network commands as root without password
-# (Required for emergency network troubleshooting during operations)
+
+# Алекс может запускать сетевые команды от имени root БЕЗ пароля
+# Формат: username HOST=(RUNAS) NOPASSWD: COMMANDS
 alex ALL=(root) NOPASSWD: NETCMDS
 
 # ============================================================================
-# Explicit Denials (Defense in Depth)
+# ЯВНЫЙ ЗАПРЕТ ОПАСНЫХ КОМАНД (Defense in Depth)
 # ============================================================================
-# Even if Alex somehow gains broader sudo access, these are explicitly blocked
+
+# Даже если Алекс попытается — эти команды будут заблокированы
 alex ALL=(root) !/usr/sbin/visudo, \
+                !/usr/bin/visudo, \
                 !/usr/bin/passwd root, \
                 !/bin/passwd root, \
-                !/bin/rm -rf /, \
-                !/usr/bin/rm -rf /, \
-                !/usr/bin/dd, \
-                !/bin/dd, \
-                !/usr/bin/mkfs*, \
-                !/sbin/mkfs*, \
+                !/usr/sbin/useradd, \
                 !/usr/sbin/userdel, \
-                !/usr/sbin/usermod root
+                !/usr/sbin/usermod, \
+                !/bin/rm -rf /, \
+                !/usr/bin/rm -rf /
 
 # ============================================================================
-# Notes:
-#
-# 1. File Permissions:
-#    - Must be 0440 (r--r-----)
-#    - Owner: root
-#    - Group: root
-#    - Command: sudo chmod 440 /etc/sudoers.d/alex
-#
-# 2. Syntax Validation:
-#    - ALWAYS test before deploying: visudo -c -f /etc/sudoers.d/alex
-#    - Invalid syntax can lock you out of sudo!
-#
-# 3. Security Considerations:
-#    - NOPASSWD: Convenient but risky
-#    - Alternative: require password for most commands, NOPASSWD for read-only
-#    - Example: alex ALL=(root) PASSWD: NETCMDS (better for production)
-#
-# 4. Logging:
-#    - All sudo commands logged to /var/log/auth.log
-#    - Check: sudo grep alex /var/log/auth.log
-#
-# 5. Testing Alex's Access:
-#    - Login as alex: sudo -i -u alex
-#    - Test allowed: sudo ip addr show
-#    - Test denied: sudo useradd test (should fail)
-#
-# 6. Why These Commands?
-#    - ip: Configure network interfaces, routes
-#    - ss/netstat: Check connections, listening ports
-#    - tcpdump: Capture packets (troubleshooting)
-#    - iptables/ufw: Manage firewall rules
-#    - nmap: Scan network (security audits)
-#    - route: View/modify routing table
-#
-# 7. Principle of Least Privilege:
-#    - Alex is Network Administrator, NOT System Administrator
-#    - Can manage network, CANNOT:
-#      → Create/delete users
-#      → Modify system files
-#      → Install packages
-#      → Reboot system
-#      → Access other users' files (unless group permissions)
-#
-# ============================================================================
-# Andrei Volkov: "Least privilege — Alex gets network tools, nothing more.
-#                 If compromised, damage is contained. That's security."
+# КОММЕНТАРИИ ДЛЯ ПОНИМАНИЯ
 # ============================================================================
 
+# ЧТО МОЖЕТ АЛЕКС:
+#   ✓ sudo ip addr show              — посмотреть IP адреса
+#   ✓ sudo ss -tulpn                 — посмотреть открытые порты
+#   ✓ sudo tcpdump -i eth0           — перехватить пакеты
+#   ✓ sudo iptables -L               — посмотреть правила фаервола
+#   ✓ sudo ufw allow 22/tcp          — открыть порт в фаерволе
+#   ✓ sudo nmap 192.168.1.0/24       — сканировать сеть
+
+# ЧТО НЕ МОЖЕТ АЛЕКС:
+#   ✗ sudo useradd hacker            — создать пользователя
+#   ✗ sudo passwd root               — сменить пароль root
+#   ✗ sudo visudo                    — изменить судо конфигурацию
+#   ✗ sudo rm -rf /                  — удалить всю систему
+#   ✗ sudo systemctl restart sshd    — перезапустить SSH (не в списке)
+
+# ============================================================================
+# ЛОГИРОВАНИЕ
+# ============================================================================
+
+# Все команды sudo автоматически логируются в:
+#   /var/log/auth.log     — стандартный лог аутентификации
+#   /var/log/sudo.log     — если настроен отдельный лог для sudo
+#
+# Просмотр логов sudo:
+#   sudo grep "alex.*COMMAND" /var/log/auth.log
+#   sudo journalctl _COMM=sudo | grep alex
+
+# ============================================================================
+# УСТАНОВКА
+# ============================================================================
+
+# 1. Скопировать этот файл в /etc/sudoers.d/
+#    sudo cp alex /etc/sudoers.d/alex
+
+# 2. Установить правильные права (440 — read-only для root и группы)
+#    sudo chmod 440 /etc/sudoers.d/alex
+
+# 3. Проверить синтаксис (КРИТИЧНО! ошибка заблокирует sudo)
+#    sudo visudo -c -f /etc/sudoers.d/alex
+
+# 4. Если ошибка — исправить и проверить снова
+#    Если OK — файл готов к использованию
+
+# ============================================================================
+# ТЕСТИРОВАНИЕ
+# ============================================================================
+
+# Тест 1: Проверить что может Алекс
+#   sudo -u alex sudo ip addr show
+#   Ожидается: успех (команда выполнится)
+
+# Тест 2: Проверить что НЕ может Алекс
+#   sudo -u alex sudo useradd test
+#   Ожидается: ошибка "Sorry, user alex is not allowed to execute..."
+
+# Тест 3: Проверить что не требуется пароль
+#   sudo -u alex sudo -n ss -tulpn
+#   Ожидается: успех (флаг -n = non-interactive, не запросит пароль)
+
+# ============================================================================
+# БЕЗОПАСНОСТЬ
+# ============================================================================
+
+# ⚠️ ВАЖНО: Даже ограниченный sudo — это власть!
+#
+# Алекс может:
+#   - Менять настройки сети (перенаправить трафик)
+#   - Запускать tcpdump (перехватить пароли в открытом виде)
+#   - Сканировать сеть nmap (найти уязвимости)
+#   - Менять правила фаервола (открыть порты для атаки)
+#
+# Поэтому:
+#   ✓ Доверяй, но проверяй (Trust, but Verify)
+#   ✓ Логируй все действия
+#   ✓ Регулярно проверяй логи sudo
+#   ✓ Если Алекс покинет команду — удали этот файл!
+
+# ============================================================================
+# ССЫЛКИ
+# ============================================================================
+
+# man sudoers       — полная документация по формату sudoers
+# man sudo          — документация по команде sudo
+# visudo            — редактор sudoers с проверкой синтаксиса
+
+# Online:
+#   https://www.sudo.ws/docs/man/sudoers.man/
+#   https://wiki.archlinux.org/title/Sudo
+
+# ============================================================================
+# ИСТОРИЯ ИЗМЕНЕНИЙ
+# ============================================================================
+
+# 2025-10-11: Создан Максом Соколовым под руководством Андрея Волкова
+#             Операция KERNEL SHADOWS, Episode 09, Санкт-Петербург
+#             Принцип минимальных привилегий реализован
+
+# End of configuration

@@ -1,295 +1,355 @@
-# /etc/sudoers.d/ — Sudo Configuration for KERNEL SHADOWS
+# Конфигурации sudo для команды операции
+## Episode 09: Пользователи и права доступа
 
-## 📁 Structure
-
-```
-/etc/sudoers.d/
-├── alex      # Network Administrator (limited sudo)
-├── viktor    # Operations Lead (full sudo)
-├── dmitry    # DevOps Engineer (DevOps commands only)
-└── README.md # This file (for reference, NOT deployed to /etc/)
-```
+> *"Root access как заряженный пистолет. Не давай его кому попало."*
+> — Андрей Волков, ЛЭТИ
 
 ---
 
-## 🎯 Principle of Least Privilege
+## 📁 Файлы в этой папке
 
-Each user has **minimum necessary sudo access** for their role:
+### `alex` — Алекс Соколов (Сетевой администратор)
+**Разрешённые команды:**
+- Сетевые утилиты: `ip`, `ss`, `netstat`, `tcpdump`
+- Фаервол: `iptables`, `ufw`
+- Сканирование: `nmap`, `traceroute`, `mtr`
 
-| User | Role | Sudo Access | Password? |
-|------|------|-------------|-----------|
-| **Viktor** | Operations Lead | ALL commands | YES |
-| **Alex** | Network Admin | Network commands only | NO (NOPASSWD) |
-| **Dmitry** | DevOps Engineer | Docker, systemctl, apt | NO (NOPASSWD) |
-| **Anna** | Forensics | NO sudo (read-only via ACL) | N/A |
+**Запрещено:**
+- Управление пользователями (`useradd`, `passwd root`)
+- Изменение sudo конфигурации (`visudo`)
+- Деструктивные команды (`rm -rf /`)
+
+**Философия:** Принцип минимальных привилегий (Principle of Least Privilege)
 
 ---
 
-## 📋 Deployment Instructions
+### `anna` — Анна Ковалева (Криминалистический эксперт)
+**Разрешённые команды:**
+- Чтение логов: `less`, `tail`, `cat`, `grep` для `/var/log/*`
+- Журнал systemd: `journalctl`
+- Архивные логи: `zgrep`, `zcat`
 
-### 1. Deploy sudoers Files
+**Запрещено:**
+- Изменение логов (любые write операции)
+- Удаление логов (`rm`, `truncate`)
+- Управление пользователями
 
+**Философия:** Read-only доступ для forensics (целостность доказательств)
+
+---
+
+### `dmitry` — Дмитрий Орлов (DevOps инженер)
+**Разрешённые команды:**
+- Управление сервисами: `systemctl start/stop/restart/status`
+- Просмотр логов: `journalctl`
+- Управление процессами: `kill`, `pkill`, `htop`
+- Docker: `docker`, `docker-compose`
+
+**Запрещено:**
+- Управление пользователями
+- Изменение sudo конфигурации
+- Деструктивные команды
+
+**Философия:** Separation of duties (разделение обязанностей)
+
+---
+
+## 📦 Установка
+
+### Шаг 1: Копирование конфигов
 ```bash
-# Copy each file to /etc/sudoers.d/
-sudo cp sudoers.d/alex /etc/sudoers.d/alex
-sudo cp sudoers.d/viktor /etc/sudoers.d/viktor
-sudo cp sudoers.d/dmitry /etc/sudoers.d/dmitry
+# Скопировать все файлы в /etc/sudoers.d/
+sudo cp alex /etc/sudoers.d/alex
+sudo cp anna /etc/sudoers.d/anna
+sudo cp dmitry /etc/sudoers.d/dmitry
+```
 
-# Set correct permissions (440 = read-only)
+### Шаг 2: Установка прав доступа
+```bash
+# Права 440 (read-only для root и группы, ничего для остальных)
 sudo chmod 440 /etc/sudoers.d/alex
-sudo chmod 440 /etc/sudoers.d/viktor
+sudo chmod 440 /etc/sudoers.d/anna
 sudo chmod 440 /etc/sudoers.d/dmitry
-
-# Set ownership (root:root)
-sudo chown root:root /etc/sudoers.d/alex
-sudo chown root:root /etc/sudoers.d/viktor
-sudo chown root:root /etc/sudoers.d/dmitry
 ```
 
-### 2. Validate Syntax (CRITICAL!)
-
+### Шаг 3: Проверка синтаксиса (КРИТИЧНО!)
 ```bash
-# ALWAYS validate before deploying!
-# Invalid syntax can lock you out of sudo!
-
+# Проверить каждый файл
 sudo visudo -c -f /etc/sudoers.d/alex
-sudo visudo -c -f /etc/sudoers.d/viktor
+sudo visudo -c -f /etc/sudoers.d/anna
 sudo visudo -c -f /etc/sudoers.d/dmitry
 
-# Should output: "parsed OK"
+# Если OK — увидишь сообщение "parsed OK"
+# Если ERROR — НЕ ПРОДОЛЖАЙ! Исправь синтаксис!
 ```
 
-### 3. Test Each User's Access
+**⚠️ ВАЖНО:** Ошибка в sudoers файле может **полностью заблокировать sudo**!
+Всегда проверяй синтаксис через `visudo -c` перед активацией!
 
+### Шаг 4: Проверка что файлы загружены
 ```bash
-# Test Alex (network commands)
-sudo -i -u alex
-sudo ip addr show          # Should work
-sudo useradd test          # Should fail
-exit
+# Проверить что sudoers.d включён в основном файле
+grep "^#includedir /etc/sudoers.d" /etc/sudoers
 
-# Test Viktor (full sudo)
-sudo -i -u viktor
-sudo useradd test          # Should work (requires password)
-exit
-
-# Test Dmitry (DevOps commands)
-sudo -i -u dmitry
-sudo docker ps             # Should work
-sudo useradd test          # Should fail
-exit
+# Если строки нет — добавь в /etc/sudoers:
+# echo "#includedir /etc/sudoers.d" | sudo tee -a /etc/sudoers
 ```
 
 ---
 
-## 🔍 Verification Commands
+## ✅ Тестирование
 
+### Тест 1: Алекс может выполнять сетевые команды
 ```bash
-# List all sudoers files
-ls -la /etc/sudoers.d/
+# Успех (должно работать)
+sudo -u alex sudo ip addr show
+sudo -u alex sudo ss -tulpn
+sudo -u alex sudo iptables -L
 
-# Check permissions (should be 440)
+# Ошибка (должно быть запрещено)
+sudo -u alex sudo useradd test
+# Ожидается: "Sorry, user alex is not allowed to execute..."
+```
+
+### Тест 2: Анна может читать логи, но не изменять
+```bash
+# Успех (должно работать)
+sudo -u anna sudo cat /var/log/auth.log
+sudo -u anna sudo journalctl -u ssh --since today
+sudo -u anna sudo grep "Failed" /var/log/auth.log
+
+# Ошибка (должно быть запрещено)
+sudo -u anna sudo rm /var/log/auth.log
+sudo -u anna sudo bash -c 'echo "fake" >> /var/log/auth.log'
+```
+
+### Тест 3: Дмитрий может управлять сервисами
+```bash
+# Успех (должно работать)
+sudo -u dmitry sudo systemctl status nginx
+sudo -u dmitry sudo journalctl -u nginx -n 50
+sudo -u dmitry sudo docker ps
+
+# Ошибка (должно быть запрещено)
+sudo -u dmitry sudo useradd test
+sudo -u dmitry sudo visudo
+```
+
+### Тест 4: NOPASSWD работает (не запрашивает пароль)
+```bash
+# Флаг -n = non-interactive (не запрашивать пароль)
+sudo -u alex sudo -n ip addr show
+sudo -u anna sudo -n journalctl -n 10
+sudo -u dmitry sudo -n systemctl status
+
+# Если работает без ошибки — NOPASSWD настроен правильно
+```
+
+---
+
+## 📊 Проверка текущих прав
+
+### Посмотреть что может конкретный пользователь
+```bash
+# Показать sudo права для Алекса
+sudo -u alex sudo -l
+
+# Вывод покажет:
+# User alex may run the following commands on hostname:
+#     (root) NOPASSWD: /usr/sbin/ip, /usr/bin/ss, ...
+```
+
+### Посмотреть все sudo правила
+```bash
+# Все активные правила из /etc/sudoers и /etc/sudoers.d/*
+sudo cat /etc/sudoers
+sudo cat /etc/sudoers.d/*
+```
+
+### Проверить логи sudo (кто что делал)
+```bash
+# Последние sudo команды за сегодня
+sudo grep "sudo.*COMMAND" /var/log/auth.log | grep "$(date +%b\ %d)"
+
+# Команды конкретного пользователя
+sudo grep "alex.*COMMAND" /var/log/auth.log
+
+# Через journalctl
+sudo journalctl _COMM=sudo --since today
+```
+
+---
+
+## 🔒 Безопасность
+
+### Принципы, реализованные в этих конфигах:
+
+**1. Principle of Least Privilege (Принцип минимальных привилегий)**
+- Каждый пользователь имеет **только** те права, которые нужны для работы
+- Алекс: ТОЛЬКО сетевые команды
+- Анна: ТОЛЬКО чтение логов
+- Дмитрий: ТОЛЬКО управление сервисами
+
+**2. Defense in Depth (Эшелонированная защита)**
+- Явный запрет опасных команд (`!command`)
+- Даже если что-то пропустили — опасные команды заблокированы
+
+**3. Separation of Duties (Разделение обязанностей)**
+- Никто не имеет полного sudo
+- Алекс не может управлять сервисами
+- Дмитрий не может менять сетевые настройки
+- Анна не может изменять то, что расследует
+
+**4. Audit Trail (Следы аудита)**
+- Все sudo команды логируются в `/var/log/auth.log`
+- Можно проверить кто, когда, что выполнил
+
+**5. NOPASSWD с осторожностью**
+- NOPASSWD удобно для автоматизации
+- НО: если аккаунт скомпрометирован — атакующий получает те же права
+- Поэтому: только ограниченный набор команд!
+
+---
+
+## ⚠️ Частые ошибки
+
+### Ошибка 1: Забыл проверить синтаксис
+```bash
+# ❌ ПЛОХО: скопировал файл и перезагрузился — sudo не работает!
+sudo cp alex /etc/sudoers.d/alex
+
+# ✅ ХОРОШО: проверил синтаксис ПЕРЕД перезагрузкой
+sudo visudo -c -f /etc/sudoers.d/alex
+```
+
+### Ошибка 2: Неправильные права доступа
+```bash
+# ❌ ПЛОХО: файл доступен для записи обычным пользователям
+chmod 644 /etc/sudoers.d/alex
+# sudo откажется использовать файл!
+
+# ✅ ХОРОШО: только root может читать и писать
+sudo chmod 440 /etc/sudoers.d/alex
+```
+
+### Ошибка 3: Забыл про includedir
+```bash
+# Проверь что в /etc/sudoers есть строка:
+grep "^#includedir /etc/sudoers.d" /etc/sudoers
+
+# Если нет — файлы в /etc/sudoers.d/ игнорируются!
+```
+
+### Ошибка 4: Слишком широкие маски
+```bash
+# ❌ ОПАСНО: alex может выполнять ВСЁ в /usr/sbin/
+alex ALL=(root) NOPASSWD: /usr/sbin/*
+
+# ✅ БЕЗОПАСНО: только конкретные команды
+alex ALL=(root) NOPASSWD: /usr/sbin/ip, /usr/sbin/iptables
+```
+
+---
+
+## 🛠️ Отладка проблем
+
+### Проблема: "Sorry, user alex is not allowed..."
+**Причины:**
+1. Файл не в `/etc/sudoers.d/`
+2. Неправильные права (не 440)
+3. Синтаксическая ошибка в файле
+4. `includedir` не настроен в `/etc/sudoers`
+
+**Решение:**
+```bash
+# Проверить что файл на месте
+ls -la /etc/sudoers.d/alex
+
+# Проверить права
 stat /etc/sudoers.d/alex
+# Должно быть: Access: (0440/-r--r-----)
 
-# View effective sudo rules for user
-sudo -l -U alex
-sudo -l -U viktor
-sudo -l -U dmitry
-
-# Check sudo logs
-sudo grep "sudo:" /var/log/auth.log | tail -20
-
-# See who can run what
-sudo -l
-```
-
----
-
-## 🛡️ Security Best Practices
-
-### 1. File Permissions (440)
-```bash
-# Correct:
--r--r----- 1 root root 1234 Oct 10 12:00 /etc/sudoers.d/alex
-
-# Wrong (644):
--rw-r--r-- 1 root root 1234 Oct 10 12:00 /etc/sudoers.d/alex
-# ^ World-readable = security risk!
-```
-
-### 2. Always Validate Syntax
-```bash
-# Before deploying:
+# Проверить синтаксис
 sudo visudo -c -f /etc/sudoers.d/alex
 
-# If invalid:
-# /etc/sudoers.d/alex: syntax error near line 15 <<<
-# Fix the error, test again
+# Проверить includedir
+grep includedir /etc/sudoers
 ```
 
-### 3. NOPASSWD Usage
+### Проблема: sudo запрашивает пароль (игнорирует NOPASSWD)
+**Причины:**
+1. В `/etc/sudoers` есть конфликтующее правило
+2. Порядок правил неправильный (последнее правило выигрывает)
+
+**Решение:**
 ```bash
-# Convenient but risky:
-alex ALL=(root) NOPASSWD: /usr/sbin/ip
+# Проверить все правила для пользователя
+sudo -u alex sudo -l
 
-# More secure (require password):
-alex ALL=(root) PASSWD: /usr/sbin/ip
+# Если видишь "(ALL) NOPASSWD: ALL" и ниже "(root) /usr/sbin/ip"
+# Значит первое правило перекрывает второе
 
-# Balance: NOPASSWD for read-only, PASSWD for modifications
+# Порядок загрузки:
+# 1. /etc/sudoers
+# 2. /etc/sudoers.d/* (в алфавитном порядке)
 ```
 
-### 4. Explicit Denials (Defense in Depth)
+### Проблема: После изменения sudoers файла sudo перестал работать
+**ПАНИКА MODE!**
+
+Если у тебя есть открытая root сессия:
 ```bash
-# Even if user gains broader access, block dangerous commands:
-alex ALL=(root) !/usr/sbin/visudo, \
-                !/bin/rm -rf /
+# В root сессии — исправь файл
+visudo -f /etc/sudoers.d/alex
 
-# Example attack scenario:
-# 1. Attacker compromises Alex's account
-# 2. Tries to edit sudoers: sudo visudo
-# 3. Blocked by explicit denial
+# Или удали проблемный файл
+rm /etc/sudoers.d/alex
 ```
 
-### 5. Logging and Auditing
-```bash
-# Monitor sudo usage:
-sudo journalctl -u sudo
+Если нет root сессии — придётся использовать recovery mode:
+1. Перезагрузить в recovery mode (GRUB меню)
+2. Выбрать "Drop to root shell"
+3. Исправить `/etc/sudoers` или `/etc/sudoers.d/*`
 
-# Check specific user:
-sudo grep "alex.*sudo:" /var/log/auth.log
-
-# Real-time monitoring:
-sudo tail -f /var/log/auth.log | grep sudo
-```
+**Поэтому:** ВСЕГДА проверяй синтаксис через `visudo -c` ДО активации!
 
 ---
 
-## 🧪 Testing Scenarios
+## 📖 Дополнительные ресурсы
 
-### Scenario 1: Alex tries to add user
+### Man pages
 ```bash
-$ sudo useradd attacker
-Sorry, user alex is not allowed to execute '/usr/sbin/useradd attacker' as root
+man sudoers       # Полная документация по формату sudoers
+man sudo          # Документация по команде sudo
+man visudo        # Редактор sudoers с проверкой синтаксиса
 ```
-✅ **Expected:** Blocked (Alex only has network commands)
 
-### Scenario 2: Alex manages network
-```bash
-$ sudo ip addr show
-1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN
-    inet 127.0.0.1/8 scope host lo
-...
-```
-✅ **Expected:** Works (network commands allowed)
+### Online
+- [Sudo Official Documentation](https://www.sudo.ws/docs/man/sudoers.man/)
+- [Arch Wiki: sudo](https://wiki.archlinux.org/title/Sudo)
+- [Red Hat: Configuring sudo](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/configuring_basic_system_settings/managing-sudo-access_configuring-basic-system-settings)
 
-### Scenario 3: Dmitry restarts service
-```bash
-$ sudo systemctl restart nginx
-```
-✅ **Expected:** Works (DevOps commands allowed)
-
-### Scenario 4: Dmitry modifies firewall
-```bash
-$ sudo ufw allow 8080/tcp
-Sorry, user dmitry is not allowed to execute '/usr/sbin/ufw allow 8080/tcp' as root
-```
-✅ **Expected:** Blocked (firewall = security team, not DevOps)
-
-### Scenario 5: Viktor does anything
-```bash
-$ sudo useradd test
-$ sudo reboot
-$ sudo rm /etc/important-file
-```
-✅ **Expected:** All work (Viktor has full sudo)
+### Примеры из этого курса
+- Episode 04: Package Management (принцип "используй готовые инструменты")
+- Episode 10: Processes & Systemd (управление сервисами)
 
 ---
 
-## 📊 Sudo Access Matrix
+## 📝 История изменений
 
-| Command | Viktor | Alex | Dmitry | Anna |
-|---------|--------|------|--------|------|
-| `useradd` | ✅ | ❌ | ❌ | ❌ |
-| `ip addr` | ✅ | ✅ | ❌ | ❌ |
-| `ufw allow` | ✅ | ✅ | ❌ | ❌ |
-| `docker ps` | ✅ | ❌ | ✅ | ❌ |
-| `systemctl restart` | ✅ | ❌ | ✅ | ❌ |
-| `apt install` | ✅ | ❌ | ✅ | ❌ |
-| `reboot` | ✅ | ❌ | ❌ | ❌ |
-| `visudo` | ✅ | ❌ | ❌ | ❌ |
+- **2025-10-11:** Созданы конфигурации для операции KERNEL SHADOWS
+  - alex: Сетевые команды
+  - anna: Read-only логи (forensics)
+  - dmitry: Управление сервисами (DevOps)
+  - Ментор: Андрей Волков, ЛЭТИ
+  - Локация: Санкт-Петербург, белые ночи
 
 ---
 
-## 🚨 Common Mistakes
+<div align="center">
 
-### 1. Wrong Permissions
-```bash
-# WRONG:
-sudo chmod 644 /etc/sudoers.d/alex
-# ^ World-readable! Anyone can see sudo rules
+**"Root — это не привилегия. Это ответственность."**
 
-# CORRECT:
-sudo chmod 440 /etc/sudoers.d/alex
-# ^ Only root can read
-```
+— Андрей Волков, профессор, ЛЭТИ
 
-### 2. No Syntax Validation
-```bash
-# WRONG:
-sudo cp sudoers.d/alex /etc/sudoers.d/alex
-# ^ Didn't test! If syntax error, sudo breaks!
-
-# CORRECT:
-sudo visudo -c -f sudoers.d/alex    # Test first
-sudo cp sudoers.d/alex /etc/sudoers.d/alex  # Then deploy
-```
-
-### 3. Overly Broad NOPASSWD
-```bash
-# WRONG:
-alex ALL=(root) NOPASSWD: ALL
-# ^ Alex can do ANYTHING without password!
-
-# CORRECT:
-alex ALL=(root) NOPASSWD: /usr/sbin/ip, /usr/bin/ss
-# ^ Only specific commands
-```
-
-### 4. Forgotten Wildcards
-```bash
-# WRONG:
-alex ALL=(root) /usr/sbin/ip
-# ^ Only exact command, no arguments!
-
-# CORRECT:
-alex ALL=(root) /usr/sbin/ip *
-# ^ Allows arguments: sudo ip addr show
-```
-
-### 5. No Logging Monitoring
-```bash
-# Deploy sudoers files, but never check logs!
-# → Attacker could abuse sudo for weeks unnoticed
-
-# CORRECT:
-# Monitor logs weekly:
-sudo grep "sudo:" /var/log/auth.log | less
-```
-
----
-
-## 🔗 Related Documentation
-
-- **man sudoers** — Full sudoers syntax reference
-- **man visudo** — Sudo configuration editor
-- **man sudo** — Sudo command usage
-- `/etc/sudoers` — Main sudo configuration file
-
----
-
-**"Least privilege — Alex gets network tools, nothing more. If compromised, damage is contained."**
-
-— Professor Andrei Volkov, Saint Petersburg
-
-**LETI, Russia • Principle of Least Privilege Applied!** 🇷🇺
-
+</div>
