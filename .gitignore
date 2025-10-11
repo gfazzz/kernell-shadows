@@ -27,6 +27,8 @@ season-*/episode-*/artifacts/test_environment/*
 !season-*/episode-*/artifacts/test_environment/documents/.secret_location
 
 # Student solutions (keep only template)
+# OLD: игнорировали всё кроме .sh
+# NEW: разрешаем Type B конфиги (YAML, Dockerfile, configs, etc.)
 **/solution/*
 !**/solution/.gitkeep
 !**/solution/*.sh.example
@@ -35,19 +37,87 @@ season-*/episode-*/artifacts/test_environment/*
 !season-1-shell-foundations/season-project/solution/
 !season-1-shell-foundations/season-project/solution/*.sh
 
+# ============================================================================
+# Type B Solutions (Configuration Files) — НЕ игнорируем!
+# ============================================================================
+# Episode solution files (reference implementations)
+!**/episode-*/solution/*.sh
+!**/episode-*/solution/*.md
+!**/episode-*/solution/README.md
+
+# Docker configs (Episode 14)
+!**/episode-*/solution/Dockerfile*
+!**/episode-*/solution/docker-compose*.yml
+!**/episode-*/solution/docker-compose*.yaml
+!**/episode-*/solution/.dockerignore
+!**/episode-*/solution/configs/
+!**/episode-*/solution/configs/**
+!**/episode-*/solution/html/
+!**/episode-*/solution/html/**
+!**/episode-*/solution/multi-stage/
+!**/episode-*/solution/multi-stage/**
+!**/episode-*/solution/secrets/
+!**/episode-*/solution/secrets/**
+!**/episode-*/solution/docker/
+!**/episode-*/solution/docker/**
+
+# CI/CD configs (Episode 15)
+!**/episode-*/solution/.gitlab-ci.yml
+!**/episode-*/solution/.github/
+!**/episode-*/solution/.github/**
+!**/episode-*/solution/Jenkinsfile
+
+# Ansible configs (Episode 16)
+!**/episode-*/solution/ansible/
+!**/episode-*/solution/ansible/**
+!**/episode-*/solution/ansible.cfg
+
+# Helper scripts (minimal wrappers)
+!**/episode-*/solution/scripts/
+!**/episode-*/solution/scripts/**
+
+# Systemd configs (Episode 10)
+!**/episode-*/solution/systemd/
+!**/episode-*/solution/systemd/**
+!**/episode-*/solution/*.service
+!**/episode-*/solution/*.timer
+
+# System configs (Episode 09)
+!**/episode-*/solution/sudoers.d/
+!**/episode-*/solution/sudoers.d/**
+!**/episode-*/solution/security/
+!**/episode-*/solution/security/**
+!**/episode-*/solution/pam.d/
+!**/episode-*/solution/pam.d/**
+
+# Network configs (Episodes 05-08)
+!**/episode-*/solution/configs/
+!**/episode-*/solution/configs/**
+!**/episode-*/solution/ufw_rules.txt
+!**/episode-*/solution/iptables_rules.txt
+
+# Other Type B configs
+!**/episode-*/solution/*.yml
+!**/episode-*/solution/*.yaml
+!**/episode-*/solution/*.conf
+!**/episode-*/solution/*.config
+!**/episode-*/solution/*.ini
+!**/episode-*/solution/*.toml
+!**/episode-*/solution/*.json
+!**/episode-*/solution/.gitconfig
+!**/episode-*/solution/.gitignore*
+
+# ============================================================================
+
 # Logs and temporary files
 *.log
 *.tmp
 .cache/
 
-# System files
+# System files (но НЕ example configs!)
 .env
 .env.local
-secrets.txt
+# secrets.txt — НЕ игнорируем, это примеры для обучения
 
 # Progress tracker (индивидуальный для каждого студента)
 .progress
-
-
-# Exception: Episode solution files (reference implementations for course)
-!**/episode-*/solution/*.sh
