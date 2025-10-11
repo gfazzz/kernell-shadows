@@ -35,7 +35,61 @@ IP_ADDRESS  HOSTNAME  DESCRIPTION
 
 ---
 
-#### 2. `network_report.txt` (будет создан скриптом)
+#### 2. `hosts.backup` (будет создан скриптом)
+**Описание:** Backup файла /etc/hosts перед модификациями
+
+**Зачем:**
+- Security: Проверить что никто не подменил /etc/hosts
+- Recovery: Восстановить если случайно испортили
+- Forensics: Baseline для сравнения если Крылов атакует
+
+**Создание:**
+```bash
+cp /etc/hosts artifacts/hosts.backup
+```
+
+**Проверка:**
+```bash
+cat artifacts/hosts.backup
+diff /etc/hosts artifacts/hosts.backup  # Показать изменения
+```
+
+---
+
+#### 3. `ping_capture.pcap` (опционально, требует sudo)
+**Описание:** Захваченные ICMP пакеты (ping) для анализа
+
+**Зачем:**
+- Понять как выглядят пакеты
+- Практика с tcpdump
+- Forensics: Анализ необычного трафика
+
+**Создание:**
+```bash
+sudo tcpdump -i any icmp -c 10 -w artifacts/ping_capture.pcap
+```
+
+**Анализ:**
+```bash
+# Прочитать файл
+tcpdump -r artifacts/ping_capture.pcap
+
+# Детальный вывод
+tcpdump -r artifacts/ping_capture.pcap -v
+
+# Только ICMP Echo Request
+tcpdump -r artifacts/ping_capture.pcap 'icmp[icmptype] == 8'
+```
+
+**Wireshark (GUI):**
+```bash
+# Открыть в Wireshark (если установлен)
+wireshark artifacts/ping_capture.pcap
+```
+
+---
+
+#### 4. `network_report.txt` (будет создан скриптом)
 **Описание:** Отчёт network audit (генерируется вашим скриптом)
 
 **Должен содержать:**

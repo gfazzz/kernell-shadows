@@ -91,13 +91,106 @@ get_viktor_server_ip() {
 }
 
 ###############################################################################
-# Функция 3: Проверить доступность сервера (ping)
+# Функция 3: Backup /etc/hosts (NEW in refactor)
+###############################################################################
+
+backup_hosts() {
+    local backup_file="artifacts/hosts.backup"
+
+    echo -e "${BLUE}[3] Backup /etc/hosts...${NC}"
+
+    # Создать artifacts директорию если не существует
+    mkdir -p artifacts
+
+    # Проверить что /etc/hosts существует
+    if [ ! -f /etc/hosts ]; then
+        echo -e "${YELLOW}  ⚠ /etc/hosts не найден (странно, но продолжаем)${NC}"
+        return 1
+    fi
+
+    # Копировать /etc/hosts в artifacts/
+    # Обычно чтение /etc/hosts работает без sudo
+    if cp /etc/hosts "$backup_file" 2>/dev/null; then
+        echo -e "${GREEN}✓ Backup создан: $backup_file${NC}"
+        echo "  Размер: $(du -h "$backup_file" | awk '{print $1}')"
+
+        # Показать первые 5 строк (без комментариев)
+        echo "  Preview (первые записи):"
+        grep -v "^#" "$backup_file" | grep -v "^$" | head -n 3 | sed 's/^/    /'
+
+        return 0
+    else
+        echo -e "${YELLOW}  ⚠ Нет прав для копирования /etc/hosts${NC}"
+        echo "    Попробуйте: sudo cp /etc/hosts $backup_file"
+        return 1
+    fi
+}
+
+###############################################################################
+# Функция 4: Захват ICMP пакетов (NEW in refactor — requires sudo)
+###############################################################################
+
+capture_ping_packets() {
+    local target_ip="$1"
+    local output_file="artifacts/ping_capture.pcap"
+
+    echo -e "${BLUE}[4] Захват ICMP пакетов (требует sudo)...${NC}"
+
+    # Проверить что tcpdump установлен
+    if ! command -v tcpdump &>/dev/null; then
+        echo -e "${YELLOW}  ⚠ tcpdump не установлен (опционально)${NC}"
+        echo "    Установка: sudo apt install tcpdump"
+        return 0  # Не критично, продолжаем
+    fi
+
+    # Проверить sudo доступ
+    if ! sudo -n true 2>/dev/null; then
+        echo -e "${YELLOW}  ⚠ Нет sudo доступа (пропускаем tcpdump)${NC}"
+        echo "    Это нормально — tcpdump опционален"
+        return 0
+    fi
+
+    # Создать artifacts директорию
+    mkdir -p artifacts
+
+    echo "  Запуск: sudo tcpdump -i any icmp -c 10 -w $output_file"
+    echo "  (10 пакетов или 5 секунд)"
+
+    # Захват в фоне с timeout
+    if timeout 5 sudo tcpdump -i any icmp -c 10 -w "$output_file" 2>/dev/null &
+    then
+        local tcpdump_pid=$!
+
+        # Подождать немного чтобы tcpdump стартовал
+        sleep 0.5
+
+        # Отправить ping во время захвата
+        ping -c 4 "$target_ip" &>/dev/null || true
+
+        # Дождаться завершения tcpdump (или timeout)
+        wait $tcpdump_pid 2>/dev/null || true
+    fi
+
+    # Проверить результат
+    if [ -f "$output_file" ] && [ -s "$output_file" ]; then
+        echo -e "${GREEN}✓ Пакеты захвачены: $output_file${NC}"
+        echo "  Размер: $(du -h "$output_file" | awk '{print $1}')"
+        echo "  Анализ: tcpdump -r $output_file"
+        return 0
+    else
+        echo -e "${YELLOW}  ⚠ Захват не удался (нормально если нет sudo)${NC}"
+        return 0  # Не критично
+    fi
+}
+
+###############################################################################
+# Функция 5: Проверить доступность сервера (ping)
 ###############################################################################
 
 check_server_availability() {
     local server_ip="$1"
 
-    echo -e "${BLUE}[3] Проверка доступности сервера $server_ip...${NC}"
+    echo -e "${BLUE}[5] Проверка доступности сервера $server_ip...${NC}"
 
     # ping -c 4: отправить 4 пакета
     # -W 2: timeout 2 секунды
@@ -125,13 +218,13 @@ check_server_availability() {
 }
 
 ###############################################################################
-# Функция 4: Traceroute (симуляция)
+# Функция 6: Traceroute (симуляция)
 ###############################################################################
 
 simulate_traceroute() {
     local server_ip="$1"
 
-    echo -e "${BLUE}[4] Маршрут до сервера Viktor ($server_ip):${NC}"
+    echo -e "${BLUE}[6] Маршрут до сервера Viktor ($server_ip):${NC}"
 
     # Попытка использовать реальный traceroute/tracepath
     if command -v tracepath &>/dev/null; then
@@ -152,11 +245,11 @@ simulate_traceroute() {
 }
 
 ###############################################################################
-# Функция 5: Проверить открытые порты локально (ss или netstat)
+# Функция 7: Проверить открытые порты локально (ss или netstat)
 ###############################################################################
 
 check_local_ports() {
-    echo -e "${BLUE}[5] Открытые порты на рабочей станции Max:${NC}"
+    echo -e "${BLUE}[7] Открытые порты на рабочей станции Max:${NC}"
 
     # Используем ss если доступен (более современный)
     if command -v ss &>/dev/null; then
@@ -176,13 +269,13 @@ check_local_ports() {
 }
 
 ###############################################################################
-# Функция 6: Сканирование портов сервера Viktor (nmap симуляция)
+# Функция 8: Сканирование портов сервера Viktor (nmap симуляция)
 ###############################################################################
 
 scan_viktor_server() {
     local server_ip="$1"
 
-    echo -e "${BLUE}[6] Сканирование портов сервера Viktor ($server_ip):${NC}"
+    echo -e "${BLUE}[8] Сканирование портов сервера Viktor ($server_ip):${NC}"
 
     # Попытка использовать nmap если установлен
     if command -v nmap &>/dev/null; then
@@ -209,11 +302,11 @@ scan_viktor_server() {
 }
 
 ###############################################################################
-# Функция 7: Показать routing table
+# Функция 9: Показать routing table
 ###############################################################################
 
 show_routing_table() {
-    echo -e "${BLUE}[7] Таблица маршрутизации:${NC}"
+    echo -e "${BLUE}[9] Таблица маршрутизации:${NC}"
 
     if command -v ip &>/dev/null; then
         ip route show | sed 's/^/  /'
@@ -233,7 +326,7 @@ show_routing_table() {
 }
 
 ###############################################################################
-# Функция 8: Генерация отчёта
+# Функция 10: Генерация отчёта
 ###############################################################################
 
 generate_report() {
@@ -241,7 +334,7 @@ generate_report() {
     local viktor_ip="$2"
     local report_file="artifacts/network_report.txt"
 
-    echo -e "${BLUE}[8] Генерация отчёта...${NC}"
+    echo -e "${BLUE}[10] Генерация отчёта...${NC}"
 
     # Убедиться что artifacts/ существует
     mkdir -p artifacts
@@ -379,27 +472,35 @@ main() {
     echo -e "${GREEN}✓ Viktor Server: shadow-server-02.ops.internal → $VIKTOR_SERVER_IP${NC}"
     echo ""
 
-    # 3. Проверить доступность
+    # 3. Backup /etc/hosts (NEW!)
+    backup_hosts || true  # Continue even if fails
+    echo ""
+
+    # 4. Захват ICMP пакетов (NEW! опционально)
+    capture_ping_packets "$VIKTOR_SERVER_IP" || true  # Continue even if fails
+    echo ""
+
+    # 5. Проверить доступность
     check_server_availability "$VIKTOR_SERVER_IP" || true  # Continue even if ping fails
     echo ""
 
-    # 4. Traceroute
+    # 6. Traceroute
     simulate_traceroute "$VIKTOR_SERVER_IP"
     echo ""
 
-    # 5. Открытые порты локально
+    # 7. Открытые порты локально
     check_local_ports
     echo ""
 
-    # 6. Сканирование Viktor сервера
+    # 8. Сканирование Viktor сервера
     scan_viktor_server "$VIKTOR_SERVER_IP"
     echo ""
 
-    # 7. Routing table
+    # 9. Routing table
     show_routing_table
     echo ""
 
-    # 8. Генерация отчёта
+    # 10. Генерация отчёта
     generate_report "$WORKSTATION_IP" "$VIKTOR_SERVER_IP"
     echo ""
 
