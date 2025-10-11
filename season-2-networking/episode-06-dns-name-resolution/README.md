@@ -9,6 +9,7 @@
 ║  Location: Stockholm, Sweden 🇸🇪                              ║
 ║  Datacenter: Bahnhof Pionen (30 метров под землёй)           ║
 ║  Day: 10-12 of 60                                             ║
+║  Type: Type B (Linux DNS Tools Configuration) 🔧              ║
 ║  Difficulty: ⭐⭐☆☆☆                                          ║
 ║  Time: 3-4 hours                                              ║
 ╚═══════════════════════════════════════════════════════════════╝
@@ -16,24 +17,18 @@
 
 ---
 
-## 🎬 Сюжет
+## 🎬 Пролог: Добро пожаловать в Стокгольм
 
 ### День 10, 08:00 — Arlanda Airport, Stockholm
 
-Самолёт приземляется в Arlanda. Макс впервые за границей. Чувство нереальности — вчера был в Москве, сегодня в Швеции.
+Самолёт приземляется в Arlanda. Макс впервые за границей. Вчера — Москва, сегодня — Швеция.
 
 **Терминал Arrivals:**
 
-Высокий швед в чёрной куртке с логотипом Bahnhof держит табличку: **"Max Sokolov — Shadow Ops"**.
+Высокий швед в чёрной куртке Bahnhof держит табличку: **"Max Sokolov — Shadow Ops"**.
 
-**Erik Johansson** (38 лет, блондин, спокойный):
-> *"Welcome to Sweden, Max. Viktor says you're good with Linux. We'll see. I'm Erik, network engineer at Bahnhof. Our car is outside."*
-
-Макс (немного растерян):
-> *"Uh... hi. My English is not perfect..."*
-
-Erik (улыбается):
-> *"Don't worry. Technology speaks a universal language. And I understand some Russian — my grandmother was from St. Petersburg."*
+**Erik Johansson** (38, блондин, спокойный):
+> *"Welcome to Sweden, Max. Viktor says you're good with Linux. I'm Erik, network engineer at Bahnhof. Our car is outside."*
 
 **По дороге в Bahnhof Pionen:**
 
@@ -50,22 +45,9 @@ Erik:
 
 ### 10:30 — Bahnhof Pionen Datacenter
 
-**Вход через скалу.**
+**Вход через скалу.** Бетонный тоннель вниз. Холод. Звук воды. Неоновое освещение.
 
-Бетонный тоннель ведёт вниз. Холод. Звук воды. Неоновое освещение.
-
-**Зона серверов:**
-
-Футуристичный дизайн внутри скалы. Серверные стойки светятся синим. Искусственный водопад на стене. Температура +15°C.
-
-Erik:
-> *"Welcome to Pionen. Viktor rents 3 racks here. Geographically distributed infrastructure — Moscow, Stockholm, later Tallinn, Amsterdam, Beijing, Reykjavik. We are building something big."*
-
-Макс:
-> *"Why Sweden?"*
-
-Erik:
-> *"Privacy laws. No data retention mandatory. Sweden is neutral. And Bahnhof — we have backbone in our DNA. Literally — we run major internet exchange point."*
+**Зона серверов:** Футуристичный дизайн внутри скалы. Серверные стойки светятся синим. Искусственный водопад. +15°C.
 
 **На мониторе Grafana — алерты:**
 
@@ -76,7 +58,7 @@ Erik:
 ```
 
 Erik (хмурится):
-> *"Shit. DNS attacks again. Someone is poisoning cache, redirecting our queries. Probably FSB. Viktor mentioned — Крылов?"*
+> *"Shit. DNS attacks again. Someone is poisoning cache. Probably FSB. Viktor mentioned — Крылов?"*
 
 Max (кивает):
 > *"Yes. He hunts us."*
@@ -86,2462 +68,1935 @@ Erik:
 
 **Видеозвонок с командой:**
 
-**Viktor** (из Москвы):
-> *"Max, glad you arrived. Erik will guide you through DNS. This is critical — DNS is phone book of internet. If attacker controls DNS, he controls where your traffic goes."*
+**Виктор** (из Москвы):
+> *"Макс, Эрик проведёт тебя через DNS. Это критично — DNS это телефонная книга интернета. Если атакующий контролирует DNS, он контролирует куда идёт твой трафик."*
 
-**Anna** (из Москвы, на фоне серверная):
-> *"I'm analyzing logs. Krylov's team is doing cache poisoning. They inject false DNS records. When we query shadow-server-05, we get THEIR server IP. Classic MITM."*
+**Анна** (forensics):
+> *"Я анализирую логи. Команда Крылова делает cache poisoning. Классический MITM."*
 
-**Alex** (из Москвы):
-> *"Max, trust Erik. He's one of best network engineers in Europe. Learn everything."*
+**LILITH v2.0 активируется:**
+> *"DNS — Domain Name System. Humans remember names, computers need IP addresses. DNS translates. Simple concept, CRITICAL vulnerability. Krylov knows this."*
+
+---
+
+## 🎯 Миссия: Type B Episode (DNS Tools Configuration)
+
+**Философия Type B:**
+```
+Episode 04 (Package Management):  apt exists → use it, don't wrap it ✅
+Episode 06 (DNS Resolution):      dig exists → use it, don't wrap it ✅
+```
+
+**Вы будете:**
+- ✅ Использовать DNS инструменты напрямую (dig, host, systemd-resolved)
+- ✅ Конфигурировать DNS (/etc/resolv.conf, /etc/hosts, systemd)
+- ✅ Анализировать DNS ответы руками
+- ❌ НЕ писать bash wrapper вокруг dig (это Type A — неправильно для DNS!)
+
+**Type B vs Type A:**
+
+| Task | Type A ❌ | Type B ✅ |
+|------|----------|----------|
+| Package install | bash wrapper для apt | `apt install` напрямую |
+| DNS lookup | bash wrapper для dig | `dig` напрямую |
+| DNS config | bash парсит /etc/resolv.conf | Редактируешь /etc/resolv.conf |
+| Report | bash генерирует отчёт | bash генерирует отчёт (OK!) |
+
+**В этом эпизоде:** Linux SysAdmin конфигурирует DNS, не оборачивает dig в bash. 🔧
+
+---
+
+## Цикл 1: DNS Basics — Телефонная книга интернета (10-15 мин)
+
+### 🎬 Сюжет (2 мин)
+
+Erik садится за терминал:
+> *"First lesson — DNS lookup. We ask DNS server: 'what is IP of google.com?' Simple query, complex system behind it."*
+
+### 📚 Теория: DNS как телефонная книга (5-7 мин)
+
+#### Метафора: DNS = Телефонная книга интернета 📖☎️
+
+**Представь:**
+- У тебя есть телефонная книга (DNS)
+- В ней имена → номера телефонов
+- Хочешь позвонить "Пицца Марио" → смотришь в книгу → получаешь номер 8-800-123-45-67
+
+**В интернете:**
+```
+Ты вводишь:     google.com
+DNS переводит:  142.250.185.46
+Браузер идёт:   на IP адрес
+```
+
+**Без DNS:**
+```bash
+# Нужно было бы помнить IP всех сайтов
+http://142.250.185.46    # google.com
+http://31.13.71.36       # facebook.com
+http://104.244.42.193    # twitter.com
+```
+
+Невозможно запомнить! DNS решает эту проблему.
+
+#### ASCII: DNS Translation Process
+
+```
+┌─────────────┐
+│  Browser    │ "Хочу на google.com"
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐
+│ DNS Resolver│ "Ищу IP для google.com..."
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐
+│ DNS Server  │ "google.com = 142.250.185.46"
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐
+│  Browser    │ Подключается к 142.250.185.46
+└─────────────┘
+```
+
+#### LILITH комментирует:
+
+> **LILITH:** *"DNS — это не просто команда. Это trust system всего интернета. Если DNS врёт — весь трафик идёт куда угодно. Крылов это знает."*
+
+#### Основные понятия:
+
+**1. DNS Query (запрос):**
+```bash
+Вопрос: "Что такое google.com?"
+Ответ:  "142.250.185.46"
+```
+
+**2. DNS Record (запись):**
+```
+google.com.  300  IN  A  142.250.185.46
+│            │    │   │  │
+│            │    │   │  └─ IP адрес
+│            │    │   └──── Тип записи (A = Address)
+│            │    └──────── Class (IN = Internet)
+│            └───────────── TTL (Time To Live, 300 секунд)
+└────────────────────────── Имя домена
+```
+
+**3. DNS Tools в Ubuntu:**
+```bash
+dig              # Самый детальный (для профи) ✅
+host             # Быстрая проверка
+nslookup         # Старый, но работает
+systemd-resolved # Ubuntu default resolver (важно!) ✅
+```
+
+> **LILITH:** *"`dig` — твой основной инструмент. Всё остальное — для ленивых. Учи `dig`."*
+
+### 💻 Практика: Первый DNS lookup (3-5 мин)
 
 Erik:
-> *"Okay, Max. Let's start with DNS basics. Then we'll hunt Krylov's fake records."*
+> *"Try this. Query google.com. Observe response."*
 
----
-
-### LILITH активируется
-
-**LILITH v2.0 (Networking Module):**
-> *"DNS — Domain Name System. Humans remember names (google.com), computers need IP addresses (142.250.185.46). DNS translates. Simple concept, but CRITICAL — if DNS is compromised, entire network is vulnerable."*
->
-> *"Krylov knows this. He attacks DNS because it's weakest link. Cache poisoning, spoofing, man-in-the-middle. We need to understand DNS deeply to defend."*
->
-> *"Erik will teach you commands. I'll teach you concepts. Together — you become DNS expert."*
-
----
-
-## 🎯 Миссия
-
-**Цель:** Понять DNS, обнаружить DNS spoofing от Krylov, настроить защиту.
-
-**Задачи:**
-1. Понять как работает DNS (запросы, рекурсия, кэш)
-2. Научиться использовать DNS инструменты (dig, nslookup, host)
-3. Проверить DNS записи shadow серверов
-4. Обнаружить поддельные DNS ответы (cache poisoning)
-5. Настроить локальную резолюцию через `/etc/hosts`
-6. Проверить DNSSEC (защита от spoofing)
-7. Настроить DNS over TLS (шифрование DNS запросов)
-8. Создать DNS security audit отчёт
-
-**Результат:**
-- Понимание DNS архитектуры
-- Умение диагностировать DNS проблемы
-- Навыки обнаружения DNS атак
-- Защищённая DNS конфигурация
-
----
-
-## 📚 Задания
-
-### Задание 1: Базовый DNS lookup ⭐
-
-**Контекст:**
-Erik: *"First lesson — DNS lookup. We ask DNS server: 'what is IP of google.com?' Simple query, complex system behind it."*
-
-**Задача:**
-Выполните базовый DNS lookup для `google.com` и поймите структуру ответа.
-
-**Попробуйте сами (3-5 минут):**
+#### Задание:
 
 ```bash
-# Узнайте IP адрес google.com
-# Ваша команда здесь
-```
-
-<details>
-<summary>💡 Подсказка 1 (если застряли > 5 минут)</summary>
-
-**Erik:**
-> *"`dig` — DNS lookup utility. Most powerful. Shows full DNS response."*
-
-Попробуйте:
-```bash
-dig google.com
-```
-
-**Что искать в выводе:**
-- `QUESTION SECTION` — что мы спросили
-- `ANSWER SECTION` — ответ (IP адрес)
-- `Query time` — сколько заняло
-- `SERVER` — какой DNS сервер ответил
-
-</details>
-
-<details>
-<summary>💡 Подсказка 2 (если застряли > 10 минут)</summary>
-
-**Команды:**
-
-```bash
-# dig (самый детальный)
+# 1. Базовый dig
 dig google.com
 
-# Только IP (короткий вывод)
-dig +short google.com
-
-# host (простой вариант)
-host google.com
-
-# nslookup (старый, но работает)
-nslookup google.com
+# Что искать в выводе:
+# - QUESTION SECTION  → что мы спросили
+# - ANSWER SECTION    → ответ (IP адрес)
+# - Query time        → скорость ответа
+# - SERVER            → кто ответил
 ```
 
-**Сравнение:**
-```bash
-# dig — для профи (детали DNS протокола)
-dig google.com
+**Разбор вывода:**
 
-# host — для быстрой проверки
-host google.com
-
-# nslookup — deprecated, но все ещё используется
-nslookup google.com
-```
-
-**Интерпретация dig вывода:**
-```
-;; QUESTION SECTION:
-;google.com.			IN	A
-
-;; ANSWER SECTION:
-google.com.		82	IN	A	142.250.185.46
-
-Query time: 23 msec
-SERVER: 8.8.8.8#53(8.8.8.8)
-```
-
-- `google.com` — домен
-- `IN` — Internet class
-- `A` — тип записи (IPv4 адрес)
-- `142.250.185.46` — результат
-- `82` — TTL (time to live, секунды кэша)
-- `8.8.8.8` — DNS сервер
-
-</details>
-
-<details>
-<summary>✅ Решение (если совсем застряли)</summary>
-
-**Команда для практики:**
-```bash
-# Самый детальный вывод
-dig google.com
-
-# Только IP (удобно для скриптов)
-dig +short google.com
-
-# С указанием конкретного DNS сервера
-dig @8.8.8.8 google.com
-```
-
-**Объяснение:**
-- `dig` — Domain Information Groper
-- `@8.8.8.8` — использовать Google Public DNS
-- `+short` — показать только результат (IP)
-- По умолчанию dig использует DNS сервер из `/etc/resolv.conf`
-
-**Пример вывода:**
 ```bash
 $ dig google.com
 
-; <<>> DiG 9.18.12-0ubuntu0.22.04.1-Ubuntu <<>> google.com
-;; global options: +cmd
-;; Got answer:
-;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 12345
-;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
-
 ;; QUESTION SECTION:
-;google.com.			IN	A
+;google.com.                    IN      A
 
 ;; ANSWER SECTION:
-google.com.		82	IN	A	142.250.185.46
+google.com.             240     IN      A       142.250.185.46
 
 ;; Query time: 23 msec
-;; SERVER: 8.8.8.8#53(8.8.8.8) (UDP)
-;; WHEN: Wed Oct 11 11:30:00 CEST 2025
-;; MSG SIZE  rcvd: 55
+;; SERVER: 8.8.8.8#53(8.8.8.8)
 ```
 
 **Что это значит:**
-- Query успешен (`status: NOERROR`)
-- Ответ пришёл за 23ms
-- IP адрес: `142.250.185.46`
-- TTL: 82 секунды (можно кэшировать)
+- `240` — TTL (кеш на 240 секунд)
+- `A` — Address record (IPv4)
+- `23 msec` — быстро (< 100 мс = хорошо)
+- `8.8.8.8` — Google Public DNS
 
-</details>
+#### Варианты использования dig:
+
+```bash
+# Короткий вывод (только IP)
+dig +short google.com
+
+# Трассировка (как DNS резолвит)
+dig +trace google.com
+
+# Указать конкретный DNS сервер
+dig @8.8.8.8 google.com
+dig @1.1.1.1 google.com         # Cloudflare DNS
+```
+
+> **LILITH:** *"Быстрый DNS = < 50 мс. Медленный = 100+ мс. Если видишь 500+ мс — либо проблемы, либо атака. Запомни."*
+
+### 🤔 Проверка понимания (1 мин)
+
+**Erik спрашивает:** *"What is TTL? Why does it matter?"*
 
 <details>
-<summary>🔍 Что такое DNS? (теория)</summary>
+<summary>🤔 Думай 30 секунд перед проверкой</summary>
 
-### DNS (Domain Name System)
+**Ответ:**
 
-**Определение:**
-DNS — распределённая система имён в сети. Переводит доменные имена (google.com) в IP адреса (142.250.185.46).
+**TTL (Time To Live)** — время жизни DNS записи в кеше.
 
-**Зачем нужен:**
-- Люди плохо запоминают числа: `142.250.185.46`
-- Люди хорошо запоминают слова: `google.com`
-- DNS — "телефонная книга интернета"
-
-**Как работает (упрощённо):**
+**Пример:**
 ```
-1. Вы: "Браузер, открой google.com"
-2. Браузер: "DNS сервер, какой IP у google.com?"
-3. DNS сервер: "Вот: 142.250.185.46"
-4. Браузер: "Спасибо!" → подключается к 142.250.185.46
-```
-
-**Иерархия DNS:**
-```
-                    . (root)
-                   /    |    \
-                 com   org   net
-                /  |    \
-            google microsoft amazon
-             /
-          www mail drive
-```
-
-**DNS Query Process (детально):**
-```
-1. Приложение → Resolver (local DNS cache)
-2. Если в кэше нет:
-   Resolver → Root Server ("где .com?")
-   Root → "Спроси TLD сервер .com"
-3. Resolver → TLD сервер .com ("где google.com?")
-   TLD → "Спроси authoritative сервер google.com"
-4. Resolver → Authoritative сервер google.com ("какой IP?")
-   Authoritative → "Вот: 142.250.185.46"
-5. Resolver → Приложение ("Держи IP")
-6. Resolver кэширует ответ (TTL)
-```
-
-**Типы DNS записей:**
-- **A** — IPv4 адрес (`google.com → 142.250.185.46`)
-- **AAAA** — IPv6 адрес (`google.com → 2a00:1450:4001:801::200e`)
-- **CNAME** — алиас (`www.google.com → google.com`)
-- **MX** — mail server (`google.com → gmail-smtp-in.l.google.com`)
-- **TXT** — текстовая информация (SPF, DKIM, verification)
-- **NS** — name server (`google.com → ns1.google.com`)
-- **SOA** — Start of Authority (информация о зоне)
-
-**DNS Servers:**
-- **Recursive Resolver** — делает всю работу за вас (8.8.8.8 — Google DNS)
-- **Root Servers** — 13 корневых серверов (A-M.root-servers.net)
-- **TLD Servers** — Top Level Domain (.com, .org, .ru)
-- **Authoritative Servers** — конечные серверы с ответами
-
-**Кэширование:**
-- TTL (Time To Live) — сколько секунд кэшировать
-- Ускоряет запросы
-- Но создаёт проблему — если IP изменился, кэш ещё старый
-
-**Команды:**
-```bash
-dig google.com      # Полная информация
-host google.com     # Быстрая проверка
-nslookup google.com # Старый способ
-```
-
-**Файлы конфигурации:**
-- `/etc/hosts` — локальная резолюция (проверяется ДО DNS)
-- `/etc/resolv.conf` — какие DNS серверы использовать
-- `/etc/nsswitch.conf` — порядок резолюции (files → dns)
-
-**Почему DNS критичен для безопасности:**
-- Если атакующий контролирует DNS → он контролирует куда идёт трафик
-- Cache poisoning — подмена записей в кэше
-- DNS spoofing — поддельные ответы
-- MITM через DNS — redirect на фишинговый сайт
-- DDoS через DNS amplification
-
-**Защита:**
-- **DNSSEC** — цифровые подписи (проверка подлинности)
-- **DNS over TLS (DoT)** — шифрование запросов (port 853)
-- **DNS over HTTPS (DoH)** — DNS через HTTPS (port 443)
-- Использовать доверенные DNS серверы
-
-</details>
-
-**Запишите результат:**
-```bash
-# IP адрес google.com:
-GOOGLE_IP="???.???.???.???"
-```
-
----
-
-### Задание 2: DNS lookup для shadow серверов ⭐⭐
-
-**Контекст:**
-Erik: *"Now — real task. Check our shadow servers. Viktor's infrastructure uses custom domains: shadow-server-*.ops.internal. These should NOT be visible on public DNS. Let's check."*
-
-**Задача:**
-Проверьте DNS записи для серверов операции из `artifacts/dns_zones.txt`.
-
-**Попробуйте сами (5 минут):**
-
-```bash
-# Проверьте файл artifacts/dns_zones.txt
-# Выполните DNS lookup для первых 3 серверов
-```
-
-<details>
-<summary>💡 Подсказка 1 (если застряли > 5 минут)</summary>
-
-**LILITH:**
-> *"`artifacts/dns_zones.txt` содержит список доменов операции. Используй `dig` или `host` для проверки каждого."*
-
-Попробуйте:
-```bash
-# Посмотреть список серверов
-cat artifacts/dns_zones.txt
-
-# Проверить один сервер
-dig shadow-server-01.ops.internal
-
-# Проверить с конкретным DNS сервером
-dig @8.8.8.8 shadow-server-01.ops.internal
-```
-
-**Что ожидать:**
-- Если домен `.ops.internal` не в публичном DNS → `NXDOMAIN` (не существует)
-- Это нормально — internal домены не должны быть публичными
-- В production они резолвятся только через internal DNS сервер
-
-</details>
-
-<details>
-<summary>💡 Подсказка 2 (если застряли > 10 минут)</summary>
-
-**Команды:**
-
-```bash
-# Прочитать список доменов
-cat artifacts/dns_zones.txt
-
-# Проверить все домены (цикл)
-while read domain; do
-    echo "Checking: $domain"
-    dig +short "$domain" || echo "  → No DNS record (expected for internal domains)"
-done < artifacts/dns_zones.txt
-```
-
-**Альтернатива — host:**
-```bash
-for domain in $(cat artifacts/dns_zones.txt); do
-    echo -n "$domain: "
-    host "$domain" 2>&1 | grep -q "NXDOMAIN" && echo "Not in public DNS ✓" || host "$domain"
-done
-```
-
-**Что проверить:**
-1. Домены `.ops.internal` НЕ должны быть в публичном DNS
-2. Если они есть — это утечка информации!
-3. Internal домены должны резолвиться только в private сети
-
-</details>
-
-<details>
-<summary>✅ Решение (если совсем застряли)</summary>
-
-**Скрипт для проверки:**
-```bash
-#!/bin/bash
-
-dns_zones_file="artifacts/dns_zones.txt"
-
-if [ ! -f "$dns_zones_file" ]; then
-    echo "⚠ File not found: $dns_zones_file"
-    exit 1
-fi
-
-echo "═══════════════════════════════════════════════════════════"
-echo "  DNS Lookup: Shadow Servers"
-echo "═══════════════════════════════════════════════════════════"
-echo ""
-
-count=0
-not_found=0
-
-while IFS= read -r domain; do
-    # Skip empty lines and comments
-    [[ -z "$domain" || "$domain" =~ ^# ]] && continue
-
-    count=$((count + 1))
-    echo "[$count] Checking: $domain"
-
-    # Try to resolve
-    result=$(dig +short "$domain" 2>/dev/null)
-
-    if [ -z "$result" ]; then
-        echo "    Status: NXDOMAIN (not in public DNS) ✓"
-        not_found=$((not_found + 1))
-    else
-        echo "    IP: $result"
-        echo "    ⚠️  WARNING: Internal domain is in public DNS!"
-    fi
-    echo ""
-done < "$dns_zones_file"
-
-echo "═══════════════════════════════════════════════════════════"
-echo "Summary:"
-echo "  Total domains checked: $count"
-echo "  Not in public DNS: $not_found (good!)"
-echo "  In public DNS: $((count - not_found)) ${((count - not_found > 0)) && echo '(⚠️  security issue!)' || echo '(good!)'}"
-echo "═══════════════════════════════════════════════════════════"
-```
-
-**Объяснение:**
-- `dig +short` — показать только IP (без деталей)
-- Если результат пустой → домен не найден (NXDOMAIN)
-- Internal домены (`.ops.internal`) НЕ должны быть в публичном DNS
-- Если они там → утечка информации о инфраструктуре
-
-**Security note:**
-Internal домены должны:
-- Резолвиться только в private сети
-- Использовать internal DNS сервер
-- НЕ быть видимыми из интернета
-
-</details>
-
-**Запишите результат:**
-```bash
-# Количество серверов без публичных DNS записей (expected):
-INTERNAL_DOMAINS_COUNT=???
-```
-
----
-
-### Задание 3: Проверка разных типов DNS записей ⭐⭐
-
-**Контекст:**
-Erik: *"DNS is not only about A records (IP addresses). There are many types: MX for mail, TXT for verification, CNAME for aliases. Let's explore."*
-
-**Задача:**
-Проверьте различные типы DNS записей для `google.com`: A, AAAA, MX, TXT, NS.
-
-**Попробуйте сами (5-7 минут):**
-
-```bash
-# Проверьте A, AAAA, MX, TXT, NS записи для google.com
-# Ваши команды здесь
-```
-
-<details>
-<summary>💡 Подсказка 1 (если застряли > 5 минут)</summary>
-
-**Erik:**
-> *"`dig` can query specific record types. Use `-t TYPE` or just type name."*
-
-Попробуйте:
-```bash
-# A record (IPv4)
-dig google.com A
-
-# AAAA record (IPv6)
-dig google.com AAAA
-
-# MX record (mail servers)
-dig google.com MX
-
-# TXT records
-dig google.com TXT
-
-# NS records (name servers)
-dig google.com NS
-```
-
-**Что искать:**
-- **A** — IPv4 адрес
-- **AAAA** — IPv6 адрес (длинный hex)
-- **MX** — mail server с приоритетом (число меньше = выше приоритет)
-- **TXT** — текстовые данные (SPF, DKIM, verification tokens)
-- **NS** — authoritative name servers для домена
-
-</details>
-
-<details>
-<summary>💡 Подсказка 2 (если застряли > 10 минут)</summary>
-
-**Команды (короткий вывод):**
-
-```bash
-# A records (IPv4)
-dig +short google.com A
-
-# AAAA records (IPv6)
-dig +short google.com AAAA
-
-# MX records (mail)
-dig +short google.com MX
-
-# TXT records
-dig +short google.com TXT
-
-# NS records (name servers)
-dig +short google.com NS
-
-# Все записи сразу
-dig google.com ANY
-```
-
-**Интерпретация MX:**
-```
-10 smtp.google.com.
-20 smtp2.google.com.
-```
-- `10` — приоритет (меньше = выше)
-- `smtp.google.com.` — mail server hostname
-
-**Интерпретация TXT:**
-```
-"v=spf1 include:_spf.google.com ~all"
-```
-- SPF record — разрешённые mail servers
-- Защита от спама/фишинга
-
-</details>
-
-<details>
-<summary>✅ Решение (если совсем застряли)</summary>
-
-**Скрипт для проверки всех типов:**
-```bash
-#!/bin/bash
-
-domain="google.com"
-
-echo "═══════════════════════════════════════════════════════════"
-echo "  DNS Records Check: $domain"
-echo "═══════════════════════════════════════════════════════════"
-echo ""
-
-# A records (IPv4)
-echo "[1] A Records (IPv4):"
-dig +short "$domain" A | sed 's/^/    /'
-echo ""
-
-# AAAA records (IPv6)
-echo "[2] AAAA Records (IPv6):"
-dig +short "$domain" AAAA | sed 's/^/    /'
-echo ""
-
-# MX records (Mail)
-echo "[3] MX Records (Mail Servers):"
-dig +short "$domain" MX | sed 's/^/    /'
-echo ""
-
-# TXT records
-echo "[4] TXT Records:"
-dig +short "$domain" TXT | sed 's/^/    /'
-echo ""
-
-# NS records (Name Servers)
-echo "[5] NS Records (Authoritative Name Servers):"
-dig +short "$domain" NS | sed 's/^/    /'
-echo ""
-
-# CNAME (alias) — для subdomain
-echo "[6] CNAME Check (www.$domain):"
-dig +short "www.$domain" CNAME | sed 's/^/    /'
-[ -z "$(dig +short "www.$domain" CNAME)" ] && echo "    (no CNAME, direct A record)"
-echo ""
-
-echo "═══════════════════════════════════════════════════════════"
-```
-
-**Объяснение типов записей:**
-
-**A (Address):**
-- IPv4 адрес
-- Пример: `142.250.185.46`
-
-**AAAA (IPv6 Address):**
-- IPv6 адрес
-- Пример: `2a00:1450:4001:801::200e`
-
-**MX (Mail Exchange):**
-- Mail servers для домена
-- Формат: `приоритет hostname`
-- Пример: `10 smtp.google.com.`
-- Меньший приоритет = используется первым
-
-**TXT (Text):**
-- Произвольный текст
-- Используется для:
-  - SPF (защита от спама)
-  - DKIM (цифровая подпись писем)
-  - Domain verification (Google, etc)
-  - DMARC (политика email безопасности)
-
-**NS (Name Server):**
-- Authoritative DNS серверы для домена
-- Пример: `ns1.google.com.`
-
-**CNAME (Canonical Name):**
-- Алиас (псевдоним)
-- Пример: `www.google.com → google.com`
-- Перенаправление на другое доменное имя
-
-</details>
-
-<details>
-<summary>🔍 Типы DNS записей (теория)</summary>
-
-### DNS Record Types
-
-**A (Address) Record:**
-```
-google.com.  IN  A  142.250.185.46
-```
-- Преобразует имя в IPv4 адрес
-- Самый распространённый тип
-- Может быть несколько A записей (round-robin load balancing)
-
-**AAAA (IPv6 Address) Record:**
-```
-google.com.  IN  AAAA  2a00:1450:4001:801::200e
-```
-- Преобразует имя в IPv6 адрес
-- AAAA = 4 раза по A (IPv6 в 4 раза длиннее IPv4)
-
-**CNAME (Canonical Name) Record:**
-```
-www.google.com.  IN  CNAME  google.com.
-```
-- Алиас (псевдоним)
-- `www.google.com` → `google.com` → IP
-- CNAME НЕ может быть на root домене (google.com — нельзя, www.google.com — можно)
-
-**MX (Mail Exchange) Record:**
-```
-google.com.  IN  MX  10 smtp.google.com.
-google.com.  IN  MX  20 smtp2.google.com.
-```
-- Mail servers для домена
-- Приоритет: меньше число = выше приоритет
-- Пример: сначала пробуем `smtp.google.com` (10), если не работает → `smtp2.google.com` (20)
-
-**TXT (Text) Record:**
-```
-google.com.  IN  TXT  "v=spf1 include:_spf.google.com ~all"
-```
-- Произвольный текст
-- Используется для:
-  - **SPF** (Sender Policy Framework): какие серверы могут отправлять почту от этого домена
-  - **DKIM** (DomainKeys Identified Mail): цифровая подпись писем
-  - **DMARC** (Domain-based Message Authentication): политика обработки спама
-  - Domain verification (подтверждение владения доменом)
-
-**NS (Name Server) Record:**
-```
-google.com.  IN  NS  ns1.google.com.
-google.com.  IN  NS  ns2.google.com.
-```
-- Authoritative DNS серверы для домена
-- Кто отвечает за этот домен?
-- Обычно 2+ для redundancy
-
-**SOA (Start of Authority) Record:**
-```
-google.com.  IN  SOA  ns1.google.com. dns-admin.google.com. (
-    2025100801  ; Serial (версия зоны)
-    7200        ; Refresh (как часто slave проверяет master)
-    3600        ; Retry (как часто повторять если refresh failed)
-    1209600     ; Expire (когда slave перестаёт отвечать)
-    3600        ; Minimum TTL
-)
-```
-- Информация о DNS зоне
-- Primary name server
-- Email администратора
-- Параметры синхронизации
-
-**PTR (Pointer) Record:**
-```
-46.185.250.142.in-addr.arpa.  IN  PTR  google.com.
-```
-- Reverse DNS lookup (IP → домен)
-- Используется для:
-  - Email (проверка легитимности mail server)
-  - Логи (показывать hostname вместо IP)
-  - Security (проверка что IP соответствует домену)
-
-**SRV (Service) Record:**
-```
-_sip._tcp.example.com.  IN  SRV  10 60 5060 sipserver.example.com.
-```
-- Указывает hostname + port для сервиса
-- Используется для SIP, XMPP, LDAP
-- Формат: приоритет, вес, порт, hostname
-
-**CAA (Certification Authority Authorization) Record:**
-```
-google.com.  IN  CAA  0 issue "pki.goog"
-```
-- Какие CA могут выдавать SSL сертификаты для домена
-- Защита от неавторизованных сертификатов
-
-**Команды проверки:**
-```bash
-dig google.com A       # IPv4
-dig google.com AAAA    # IPv6
-dig google.com MX      # Mail
-dig google.com TXT     # Text records
-dig google.com NS      # Name servers
-dig google.com SOA     # Start of Authority
-dig -x 142.250.185.46  # Reverse DNS (PTR)
-dig google.com ANY     # All records (deprecated)
-```
-
-**Security implications:**
-- **TXT records** — могут содержать sensitive информацию
-- **NS records** — атакующий может узнать DNS провайдера
-- **MX records** — информация о mail инфраструктуре
-- **A records** — IP адреса серверов
-
-**Best practices:**
-- Не публиковать больше информации чем нужно
-- Использовать DNSSEC для защиты от подделки
-- Регулярно проверять DNS records на утечки
-- Минимизировать TTL для critical records (быстрая смена в случае атаки)
-
-</details>
-
-**Запишите результаты:**
-```bash
-# A record (IPv4):
-GOOGLE_A="???.???.???.???"
-
-# MX record (первый mail server):
-GOOGLE_MX="???"
-```
-
----
-
-### Задание 4: Reverse DNS Lookup ⭐⭐
-
-**Контекст:**
-Katarina Lindström (видеозвонок из Stockholm University):
-> *"Erik, introduce me to Max. Hi Max, I'm Katarina, cryptography researcher. Reverse DNS is important — it proves that IP belongs to domain. Critical for email security and forensics."*
-
-**Задача:**
-Выполните reverse DNS lookup: по IP адресу узнать доменное имя.
-
-**Попробуйте сами (3-5 минут):**
-
-```bash
-# Узнайте доменное имя для IP: 8.8.8.8 (Google DNS)
-# Ваша команда здесь
-```
-
-<details>
-<summary>💡 Подсказка 1 (если застряли > 5 минут)</summary>
-
-**Katarina:**
-> *"Reverse DNS uses PTR records. IP in special format: reverse octets + `.in-addr.arpa`. For 8.8.8.8 → `8.8.8.8.in-addr.arpa`. But `dig -x` does this automatically."*
-
-Попробуйте:
-```bash
-# Reverse DNS (автоматически)
-dig -x 8.8.8.8
-
-# Или host (проще)
-host 8.8.8.8
-```
-
-**Что искать:**
-- PTR record в ответе
-- Hostname для этого IP
-
-</details>
-
-<details>
-<summary>💡 Подсказка 2 (если застряли > 10 минут)</summary>
-
-**Команды:**
-
-```bash
-# dig -x (самый надёжный)
-dig -x 8.8.8.8
-
-# Короткий вывод
-dig -x 8.8.8.8 +short
-
-# host (простой вариант)
-host 8.8.8.8
-
-# nslookup
-nslookup 8.8.8.8
-```
-
-**Примеры reverse DNS:**
-```bash
-# Google DNS
-dig -x 8.8.8.8
-# → dns.google
-
-# Cloudflare DNS
-dig -x 1.1.1.1
-# → one.one.one.one
-
-# Ваш публичный IP (если есть)
-curl -s ifconfig.me | xargs dig -x
-```
-
-**Когда reverse DNS важен:**
-- **Email** — mail servers проверяют PTR record отправителя
-- **Forensics** — по IP узнать откуда атака
-- **Logging** — красивые имена в логах вместо IP
-
-</details>
-
-<details>
-<summary>✅ Решение (если совсем застряли)</summary>
-
-**Команда:**
-```bash
-# Reverse DNS для 8.8.8.8
-dig -x 8.8.8.8
-
-# Или короткий вывод
-dig -x 8.8.8.8 +short
-# Результат: dns.google
-```
-
-**Скрипт для проверки нескольких IP:**
-```bash
-#!/bin/bash
-
-echo "═══════════════════════════════════════════════════════════"
-echo "  Reverse DNS Lookup"
-echo "═══════════════════════════════════════════════════════════"
-echo ""
-
-# Список известных IP
-declare -A known_ips=(
-    ["8.8.8.8"]="Google DNS"
-    ["1.1.1.1"]="Cloudflare DNS"
-    ["9.9.9.9"]="Quad9 DNS"
-    ["208.67.222.222"]="OpenDNS"
-)
-
-for ip in "${!known_ips[@]}"; do
-    echo "[$ip] ${known_ips[$ip]}"
-    hostname=$(dig -x "$ip" +short 2>/dev/null | head -n1)
-
-    if [ -n "$hostname" ]; then
-        echo "    Hostname: $hostname"
-    else
-        echo "    (no PTR record)"
-    fi
-    echo ""
-done
-
-echo "═══════════════════════════════════════════════════════════"
-```
-
-**Объяснение:**
-- `dig -x IP` — reverse lookup
-- Проверяет PTR record в зоне `.in-addr.arpa`
-- Формат: `8.8.8.8` → `8.8.8.8.in-addr.arpa`
-- Если PTR есть → возвращает hostname
-
-**Как работает reverse DNS:**
-```
-Forward DNS:  google.com → 142.250.185.46
-Reverse DNS:  142.250.185.46 → ???.google.com
-
-PTR record: 46.185.250.142.in-addr.arpa → lhr25s34-in-f14.1e100.net
-```
-
-**Security implications:**
-- Отсутствие PTR record — подозрительно для mail server
-- Несоответствие forward/reverse — может указывать на spoofing
-- Forensics — reverse DNS помогает идентифицировать источник атаки
-
-**Проверка для любого IP:**
-```bash
-# Ваш публичный IP
-my_ip=$(curl -s ifconfig.me)
-echo "Your public IP: $my_ip"
-echo "Reverse DNS:"
-dig -x "$my_ip" +short
-```
-
-</details>
-
-<details>
-<summary>🔍 Reverse DNS (PTR Records) — теория</summary>
-
-### Reverse DNS (PTR Records)
-
-**Определение:**
-Reverse DNS — преобразование IP адреса в доменное имя (обратное от обычного DNS).
-
-**Forward vs Reverse:**
-```
-Forward:  example.com → 192.0.2.1     (A record)
-Reverse:  192.0.2.1 → example.com     (PTR record)
-```
-
-**Как работает:**
-```
-IP: 192.0.2.1
-Reverse format: 1.2.0.192.in-addr.arpa
-
-Query: PTR 1.2.0.192.in-addr.arpa
-Answer: example.com
-```
-
-**Зачем нужен:**
-
-1. **Email Security:**
-   - Mail servers проверяют PTR record отправителя
-   - Если PTR отсутствует или не соответствует → спам
-   - Forward/Reverse должны совпадать
-
-2. **Logging:**
-   - Показывать hostname в логах вместо IP
-   - Удобнее читать
-   - Forensics analysis
-
-3. **Forensics:**
-   - По IP атакующего узнать его провайдера
-   - Traceback источника атаки
-   - Identify malicious infrastructure
-
-4. **Verification:**
-   - Подтверждение что IP действительно принадлежит домену
-   - Anti-spoofing
-
-**Команды:**
-```bash
-# dig
-dig -x 8.8.8.8
-
-# host
-host 8.8.8.8
-
-# nslookup
-nslookup 8.8.8.8
-```
-
-**Примеры:**
-```bash
-$ dig -x 8.8.8.8 +short
-dns.google
-
-$ dig -x 1.1.1.1 +short
-one.one.one.one
-```
-
-**Forward-Reverse Match:**
-```bash
-# Forward
-$ dig +short google.com
-142.250.185.46
-
-# Reverse
-$ dig -x 142.250.185.46 +short
-lhr25s34-in-f14.1e100.net
-
-# Not exact match (Google uses different hostnames), but same domain zone
-```
-
-**Security implications:**
-- **Missing PTR** — suspicious (особенно для mail servers)
-- **Mismatched PTR** — возможен spoofing
-- **Generic PTR** (192-0-2-1.example.com) — не настроен правильно
-
-**Best practices:**
-- Настроить PTR для всех публичных mail servers
-- Forward и Reverse должны соответствовать
-- Проверять PTR при forensics анализе
-- Использовать в firewall rules (rate limit по hostname)
-
-</details>
-
-**Запишите результат:**
-```bash
-# Reverse DNS для 8.8.8.8:
-GOOGLE_DNS_HOSTNAME="???"
-```
-
----
-
-### Задание 5: Локальная резолюция через /etc/hosts ⭐⭐
-
-**Контекст:**
-Erik: *"Sometimes we need to override DNS without waiting for propagation. `/etc/hosts` — local DNS. Checked BEFORE real DNS query. Very useful for testing and security."*
-
-**Задача:**
-Добавьте локальную DNS запись в `/etc/hosts` для тестового домена `shadow-test.local`.
-
-**Попробуйте сами (5-7 минут):**
-
-```bash
-# 1. Сделайте backup /etc/hosts
-# 2. Добавьте запись: shadow-test.local → 127.0.0.1
-# 3. Проверьте что ping shadow-test.local работает
-```
-
-<details>
-<summary>💡 Подсказка 1 (если застряли > 5 минут)</summary>
-
-**Erik:**
-> *"`/etc/hosts` — простой текстовый файл. Формат: `IP hostname`. Проверяется ДО DNS запроса."*
-
-Попробуйте:
-```bash
-# Backup (важно!)
-sudo cp /etc/hosts /etc/hosts.backup
-
-# Добавить запись
-echo "127.0.0.1 shadow-test.local" | sudo tee -a /etc/hosts
-
-# Проверить
-ping -c 2 shadow-test.local
+google.com.  300  IN  A  142.250.185.46
+             ^^^
+             TTL = 300 секунд = 5 минут
 ```
 
 **Что происходит:**
-1. OS читает `/etc/hosts`
-2. Находит `shadow-test.local → 127.0.0.1`
-3. НЕ делает DNS запрос
-4. Возвращает 127.0.0.1
+1. Первый запрос → DNS сервер → ответ → кеш на 300 секунд
+2. Следующие запросы (5 минут) → берутся из кеша (быстро!)
+3. Через 5 минут → кеш устаревает → новый запрос к DNS серверу
+
+**Почему важно:**
+- **Низкий TTL (60):** Быстрые обновления, но больше нагрузка на DNS
+- **Высокий TTL (86400 = 24ч):** Меньше запросов, но медленные изменения
+
+> **LILITH:** *"Крылов любит cache poisoning. Подделывает один ответ → TTL 3600 = 1 час × 10,000 пользователей = катастрофа. Вот почему TTL критичен."*
 
 </details>
-
-<details>
-<summary>💡 Подсказка 2 (если застряли > 10 минут)</summary>
-
-**Команды:**
-
-```bash
-# 1. Backup
-sudo cp /etc/hosts /etc/hosts.backup
-
-# 2. Проверить текущее содержимое
-cat /etc/hosts
-
-# 3. Добавить запись (несколько способов)
-
-# Способ 1: echo + tee
-echo "127.0.0.1 shadow-test.local" | sudo tee -a /etc/hosts
-
-# Способ 2: sudo редактор
-sudo nano /etc/hosts
-# Добавить строку вручную: 127.0.0.1 shadow-test.local
-
-# 4. Проверить что добавилось
-grep "shadow-test" /etc/hosts
-
-# 5. Тест
-ping -c 2 shadow-test.local
-host shadow-test.local  # не сработает (т.к. не в DNS)
-```
-
-**Формат /etc/hosts:**
-```
-# IP_ADDRESS    HOSTNAME    [ALIASES...]
-127.0.0.1       localhost
-127.0.1.1       your-hostname
-192.168.1.100   myserver.local myserver
-```
-
-**Приоритет резолюции (по умолчанию):**
-1. `/etc/hosts` — сначала локальный файл
-2. DNS — если в hosts не найдено
-
-</details>
-
-<details>
-<summary>✅ Решение (если совсем застряли)</summary>
-
-**Скрипт:**
-```bash
-#!/bin/bash
-
-hosts_file="/etc/hosts"
-backup_file="/etc/hosts.backup"
-test_domain="shadow-test.local"
-test_ip="127.0.0.1"
-
-echo "═══════════════════════════════════════════════════════════"
-echo "  /etc/hosts Configuration"
-echo "═══════════════════════════════════════════════════════════"
-echo ""
-
-# 1. Backup
-echo "[1] Creating backup..."
-sudo cp "$hosts_file" "$backup_file"
-echo "    ✓ Backup saved: $backup_file"
-echo ""
-
-# 2. Check if entry already exists
-if grep -q "$test_domain" "$hosts_file"; then
-    echo "[2] Entry already exists in /etc/hosts"
-    grep "$test_domain" "$hosts_file" | sed 's/^/    /'
-else
-    # 3. Add entry
-    echo "[2] Adding entry: $test_ip $test_domain"
-    echo "$test_ip $test_domain" | sudo tee -a "$hosts_file" > /dev/null
-    echo "    ✓ Entry added"
-fi
-echo ""
-
-# 4. Verify
-echo "[3] Verifying /etc/hosts content:"
-grep "$test_domain" "$hosts_file" | sed 's/^/    /'
-echo ""
-
-# 5. Test with ping
-echo "[4] Testing with ping:"
-if ping -c 2 -W 1 "$test_domain" &>/dev/null; then
-    echo "    ✓ $test_domain resolves to $test_ip"
-    echo "    (ping successful)"
-else
-    echo "    ✗ Ping failed (but resolution might still work)"
-fi
-echo ""
-
-echo "═══════════════════════════════════════════════════════════"
-echo "Cleanup (when done):"
-echo "  sudo cp $backup_file $hosts_file"
-echo "═══════════════════════════════════════════════════════════"
-```
-
-**Объяснение:**
-- `/etc/hosts` — локальная резолюция имён
-- Проверяется ДО DNS запроса
-- Не требует DNS сервера
-- root права нужны для редактирования
-
-**Как работает резолюция:**
-```
-1. Приложение: "Дай IP для shadow-test.local"
-2. OS: Проверяю /etc/hosts... Есть! 127.0.0.1
-3. OS → Приложение: "Держи 127.0.0.1"
-4. (DNS запрос НЕ делается)
-```
-
-**Use cases:**
-- **Testing** — тестировать до DNS propagation
-- **Development** — локальные dev домены (myproject.local)
-- **Security** — блокировать malware домены (redirect на 127.0.0.1)
-- **Performance** — кэшировать часто используемые домены
-
-**Security warning:**
-- Если attacker получит root — он может изменить `/etc/hosts`
-- Redirect на malicious IP
-- MITM атака
-- Проверяйте integrity регулярно
-
-**Cleanup:**
-```bash
-# Restore from backup
-sudo cp /etc/hosts.backup /etc/hosts
-```
-
-</details>
-
-<details>
-<summary>🔍 /etc/hosts — теория</summary>
-
-### /etc/hosts — Local DNS Resolution
-
-**Определение:**
-`/etc/hosts` — текстовый файл для локальной резолюции имён (без DNS сервера).
-
-**Формат:**
-```
-IP_ADDRESS    HOSTNAME    [ALIASES...]
-
-# Примеры:
-127.0.0.1     localhost
-127.0.1.1     mycomputer
-192.168.1.10  server.local server srv
-```
-
-**Как работает:**
-```
-1. Приложение запрашивает IP для hostname
-2. OS читает /etc/nsswitch.conf → узнаёт порядок резолюции
-3. По умолчанию: files dns (сначала files = /etc/hosts, потом dns)
-4. OS читает /etc/hosts
-5. Если hostname найден → возвращает IP (DNS НЕ вызывается)
-6. Если не найден → DNS запрос
-```
-
-**Priority:**
-```
-/etc/nsswitch.conf:
-  hosts: files dns
-
-Означает:
-  1. /etc/hosts (files)
-  2. DNS
-```
-
-**Можно изменить:**
-```
-hosts: dns files  # Сначала DNS, потом /etc/hosts
-```
-
-**Use Cases:**
-
-1. **Development:**
-   ```
-   127.0.0.1  myproject.local
-   127.0.0.1  api.myproject.local
-   ```
-
-2. **Testing:**
-   ```
-   192.168.1.100  staging.example.com
-   ```
-   Тестировать до DNS propagation
-
-3. **Security (Ad Blocking):**
-   ```
-   0.0.0.0  ads.doubleclick.net
-   0.0.0.0  tracker.example.com
-   ```
-   Блокировать malware/ads домены
-
-4. **Performance:**
-   ```
-   142.250.185.46  google.com
-   ```
-   Кэшировать часто используемые домены (но TTL = вечность)
-
-**Security Implications:**
-
-**Attack vector:**
-- Если attacker получит root → может изменить `/etc/hosts`
-- Redirect на malicious IP
-- MITM (man-in-the-middle)
-- Phishing (redirect bank.com на фишинговый сайт)
-
-**Defense:**
-- Мониторить changes в `/etc/hosts`
-- File integrity monitoring (AIDE, Tripwire)
-- Read-only filesystem (для critical systems)
-- Регулярные проверки
-
-**Best Practices:**
-- Всегда делать backup перед изменением
-- Документировать все custom entries
-- Не использовать для production DNS
-- Проверять integrity регулярно
-
-**Команды:**
-```bash
-# Просмотр
-cat /etc/hosts
-
-# Backup
-sudo cp /etc/hosts /etc/hosts.backup
-
-# Добавить запись
-echo "192.168.1.100 myserver.local" | sudo tee -a /etc/hosts
-
-# Удалить запись
-sudo sed -i '/myserver.local/d' /etc/hosts
-
-# Restore
-sudo cp /etc/hosts.backup /etc/hosts
-```
-
-**Related files:**
-- `/etc/nsswitch.conf` — order of resolution
-- `/etc/resolv.conf` — DNS servers
-- `/etc/hostname` — hostname этой машины
-
-</details>
-
-**Проверка:**
-```bash
-# После добавления записи
-ping -c 2 shadow-test.local
-# Должно работать!
-```
 
 ---
 
-### Задание 6: Обнаружение DNS Spoofing ⭐⭐⭐
+## Цикл 2: Shadow Servers Check — Скрытые домены (10-15 мин)
 
-**Контекст:**
-Anna (видеозвонок из Москвы):
-> *"Max, I found evidence. Krylov's team is poisoning DNS cache. When we query shadow-server-05, sometimes we get WRONG IP. Cache poisoning attack. You need to detect this."*
+### 🎬 Сюжет (2 мин)
 
-**Задача:**
-Проверьте `artifacts/suspicious_domains.txt` на DNS spoofing — сравните ожидаемые и фактические IP.
+Erik:
+> *"Our infrastructure uses internal domains: shadow-server-01.ops.internal. They should NOT be in public DNS. If public DNS knows them — information leak. Or worse — Krylov replaced records."*
 
-**Попробуйте сами (7-10 минут):**
+### 📚 Теория: Public vs Private DNS (5-7 мин)
+
+#### Метафора: Unlisted Phone Numbers 🔒
+
+**Представь:**
+- **Public DNS** = Телефонная книга в библиотеке (все видят)
+- **Private DNS** = Твой личный блокнот (только ты знаешь)
+
+**Shadow infrastructure:**
+```
+Public:   shadow-ops.com          → 203.0.113.42   (OK, видят все)
+Private:  shadow-server-01.internal → 10.50.1.15   (НЕ должно быть публично!)
+```
+
+**Если shadow-server-01.internal в PUBLIC DNS:**
+- ❌ Информационная утечка
+- ❌ Крылов узнаёт структуру инфраструктуры
+- ❌ Возможны атаки на internal домены
+
+#### DNS Zones типы:
+
+```
+.com, .org, .net     → Public TLD (Top Level Domain)
+.internal, .local    → Private (RFC 6762, должны быть только внутри сети)
+.ops.internal        → Ваш internal zone
+```
+
+> **LILITH:** *"`.internal` домены в публичном DNS = как номер твоей банковской карты в телефонной книге. Глупо. Опасно."*
+
+#### Проверка shadow серверов:
+
+**Цель:** Убедиться что shadow-server-*.ops.internal НЕ в public DNS.
+
+**Ожидаемый результат:**
+```bash
+$ dig shadow-server-01.ops.internal
+
+;; ANSWER SECTION:
+# ПУСТО — это хорошо! Нет ответа = не утечка
+```
+
+**Плохой результат:**
+```bash
+;; ANSWER SECTION:
+shadow-server-01.ops.internal. 300 IN A 10.50.1.15
+
+# ⚠️ УТЕЧКА! Private IP в public DNS!
+```
+
+#### systemd-resolved (Ubuntu default):
+
+Ubuntu использует **systemd-resolved** как default DNS resolver.
 
 ```bash
-# Файл artifacts/suspicious_domains.txt содержит список доменов
-# Для каждого указан expected_ip
-# Проверьте что DNS возвращает правильные IP
+# Проверить статус
+resolvectl status
+
+# Query через systemd-resolved
+resolvectl query google.com
+
+# Flush cache (если нужно)
+resolvectl flush-caches
 ```
+
+> **LILITH:** *"`systemd-resolved` — стандарт Ubuntu. Не игнорируй его. Учи."*
+
+### 💻 Практика: Проверка shadow domains (3-5 мин)
+
+#### Задание:
+
+```bash
+# 1. Проверить shadow servers из списка
+cd artifacts/
+cat dns_zones.txt
+
+# 2. Для каждого домена проверить PUBLIC DNS
+dig shadow-server-01.ops.internal
+dig shadow-server-02.ops.internal
+# ... продолжить для всех
+
+# 3. Убедиться что ANSWER SECTION пустой (хорошо!)
+#    Если есть ответ → УТЕЧКА! → сообщить команде
+
+# 4. Использовать systemd-resolved тоже
+resolvectl query shadow-server-01.ops.internal
+```
+
+**Erik:**
+> *"If you see answer — we have problem. Internal domains must stay internal."*
+
+#### Автоматизация проверки (bash OK для такого!):
+
+```bash
+# Простой loop для проверки списка
+while read domain; do
+    [[ "$domain" =~ ^# ]] && continue  # Skip comments
+    result=$(dig +short "$domain" 2>/dev/null)
+    if [ -n "$result" ]; then
+        echo "⚠️  LEAK: $domain → $result"
+    else
+        echo "✓ OK: $domain (not in public DNS)"
+    fi
+done < artifacts/dns_zones.txt
+```
+
+> **LILITH:** *"Bash loop для автоматизации повторяющихся команд — ОК. Но не пиши bash wrapper для замены dig. Понял разницу?"*
+
+### 🤔 Проверка понимания (1 мин)
+
+**Katarina** (криптограф, подходит):
+> *"Max, why `.internal` domains dangerous in public DNS?"*
 
 <details>
-<summary>💡 Подсказка 1 (если застряли > 7 минут)</summary>
+<summary>🤔 Думай перед ответом</summary>
 
-**LILITH:**
-> *"DNS spoofing detection — сравнить expected IP с actual IP. Если не совпадают → атака. Проверь каждый домен из suspicious_domains.txt."*
+**Ответ:**
 
-Попробуйте:
-```bash
-# Прочитать файл
-cat artifacts/suspicious_domains.txt
+**3 причины:**
 
-# Формат: domain expected_ip
-# Пример: shadow-server-05.ops.internal 10.50.1.105
+1. **Information Disclosure:**
+   - Крылов видит структуру инфраструктуры
+   - Знает количество серверов
+   - Видит naming conventions
 
-# Для каждого домена:
-# 1. Узнать actual IP (dig)
-# 2. Сравнить с expected
-# 3. Если не совпадают → spoofing!
+2. **Attack Surface:**
+   - Public DNS → можно атаковать через DNS
+   - Cache poisoning становится возможным
+   - DNS amplification attacks
+
+3. **Trust Violation:**
+   - `.internal` означает "только для нас"
+   - Если в public DNS → кто-то слил данные
+   - Или misconfiguration (плохо!)
+
+**Erik:**
+> *"In security, information is power. Every leaked detail helps attacker. Keep internal internal."*
+
+> **LILITH:** *"Крылов собирает информацию как пазл. Одна утечка DNS = один кусочек. 100 утечек = полная картина. Zero tolerance для утечек."*
+
+</details>
+
+---
+
+## Цикл 3: DNS Record Types — Различные типы записей (10-15 мин)
+
+### 🎬 Сюжет (2 мин)
+
+Erik открывает whiteboard:
+> *"DNS is not just IP addresses. Many record types — A, AAAA, MX, NS, TXT, CNAME. Each has purpose. Let me show you."*
+
+### 📚 Теория: DNS Record Types (5-7 мин)
+
+#### Метафора: Разные страницы в справочнике 📔
+
+**Представь телефонную книгу компании:**
+- **A record** = Основной номер офиса
+- **MX record** = Номер почтового отделения (mail)
+- **NS record** = Номер справочной службы
+- **TXT record** = Заметки и пометки
+
+#### ASCII: DNS Record Types Structure
+
+```
+┌────────────────────────────────────────┐
+│         DNS Record Types               │
+├────────┬───────────────────────────────┤
+│ A      │ IPv4 Address                  │
+│ AAAA   │ IPv6 Address                  │
+│ MX     │ Mail Exchange (почта)         │
+│ NS     │ Name Server (DNS сервер)      │
+│ CNAME  │ Canonical Name (алиас)        │
+│ TXT    │ Text (любая информация)       │
+│ PTR    │ Pointer (reverse DNS)         │
+│ SOA    │ Start of Authority            │
+└────────┴───────────────────────────────┘
 ```
 
-**Базовый алгоритм:**
+#### Детальный разбор:
+
+**1. A Record (Address) — IPv4:**
 ```bash
-while read domain expected_ip; do
-    actual_ip=$(dig +short "$domain" | head -n1)
+$ dig A google.com +short
+142.250.185.46
+```
+
+**2. AAAA Record — IPv6:**
+```bash
+$ dig AAAA google.com +short
+2a00:1450:4001:830::200e
+```
+
+> **LILITH:** *"IPv6 — будущее. IPv4 адреса закончились в 2011. Учи оба."*
+
+**3. MX Record (Mail Exchange):**
+
+Указывает куда слать email.
+
+```bash
+$ dig MX gmail.com +short
+5 gmail-smtp-in.l.google.com.
+10 alt1.gmail-smtp-in.l.google.com.
+20 alt2.gmail-smtp-in.l.google.com.
+```
+
+**Цифра = приоритет:**
+- `5` = первый (lowest number = highest priority!)
+- `10` = backup
+- `20` = второй backup
+
+#### "Aha!" момент: MX Priority counterintuitive! 💡
+
+```
+❌ Думаешь: "10 > 5, значит 10 важнее"
+✅ Reality: "10 > 5, значит 10 МЕНЕЕ важен"
+
+Правило: LOWER number = HIGHER priority
+
+5  = PRIMARY mail server   (попробуй сначала)
+10 = BACKUP                (если 5 недоступен)
+20 = LAST RESORT           (если 5 и 10 не работают)
+```
+
+> **LILITH:** *"Я знаю, counterintuitive. Почему так? Historical reasons. Просто запомни: меньше = важнее."*
+
+**4. NS Record (Name Server):**
+
+Кто отвечает за DNS этого домена.
+
+```bash
+$ dig NS google.com +short
+ns1.google.com.
+ns2.google.com.
+ns3.google.com.
+ns4.google.com.
+```
+
+**5. CNAME (Canonical Name) — Alias:**
+
+```bash
+$ dig CNAME www.github.com +short
+github.com.
+
+# www.github.com → алиас для github.com
+```
+
+**6. TXT Record — Любая текстовая информация:**
+
+```bash
+$ dig TXT google.com +short
+"v=spf1 include:_spf.google.com ~all"
+"docusign=05958488-4752-4ef2-95eb-aa7ba8a3bd0e"
+```
+
+**Используется для:**
+- SPF (защита от спама)
+- DKIM (подпись email)
+- Domain verification (доказать владение доменом)
+- Site verification
+
+> **LILITH:** *"TXT records = metadata. Спамеры и хакеры читают их. Не пиши там секреты."*
+
+### 💻 Практика: Проверка разных типов (3-5 мин)
+
+Erik:
+> *"Try different record types. Understand what each tells you."*
+
+#### Задание:
+
+```bash
+# 1. A record (IPv4)
+dig A google.com
+
+# 2. AAAA record (IPv6)
+dig AAAA google.com
+
+# 3. MX records (mail)
+dig MX gmail.com
+
+# 4. NS records (DNS servers)
+dig NS google.com
+
+# 5. TXT records (metadata)
+dig TXT google.com
+
+# 6. Для shadow servers (если есть internal DNS)
+dig A shadow-server-01.ops.internal
+dig MX ops.internal
+```
+
+#### Специальный query: ALL records
+
+```bash
+# Показать все типы сразу
+dig ANY google.com
+
+# (Deprecated в новых версиях DNS, но работает)
+```
+
+#### systemd-resolved syntax:
+
+```bash
+# Через systemd-resolved (Ubuntu way)
+resolvectl query google.com
+resolvectl query --type=MX gmail.com
+resolvectl query --type=TXT google.com
+```
+
+> **LILITH:** *"В реальной работе 90% времени используешь A и AAAA records. Остальные — для специальных задач. Но знать все типы обязательно."*
+
+### 🤔 Проверка понимания (1 мин)
+
+**Erik:** *"I give you MX records with priorities 10, 20, 5. Which server gets mail first?"*
+
+<details>
+<summary>🤔 Думай перед ответом</summary>
+
+**Ответ:**
+
+**Сервер с приоритетом 5!**
+
+```
+Приоритеты: 10, 20, 5
+
+Порядок попыток:
+1. Приоритет 5  (lowest = first)
+2. Приоритет 10 (backup)
+3. Приоритет 20 (last resort)
+```
+
+**Правило:** Lower number = Higher priority (контринтуитивно, но так работает!)
+
+**Реальный пример:**
+```bash
+$ dig MX gmail.com +short
+5 gmail-smtp-in.l.google.com.          # PRIMARY
+10 alt1.gmail-smtp-in.l.google.com.    # BACKUP 1
+20 alt2.gmail-smtp-in.l.google.com.    # BACKUP 2
+```
+
+**Erik:**
+> *"Good. Historical design — lower number tried first. Like queue number at doctor — 1 goes before 2."*
+
+> **LILITH:** *"Если MX records перепутаны — письма идут на backup, а primary простаивает. Performance падает. Будь внимателен."*
+
+</details>
+
+---
+
+## Цикл 4: Reverse DNS & PTR Records — Обратный lookup (10-15 мин)
+
+### 🎬 Сюжет (2 мин)
+
+Анна (в видеозвонке):
+> *"Макс, я нашла подозрительный IP в логах: 185.220.101.52. Нужно идентифицировать. Сделай reverse DNS lookup — IP → hostname. Возможно, это Крылов."*
+
+### 📚 Теория: Reverse DNS (PTR Records) (5-7 мин)
+
+#### Метафора: Обратный поиск в телефонной книге 🔄
+
+**Normal DNS (Forward):**
+```
+Имя → Номер
+"Пицца Марио" → 8-800-123-45-67
+```
+
+**Reverse DNS:**
+```
+Номер → Имя
+8-800-123-45-67 → "Пицца Марио"
+```
+
+**В интернете:**
+```bash
+Forward:  google.com        → 142.250.185.46
+Reverse:  142.250.185.46    → google.com
+```
+
+#### PTR Record (Pointer):
+
+**Специальный тип DNS записи для reverse lookup.**
+
+```bash
+# Forward DNS
+dig google.com
+→ 142.250.185.46
+
+# Reverse DNS
+dig -x 142.250.185.46
+→ lhr25s34-in-f14.1e100.net.  # Google's PTR record
+```
+
+#### Зачем нужен Reverse DNS?
+
+**1. Email серверы проверяют PTR:**
+```
+Сервер Gmail получает email от IP 203.0.113.50
+→ Делает reverse DNS: 203.0.113.50 → ???
+→ Если PTR отсутствует → подозрительно → SPAM
+→ Если PTR = mail.example.com → легитимно → OK
+```
+
+> **LILITH:** *"Почтовые серверы без правильного PTR = автоматически спам. Настраивай PTR для любого mail server."*
+
+**2. Forensics & Security:**
+```bash
+# Подозрительный IP в логах
+185.220.101.52
+
+# Reverse DNS → узнаем hostname
+dig -x 185.220.101.52
+→ tor-exit-node.example.com
+
+# Aha! Это Tor exit node (анонимизация)
+# Высокая вероятность что Крылов использует Tor
+```
+
+**3. Network troubleshooting:**
+```bash
+# Ping неизвестного IP
+ping 8.8.8.8
+
+# Что это за сервер?
+dig -x 8.8.8.8
+→ dns.google.
+
+# Aha! Google Public DNS
+```
+
+#### ASCII: Reverse DNS Structure
+
+```
+Normal DNS:    example.com      →  93.184.216.34
+                      ↓               ↓
+Reverse DNS:   34.216.184.93.in-addr.arpa  →  example.com
+                      ↑
+               IP в обратном порядке!
+```
+
+#### Синтаксис Reverse DNS:
+
+```bash
+# dig -x (автоматически преобразует)
+dig -x 93.184.216.34
+
+# Или вручную (редко нужно):
+dig PTR 34.216.184.93.in-addr.arpa
+```
+
+> **LILITH:** *"`-x` = удобно. Используй его. Вручную PTR queries — для мазохистов."*
+
+### 💻 Практика: Reverse DNS для подозрительного IP (3-5 мин)
+
+Анна:
+> *"Проверь этот IP: 185.220.101.52. Нашла в логах атаки."*
+
+#### Задание:
+
+```bash
+# 1. Reverse DNS для подозрительного IP
+dig -x 185.220.101.52
+
+# 2. Что получаешь в ANSWER SECTION?
+# Если hostname содержит "tor", "exit", "proxy" → подозрительно
+
+# 3. Forward DNS для проверки
+# Если PTR вернул hostname → проверь обратно
+dig <hostname_from_ptr>
+
+# 4. Должны совпадать (forward = reverse)
+```
+
+**Реальный пример:**
+
+```bash
+$ dig -x 185.220.101.52
+
+;; ANSWER SECTION:
+52.101.220.185.in-addr.arpa. 3600 IN PTR tor-exit-5-readme.dfri.se.
+
+# Aha! Tor exit node из Швеции!
+```
+
+**Анна:**
+> *"Tor exit node. Крылов использует Tor для анонимности. Умный ублюдок."*
+
+#### Проверка shadow servers:
+
+```bash
+# Reverse DNS для shadow servers
+dig -x 10.50.1.15    # shadow-server-01
+dig -x 10.50.1.16    # shadow-server-02
+
+# Должны вернуть internal hostnames
+```
+
+> **LILITH:** *"Forward DNS и Reverse DNS должны совпадать. Если не совпадают — misconfiguration или подозрительная активность."*
+
+### 🤔 Проверка понимания (1 мин)
+
+**Erik:** *"You see IP 203.0.113.42 in logs. How to find what server it is?"*
+
+<details>
+<summary>🤔 Думай перед ответом</summary>
+
+**Ответ:**
+
+**Reverse DNS lookup с помощью dig -x:**
+
+```bash
+dig -x 203.0.113.42
+```
+
+**Вывод покажет PTR record:**
+```
+;; ANSWER SECTION:
+42.113.0.203.in-addr.arpa. 3600 IN PTR server42.ops.internal.
+```
+
+**Hostname = `server42.ops.internal`**
+
+**Дополнительная проверка:**
+```bash
+# Forward DNS для проверки совпадения
+dig A server42.ops.internal
+→ 203.0.113.42
+
+# Если совпадает → всё правильно ✓
+```
+
+**Erik:**
+> *"Correct. Reverse DNS = forensics tool. Always check unknown IPs in logs."*
+
+> **LILITH:** *"В реальной работе 50% IP не имеют PTR records. Это нормально для клиентских машин. Но для серверов PTR обязателен."*
+
+</details>
+
+---
+
+## Цикл 5: /etc/hosts & /etc/resolv.conf — Локальная DNS конфигурация (10-15 мин)
+
+### 🎬 Сюжет (2 мин)
+
+Erik:
+> *"Sometimes DNS is slow. Or compromised. Local `/etc/hosts` file overrides DNS. Fast. Reliable. But dangerous — malware loves it."*
+
+### 📚 Теория: Local DNS Configuration (5-7 мин)
+
+#### Метафора: Личный блокнот vs Телефонная книга 📓
+
+**Представь:**
+- **Телефонная книга в библиотеке** = DNS сервер (общедоступно)
+- **Твой личный блокнот** = /etc/hosts (только у тебя)
+
+**Когда ты ищешь номер:**
+1. Сначала смотришь в СВОЙ блокнот (/etc/hosts)
+2. Если нет → идёшь в библиотеку (DNS)
+
+**Твой блокнот всегда сильнее книги!**
+
+#### Priority Order в Linux:
+
+```bash
+1. /etc/hosts           # Локальный файл (highest priority!)
+2. systemd-resolved     # Ubuntu DNS resolver
+3. /etc/resolv.conf     # DNS servers configuration
+4. DNS servers          # External (8.8.8.8, 1.1.1.1, etc.)
+```
+
+#### ASCII: DNS Resolution Priority
+
+```
+┌─────────────────┐
+│  Application    │ "Нужен IP для google.com"
+└────────┬────────┘
+         ▼
+┌─────────────────┐
+│  /etc/hosts     │ Есть google.com здесь?
+└────────┬────────┘
+         │ Да → вернуть IP (STOP!)
+         │ Нет → дальше
+         ▼
+┌─────────────────┐
+│systemd-resolved │ Query DNS server
+└────────┬────────┘
+         ▼
+┌─────────────────┐
+│ /etc/resolv.conf│ Какой DNS server?
+│ nameserver 8.8.8.8
+└────────┬────────┘
+         ▼
+┌─────────────────┐
+│  DNS Server     │ 8.8.8.8 → ответ
+│  (8.8.8.8)      │
+└─────────────────┘
+```
+
+#### /etc/hosts — Static DNS
+
+**Формат:**
+```
+IP_ADDRESS    HOSTNAME    [ALIASES]
+```
+
+**Пример:**
+```bash
+$ cat /etc/hosts
+
+127.0.0.1       localhost
+127.0.1.1       maxlaptop
+
+# Shadow servers (internal)
+10.50.1.15      shadow-server-01.ops.internal shadow-01
+10.50.1.16      shadow-server-02.ops.internal shadow-02
+10.50.1.17      shadow-server-03.ops.internal shadow-03
+```
+
+**Использование:**
+```bash
+# Вместо IP можно использовать hostname
+ssh shadow-server-01.ops.internal
+# или alias
+ssh shadow-01
+
+# Resolve через /etc/hosts (не DNS!)
+ping shadow-01
+```
+
+> **LILITH:** *"`/etc/hosts` = корень доступ к DNS. Malware это знает. Проверяй этот файл регулярно."*
+
+#### "Aha!" момент: /etc/hosts Malware Priority! 💡
+
+```
+Malware тактика:
+
+1. Проникает в систему
+2. Редактирует /etc/hosts:
+
+   185.220.101.52  facebook.com
+   185.220.101.52  gmail.com
+   185.220.101.52  banking.com
+
+3. Теперь ВСЕ запросы к этим сайтам идут на IP атакующего!
+4. DNS не проверяется (hosts имеет приоритет)
+5. Пользователь видит "facebook.com" но подключается к фишинг-сайту
+```
+
+**Защита:**
+```bash
+# Проверить /etc/hosts на подозрительные записи
+sudo cat /etc/hosts | grep -v "^#" | grep -v "^$"
+
+# Сделать immutable (только root может менять)
+sudo chattr +i /etc/hosts
+
+# Проверить permissions (должен быть 644, owner root)
+ls -l /etc/hosts
+```
+
+> **LILITH:** *"DNS poisoning через /etc/hosts = старая атака, но работает до сих пор. Проверяй этот файл при любой аномалии."*
+
+#### /etc/resolv.conf — DNS Configuration
+
+**Конфигурирует какие DNS серверы использовать.**
+
+**Пример:**
+```bash
+$ cat /etc/resolv.conf
+
+# Ubuntu systemd-resolved
+nameserver 127.0.0.53           # systemd-resolved stub
+options edns0 trust-ad
+
+# Или напрямую external DNS:
+nameserver 8.8.8.8              # Google Public DNS
+nameserver 1.1.1.1              # Cloudflare DNS
+nameserver 208.67.222.222       # OpenDNS
+
+search ops.internal example.com  # Search domains
+```
+
+**Параметры:**
+- `nameserver` — DNS сервер для запросов
+- `search` — домены для автодополнения
+- `options` — дополнительные опции
+
+#### systemd-resolved (Ubuntu default):
+
+**Ubuntu использует systemd-resolved как DNS resolver.**
+
+```bash
+# Статус
+resolvectl status
+
+# Query
+resolvectl query google.com
+
+# Статистика
+resolvectl statistics
+
+# Flush DNS cache
+resolvectl flush-caches
+
+# Конфигурация DNS servers
+resolvectl dns eth0 8.8.8.8 1.1.1.1
+```
+
+**Конфигурация файл:**
+```bash
+/etc/systemd/resolved.conf
+
+[Resolve]
+DNS=8.8.8.8 1.1.1.1
+FallbackDNS=208.67.222.222
+DNSOverTLS=opportunistic
+```
+
+> **LILITH:** *"`systemd-resolved` — Ubuntu standard. Не борись с ним, используй его. DNSOverTLS = шифрование DNS queries (защита от прослушки)."*
+
+### 💻 Практика: Конфигурирование локального DNS (3-5 мин)
+
+Erik:
+> *"Add shadow servers to /etc/hosts. Bypass DNS. Faster. More control."*
+
+#### Задание:
+
+```bash
+# 1. Backup /etc/hosts
+sudo cp /etc/hosts /etc/hosts.backup
+
+# 2. Добавить shadow servers
+sudo nano /etc/hosts
+
+# Добавить строки:
+10.50.1.15   shadow-server-01.ops.internal shadow-01
+10.50.1.16   shadow-server-02.ops.internal shadow-02
+10.50.1.17   shadow-server-03.ops.internal shadow-03
+
+# 3. Проверить
+cat /etc/hosts | grep shadow
+
+# 4. Тест (должен работать БЕЗ DNS!)
+ping shadow-01
+ssh shadow-01  # (если есть доступ)
+
+# 5. Проверить /etc/resolv.conf
+cat /etc/resolv.conf
+
+# 6. systemd-resolved статус
+resolvectl status
+```
+
+#### Security check /etc/hosts:
+
+```bash
+# Проверить permissions
+ls -l /etc/hosts
+# Должно быть: -rw-r--r-- root root
+
+# Проверить на подозрительные записи
+sudo cat /etc/hosts | grep -v "^#" | grep -v "^$" | grep -v "127.0"
+
+# Если видишь записи типа:
+# 185.220.101.52  facebook.com
+# ⚠️ MALWARE! Удалить немедленно!
+```
+
+> **LILITH:** *"Настроил `/etc/hosts` — проверь через 5 минут что там. Malware любит этот файл."*
+
+### 🤔 Проверка понимания (1 мин)
+
+**Katarina:** *"If I add `google.com 127.0.0.1` to /etc/hosts, what happens when I ping google.com?"*
+
+<details>
+<summary>🤔 Думай перед ответом</summary>
+
+**Ответ:**
+
+**Ping будет идти на 127.0.0.1 (localhost), НЕ на настоящий Google!**
+
+```bash
+# В /etc/hosts:
+127.0.0.1  google.com
+
+# Когда ты делаешь:
+ping google.com
+
+# Система:
+1. Смотрит в /etc/hosts СНАЧАЛА
+2. Находит google.com → 127.0.0.1
+3. Не делает DNS query!
+4. Ping идёт на 127.0.0.1 (твоя машина)
+```
+
+**Результат:**
+```bash
+$ ping google.com
+PING google.com (127.0.0.1) 56(84) bytes of data.
+64 bytes from localhost (127.0.0.1): icmp_seq=1 ttl=64 time=0.045 ms
+```
+
+**Это полезно для:**
+- Блокирования сайтов (adblock через /etc/hosts)
+- Тестирования (redirect production → localhost)
+
+**Это опасно когда:**
+- Malware делает это для phishing
+- Случайно сломал конфигурацию
+
+> **LILITH:** *"`/etc/hosts` = мощный инструмент. С great power comes great responsibility. Или great fuckup. Будь осторожен."*
+
+</details>
+
+---
+
+## Цикл 6: DNS Spoofing Detection — Обнаружение подделок (10-15 мин)
+
+### 🎬 Сюжет (2 мин)
+
+Анна (urgent):
+> *"Макс, я нашла доказательства. Крылов делает DNS cache poisoning. Некоторые наши запросы возвращают ЕГО серверы, не наши. Нужно определить какие домены скомпрометированы."*
+
+### 📚 Теория: DNS Spoofing & Cache Poisoning (5-7 мин)
+
+#### Метафора: Подменённая телефонная книга 📖🔀
+
+**Представь:**
+1. Ты хочешь номер "Банк Надёжный"
+2. Смотришь в телефонную книгу
+3. НО! Мошенник ночью подменил страницу
+4. Вместо настоящего банка записан НОМЕР МОШЕННИКА
+5. Ты звонишь думая что в банк, но на самом деле мошеннику!
+
+**DNS Cache Poisoning аналогично:**
+
+```
+Normal:
+dig shadow-server-05.ops.internal
+→ 10.50.1.20 (правильный IP)
+
+After Poisoning:
+dig shadow-server-05.ops.internal
+→ 185.220.101.52 (IP Крылова!) ⚠️
+```
+
+#### ASCII: DNS Cache Poisoning Attack
+
+```
+Step 1: Normal DNS
+┌─────────┐         ┌─────────┐         ┌─────────────┐
+│ Client  │ Query   │   DNS   │ Query   │Authoritative│
+│         ├────────>│ Resolver├────────>│ DNS Server  │
+│         │<────────┤         │<────────┤             │
+└─────────┘ Answer  └─────────┘ Answer  └─────────────┘
+              ↓
+           Cache: shadow-05 → 10.50.1.20 (correct)
+
+Step 2: Attacker injects FAKE response
+┌─────────┐
+│Attacker │ Fake Answer (faster than real!)
+│(Krylov) ├───────────────────────┐
+└─────────┘                       ▼
+┌─────────┐                   ┌─────────┐
+│ Client  │                   │   DNS   │
+│         │                   │ Resolver│
+└─────────┘                   └─────────┘
+                                  ↓
+              Cache: shadow-05 → 185.220.101.52 (FAKE!)
+                                  ↓
+                            TTL 3600 = 1 hour!
+
+Step 3: All clients get FAKE IP for 1 hour!
+┌─────────┐         ┌─────────┐
+│ Client  │ Query   │   DNS   │
+│         ├────────>│ Resolver│ Returns 185.220.101.52
+│         │<────────┤ (cached)│ (Attacker IP!)
+└─────────┘         └─────────┘
+    │
+    └──> Connects to ATTACKER, not real server! ⚠️
+```
+
+#### Amplification Effect:
+
+```
+1 cache poisoning = 10,000 victims
+
+Пример:
+- Resolver обслуживает 10,000 клиентов
+- Крылов успешно poisoning cache
+- TTL = 3600 (1 час)
+- 10,000 × 1 hour = 10,000 victim-hours!
+```
+
+> **LILITH:** *"Вот почему DNS атаки эффективны. Одна атака — тысячи жертв. Понял почему Крылов выбрал DNS?"*
+
+#### Как обнаружить DNS Spoofing:
+
+**1. Сравнение с authoritative DNS:**
+
+```bash
+# Query через local resolver
+dig shadow-server-05.ops.internal
+
+# Query напрямую authoritative DNS (bypass cache)
+dig @ns1.ops.internal shadow-server-05.ops.internal
+
+# Если ответы РАЗНЫЕ → cache poisoning!
+```
+
+**2. Multiple DNS resolvers comparison:**
+
+```bash
+# Google DNS
+dig @8.8.8.8 example.com
+
+# Cloudflare DNS
+dig @1.1.1.1 example.com
+
+# OpenDNS
+dig @208.67.222.222 example.com
+
+# Если РАЗНЫЕ ответы → один из resolver скомпрометирован
+```
+
+**3. Performance metrics:**
+
+```bash
+# Suspicious: очень медленный DNS
+dig google.com
+;; Query time: 523 msec    # ⚠️ Слишком медленно!
+
+# Normal:
+;; Query time: 23 msec     # ✓ Хорошо
+```
+
+> **LILITH:** *"DNS > 200 мс = либо проблема, либо атака. Проверяй."*
+
+**4. Проверка известных good/bad domains:**
+
+```bash
+# Из списка suspicious_domains.txt
+# Формат: domain expected_ip
+
+facebook.com 157.240.1.35
+# Если dig возвращает другой IP → spoofing!
+```
+
+### 💻 Практика: Обнаружение spoofing (3-5 мин)
+
+Анна:
+> *"Проверь suspicious_domains.txt. Сравни реальные DNS ответы с ожидаемыми. Доложи о любых несовпадениях."*
+
+#### Задание:
+
+```bash
+# 1. Проверить suspicious domains
+cd artifacts/
+cat suspicious_domains.txt
+
+# Формат: domain expected_ip comment
+# facebook.com 157.240.1.35 # Social network
+# google.com 142.250.185.46 # Search engine
+
+# 2. Для каждого домена проверить actual IP
+dig +short facebook.com
+dig +short google.com
+
+# 3. Сравнить с expected_ip
+# Если НЕ совпадает → ⚠️ SPOOFING!
+
+# 4. Проверить через разные DNS resolvers
+dig @8.8.8.8 +short facebook.com
+dig @1.1.1.1 +short facebook.com
+dig @208.67.222.222 +short facebook.com
+
+# Если ответы РАЗНЫЕ → один resolver скомпрометирован
+```
+
+#### Bash для автоматизации (OK для такого!):
+
+```bash
+#!/bin/bash
+# Простая проверка списка domains
+
+while read domain expected_ip comment; do
+    # Skip comments
+    [[ "$domain" =~ ^# ]] && continue
+
+    # Actual IP от DNS
+    actual_ip=$(dig +short "$domain" | head -1)
+
     if [ "$actual_ip" != "$expected_ip" ]; then
-        echo "⚠️  SPOOFING DETECTED: $domain"
+        echo "⚠️  SPOOFING: $domain"
+        echo "   Expected: $expected_ip"
+        echo "   Actual:   $actual_ip"
+    else
+        echo "✓ OK: $domain → $actual_ip"
     fi
 done < artifacts/suspicious_domains.txt
 ```
 
-</details>
+> **LILITH:** *"Bash loop для проверки списка — правильное использование. Но сама проверка = dig. Не пиши bash wrapper для dig парсинга. Ясно?"*
+
+#### Flush DNS cache если нужно:
+
+```bash
+# Ubuntu systemd-resolved
+sudo resolvectl flush-caches
+
+# Verify
+resolvectl statistics
+# Current Cache Size: 0 (empty)
+```
+
+### 🤔 Проверка понимания (1 мин)
+
+**Анна:** *"Почему cache poisoning опаснее чем простой DNS spoofing?"*
 
 <details>
-<summary>💡 Подсказка 2 (если застряли > 15 минут)</summary>
+<summary>🤔 Думай перед ответом</summary>
 
-**Полный скрипт проверки:**
+**Ответ:**
 
-```bash
-#!/bin/bash
+**Cache Poisoning = Amplification Attack**
 
-file="artifacts/suspicious_domains.txt"
-
-echo "Checking for DNS Spoofing..."
-echo ""
-
-spoofed=0
-clean=0
-
-while IFS=' ' read -r domain expected_ip; do
-    # Skip comments and empty lines
-    [[ "$domain" =~ ^# || -z "$domain" ]] && continue
-
-    echo "Checking: $domain"
-    echo "  Expected: $expected_ip"
-
-    # Get actual IP
-    actual_ip=$(dig +short "$domain" 2>/dev/null | grep -E "^[0-9]+" | head -n1)
-
-    if [ -z "$actual_ip" ]; then
-        echo "  Actual:   NXDOMAIN (not in DNS)"
-        echo "  Status:   OK (internal domain)"
-        clean=$((clean + 1))
-    elif [ "$actual_ip" = "$expected_ip" ]; then
-        echo "  Actual:   $actual_ip"
-        echo "  Status:   ✓ OK"
-        clean=$((clean + 1))
-    else
-        echo "  Actual:   $actual_ip"
-        echo "  Status:   ⚠️  SPOOFED!"
-        spoofed=$((spoofed + 1))
-    fi
-    echo ""
-done < "$file"
-
-echo "════════════════════════════════════════"
-echo "Results:"
-echo "  Clean domains:  $clean"
-echo "  Spoofed:        $spoofed"
-[ $spoofed -gt 0 ] && echo "  ⚠️  DNS ATTACK DETECTED!"
-echo "════════════════════════════════════════"
+**Simple DNS Spoofing:**
+```
+Атака 1 клиента = 1 жертва
+Нужно атаковать КАЖДОГО клиента отдельно
 ```
 
-**Что проверять:**
-- Actual IP совпадает с Expected → OK
-- Actual IP отличается → SPOOFED
-- NXDOMAIN (не в DNS) → OK для internal доменов
+**Cache Poisoning:**
+```
+Атака 1 DNS resolver = 10,000 жертв
+Все клиенты этого resolver получают fake IP
+TTL 3600 = эффект длится 1 час
+```
+
+**Математика:**
+```
+Simple Spoofing:  1 attack = 1 victim
+Cache Poisoning:  1 attack = N victims × TTL seconds
+
+Пример:
+- Resolver: 10,000 clients
+- TTL: 3600 seconds (1 hour)
+- Impact: 10,000 × 1 hour = 10,000 victim-hours
+
+Если TTL = 86400 (24 hours):
+- Impact: 10,000 × 24 hours = 240,000 victim-hours!
+```
+
+**Анна:**
+> *"Точно. Крылов умный — он атакует resolvers, не клиентов. Эффективнее. Вот почему DNSSEC важен."*
+
+> **LILITH:** *"Эффективность атаки = жертвы × время. Cache poisoning максимизирует оба параметра. Вот почему это критичная уязвимость."*
 
 </details>
-
-<details>
-<summary>✅ Решение (если совсем застряли)</summary>
-
-**Production-ready скрипт:**
-```bash
-#!/bin/bash
-
-suspicious_file="artifacts/suspicious_domains.txt"
-report_file="artifacts/dns_spoofing_report.txt"
-
-if [ ! -f "$suspicious_file" ]; then
-    echo "⚠ File not found: $suspicious_file"
-    exit 1
-fi
-
-echo "═══════════════════════════════════════════════════════════"
-echo "  DNS Spoofing Detection"
-echo "  File: $suspicious_file"
-echo "  Time: $(date '+%Y-%m-%d %H:%M:%S')"
-echo "═══════════════════════════════════════════════════════════"
-echo ""
-
-spoofed=0
-clean=0
-declare -a spoofed_list
-
-{
-    echo "DNS SPOOFING DETECTION REPORT"
-    echo "Generated: $(date)"
-    echo "─────────────────────────────────────────────────────────────"
-    echo ""
-} > "$report_file"
-
-while IFS=' ' read -r domain expected_ip comment; do
-    # Skip comments and empty lines
-    [[ "$domain" =~ ^# || -z "$domain" ]] && continue
-
-    echo "[CHECK] $domain"
-    echo "        Expected: $expected_ip"
-
-    # Get actual IP (timeout 3 sec)
-    actual_ip=$(timeout 3 dig +short +tries=2 +time=2 "$domain" 2>/dev/null | grep -E "^[0-9]+\." | head -n1)
-
-    if [ -z "$actual_ip" ]; then
-        echo "        Actual:   NXDOMAIN (not in public DNS)"
-        echo "        Status:   ✓ OK (internal domain)"
-        echo ""
-        clean=$((clean + 1))
-
-        {
-            echo "$domain: OK (not in DNS)"
-        } >> "$report_file"
-    elif [ "$actual_ip" = "$expected_ip" ]; then
-        echo "        Actual:   $actual_ip"
-        echo "        Status:   ✓ OK"
-        echo ""
-        clean=$((clean + 1))
-
-        {
-            echo "$domain: OK ($actual_ip)"
-        } >> "$report_file"
-    else
-        echo "        Actual:   $actual_ip"
-        echo "        Status:   ⚠️  SPOOFED!"
-        echo "        ⚠️  POSSIBLE CACHE POISONING!"
-        echo ""
-        spoofed=$((spoofed + 1))
-        spoofed_list+=("$domain")
-
-        {
-            echo "⚠️  $domain: SPOOFED!"
-            echo "    Expected: $expected_ip"
-            echo "    Actual:   $actual_ip"
-            echo ""
-        } >> "$report_file"
-    fi
-done < "$suspicious_file"
-
-# Summary
-echo "═══════════════════════════════════════════════════════════"
-echo "SUMMARY:"
-echo "  Total domains checked:  $((clean + spoofed))"
-echo "  Clean:                  $clean"
-echo "  Spoofed:                $spoofed"
-echo ""
-
-if [ $spoofed -gt 0 ]; then
-    echo "⚠️  DNS ATTACK DETECTED!"
-    echo ""
-    echo "Spoofed domains:"
-    for d in "${spoofed_list[@]}"; do
-        echo "  - $d"
-    done
-    echo ""
-    echo "Recommended actions:"
-    echo "  1. Flush DNS cache: sudo systemd-resolve --flush-caches"
-    echo "  2. Use trusted DNS: 8.8.8.8 (Google), 1.1.1.1 (Cloudflare)"
-    echo "  3. Enable DNSSEC"
-    echo "  4. Report to Anna (forensics)"
-else
-    echo "✓ All domains clean. No spoofing detected."
-fi
-
-echo "═══════════════════════════════════════════════════════════"
-echo "Report saved: $report_file"
-```
-
-**Объяснение:**
-- Читаем список доменов с expected IP
-- Для каждого делаем DNS lookup
-- Сравниваем actual vs expected
-- Если не совпадают → spoofing!
-- Генерируем отчёт для Anna
-
-**DNS Spoofing techniques:**
-1. **Cache Poisoning** — inject false records в DNS cache
-2. **MITM** — перехват DNS запросов, поддельные ответы
-3. **Rogue DNS Server** — подменить `/etc/resolv.conf`
-
-**Defense:**
-- **DNSSEC** — проверка цифровых подписей
-- **DNS over TLS/HTTPS** — шифрование запросов
-- **Trusted DNS servers** — использовать проверенные (8.8.8.8, 1.1.1.1)
-- **Monitoring** — детекция аномалий в DNS ответах
-
-</details>
-
-<details>
-<summary>🔍 DNS Spoofing & Cache Poisoning — теория</summary>
-
-### DNS Spoofing Attacks
-
-**DNS Spoofing (DNS Hijacking):**
-Атака где attacker подменяет DNS ответы, redirect жертву на malicious IP.
-
-**Типы атак:**
-
-**1. Cache Poisoning:**
-```
-1. Attacker: отправляет DNS query на resolver
-2. Attacker: быстро отправляет поддельные ответы (guessing transaction ID)
-3. Resolver: кэширует поддельный ответ
-4. Жертвы: получают поддельный IP из кэша
-```
-
-**2. MITM (Man-in-the-Middle):**
-```
-1. Жертва → DNS query → Attacker (перехват)
-2. Attacker → поддельный ответ → Жертва
-3. Жертва подключается к malicious IP
-```
-
-**3. Rogue DNS Server:**
-```
-1. Attacker получает root на жертве
-2. Изменяет /etc/resolv.conf → malicious DNS server
-3. Все DNS запросы идут через attacker
-```
-
-**4. Local /etc/hosts Poisoning:**
-```
-1. Attacker получает root
-2. Изменяет /etc/hosts:
-   93.184.216.34  bank.com  # phishing site
-3. Жертва заходит на bank.com → попадает на фишинг
-```
-
-**Real-world example (Kaminsky Attack, 2008):**
-Dan Kaminsky нашёл способ массово отравить DNS cache. Если успешно — можно redirect весь трафик домена.
-
-**Защита:**
-
-**1. DNSSEC (DNS Security Extensions):**
-- Цифровые подписи DNS records
-- Проверка аутентичности
-- Защита от cache poisoning
-
-**Проверка DNSSEC:**
-```bash
-dig +dnssec google.com
-
-# Ищите:
-# - RRSIG records (подписи)
-# - AD flag (Authenticated Data)
-```
-
-**2. DNS over TLS (DoT):**
-- Port 853
-- TLS encryption
-- Защита от MITM
-
-**3. DNS over HTTPS (DoH):**
-- Port 443 (HTTPS)
-- Невозможно отличить от обычного HTTPS трафика
-- Privacy
-
-**4. Trusted DNS Resolvers:**
-- **8.8.8.8** — Google Public DNS (DNSSEC enabled)
-- **1.1.1.1** — Cloudflare (privacy-focused)
-- **9.9.9.9** — Quad9 (malware blocking)
-
-**Detection:**
-
-**Signs of DNS spoofing:**
-- Unexpected IP addresses
-- SSL certificate errors (HTTPS site, wrong cert)
-- Redirect на незнакомые сайты
-- Different results from different DNS servers
-
-**Monitoring:**
-```bash
-# Проверить несколько DNS серверов
-dig @8.8.8.8 example.com
-dig @1.1.1.1 example.com
-dig @9.9.9.9 example.com
-
-# Если результаты разные → возможен spoofing
-```
-
-**Mitigation:**
-
-**Для пользователя:**
-- Использовать DNSSEC-validating resolver
-- DNS over TLS/HTTPS
-- Проверять SSL сертификаты
-- VPN с trusted DNS
-
-**Для администратора:**
-- Включить DNSSEC на authoritative сервере
-- Monitoring DNS responses
-- Rate limiting
-- Anomaly detection
-
-**Krylov's Attack (сюжет):**
-- Cache poisoning на public DNS resolvers
-- Когда Max запрашивает shadow-server-05 → получает IP под контролем Krylov
-- MITM → Krylov может читать весь трафик
-- Defense: DNSSEC + DoT + internal DNS
-
-</details>
-
-**Результат:**
-```bash
-# Количество spoofed доменов (если есть):
-SPOOFED_COUNT=???
-```
 
 ---
 
-### Задание 7: DNSSEC — проверка безопасности ⭐⭐⭐
+## Цикл 7: DNSSEC — DNS Security Extensions (10-15 мин)
 
-**Контекст:**
-Katarina (звонок из Stockholm University):
-> *"Max, DNS spoofing is possible because DNS is not authenticated. DNSSEC adds digital signatures to DNS records. If domain has DNSSEC — we can verify authenticity. Check which domains are protected."*
+### 🎬 Сюжет (2 мин)
 
-**Задача:**
-Проверьте DNSSEC (DNS Security Extensions) для нескольких доменов.
+Katarina (криптограф, подходит):
+> *"DNSSEC — cryptographic signatures for DNS. Like digital signature on document. Prevents spoofing. Let me show you."*
 
-**Попробуйте сами (7-10 минут):**
+### 📚 Теория: DNSSEC (5-7 мин)
 
-```bash
-# Проверьте DNSSEC для:
-# - google.com
-# - cloudflare.com
-# - example.com
+#### Метафора: Цифровая подпись в справочнике ✍️🔐
+
+**Представь телефонную книгу где:**
+- Каждая страница заверена нотариусом
+- Печать нотариуса = невозможно подделать
+- Если кто-то пытается изменить номер → печать не совпадает
+
+**DNSSEC аналогично:**
+```
+DNS Record:        google.com → 142.250.185.46
+DNSSEC Signature:  [cryptographic signature]
+Public Key:        [to verify signature]
+
+Если запись изменена → signature invalid → reject!
 ```
 
-<details>
-<summary>💡 Подсказка 1 (если застряли > 7 минут)</summary>
+#### ASCII: DNSSEC Chain of Trust
 
-**Katarina:**
-> *"`dig +dnssec` shows DNS security extensions. Look for RRSIG records (signatures) and AD flag (Authenticated Data)."*
+```
+┌────────────────┐
+│   Root DNS     │ Подписано Root Key
+│   (.)          ├──────────┐
+└────────┬───────┘          │
+         │                  ├─> Trust Chain
+         ▼                  │
+┌────────────────┐          │
+│   TLD DNS      │ Подписано TLD Key
+│   (.com)       ├──────────┤
+└────────┬───────┘          │
+         │                  │
+         ▼                  │
+┌────────────────┐          │
+│  Domain DNS    │ Подписано Domain Key
+│ (google.com)   ├──────────┘
+└────────────────┘
 
-Попробуйте:
-```bash
-# Проверка DNSSEC
-dig +dnssec google.com
-
-# Что искать:
-# 1. RRSIG records — цифровые подписи
-# 2. AD flag в header — Authenticated Data
-# 3. DNSKEY records — публичные ключи
+Каждый уровень подписывает следующий
+Если подпись неверна → reject response
 ```
 
-**Интерпретация:**
-- Есть RRSIG + AD flag → DNSSEC работает ✓
-- Нет RRSIG → DNSSEC не включён ✗
+#### DNSSEC Record Types:
 
-</details>
-
-<details>
-<summary>💡 Подсказка 2 (если застряли > 15 минут)</summary>
-
-**Команды:**
-
-```bash
-# DNSSEC check (детальный)
-dig +dnssec google.com
-
-# DNSSEC validation check
-dig +dnssec +multi google.com
-
-# Проверить только наличие DNSSEC
-dig +dnssec google.com | grep -E "(RRSIG|AD)"
-
-# Проверить DNSKEY (публичные ключи)
-dig DNSKEY google.com
+```
+RRSIG  - Resource Record Signature (подпись)
+DNSKEY - Public key для проверки подписи
+DS     - Delegation Signer (связь между уровнями)
+NSEC   - Next Secure (proof of non-existence)
 ```
 
-**Скрипт для batch проверки:**
-```bash
-#!/bin/bash
-
-domains=("google.com" "cloudflare.com" "example.com")
-
-for domain in "${domains[@]}"; do
-    echo "Checking DNSSEC for: $domain"
-
-    # Check for RRSIG
-    if dig +dnssec "$domain" | grep -q "RRSIG"; then
-        echo "  ✓ DNSSEC enabled (RRSIG found)"
-    else
-        echo "  ✗ DNSSEC not enabled"
-    fi
-
-    # Check AD flag
-    if dig +dnssec "$domain" | grep -q " ad;"; then
-        echo "  ✓ AD flag set (Authenticated Data)"
-    fi
-    echo ""
-done
-```
-
-</details>
-
-<details>
-<summary>✅ Решение (если совсем застряли)</summary>
-
-**Production-ready DNSSEC checker:**
-```bash
-#!/bin/bash
-
-echo "═══════════════════════════════════════════════════════════"
-echo "  DNSSEC Security Check"
-echo "═══════════════════════════════════════════════════════════"
-echo ""
-
-# Test domains
-declare -a test_domains=(
-    "google.com"
-    "cloudflare.com"
-    "example.com"
-    "github.com"
-    "linux.org"
-)
-
-secure_count=0
-insecure_count=0
-
-for domain in "${test_domains[@]}"; do
-    echo "[CHECK] $domain"
-
-    # Get DNS response with DNSSEC
-    response=$(dig +dnssec +noall +answer "$domain" A 2>/dev/null)
-    header=$(dig +dnssec +noall +comments "$domain" A 2>/dev/null | head -5)
-
-    # Check for RRSIG (signature)
-    has_rrsig=false
-    if echo "$response" | grep -q "RRSIG"; then
-        has_rrsig=true
-    fi
-
-    # Check for AD flag (Authenticated Data)
-    has_ad=false
-    if echo "$header" | grep -q " ad;"; then
-        has_ad=true
-    fi
-
-    # Verdict
-    if $has_rrsig && $has_ad; then
-        echo "        Status: ✓ DNSSEC ENABLED & VALIDATED"
-        echo "        - RRSIG found (digital signatures)"
-        echo "        - AD flag set (authenticated)"
-        secure_count=$((secure_count + 1))
-    elif $has_rrsig; then
-        echo "        Status: ⚠️  DNSSEC ENABLED but not validated"
-        echo "        - RRSIG found"
-        echo "        - AD flag missing (resolver doesn't validate)"
-        secure_count=$((secure_count + 1))
-    else
-        echo "        Status: ✗ DNSSEC NOT ENABLED"
-        echo "        - No RRSIG (no signatures)"
-        echo "        - Vulnerable to spoofing"
-        insecure_count=$((insecure_count + 1))
-    fi
-    echo ""
-done
-
-# Summary
-echo "═══════════════════════════════════════════════════════════"
-echo "SUMMARY:"
-echo "  Total domains checked:  ${#test_domains[@]}"
-echo "  DNSSEC enabled:         $secure_count"
-echo "  DNSSEC not enabled:     $insecure_count"
-echo ""
-
-if [ $insecure_count -gt 0 ]; then
-    echo "⚠️  Some domains are vulnerable to DNS spoofing!"
-    echo ""
-    echo "Recommendation:"
-    echo "  - Use DNSSEC-validating DNS resolver (8.8.8.8, 1.1.1.1)"
-    echo "  - Enable DNSSEC on your own domains"
-    echo "  - Consider DNS over TLS (DoT) or DNS over HTTPS (DoH)"
-fi
-
-echo "═══════════════════════════════════════════════════════════"
-```
-
-**Объяснение DNSSEC:**
-
-**Что это:**
-- Digital signatures для DNS records
-- Проверка подлинности ответов
-- Защита от cache poisoning
-
-**Как работает:**
-```
-1. Domain owner подписывает DNS records приватным ключом
-2. Публичный ключ публикуется в DNSKEY record
-3. Resolver скачивает DNSKEY
-4. Resolver проверяет подпись (RRSIG)
-5. Если подпись валидна → устанавливает AD flag
-```
-
-**Проверка вручную:**
-```bash
-# 1. Проверить DNSSEC
-dig +dnssec google.com
-
-# 2. Искать в выводе:
-# ;; flags: qr rd ra ad;  ← AD flag (Authenticated Data)
-#
-# ANSWER SECTION:
-# google.com. 82 IN A 142.250.185.46
-# google.com. 82 IN RRSIG ... ← подпись
-```
-
-**RRSIG record:**
-```
-google.com. 82 IN RRSIG A 8 2 300 20251108050000 20251016040000 12345 google.com. [base64-signature]
-```
-- `RRSIG` — подпись для A record
-- `8` — алгоритм (RSA/SHA-256)
-- `300` — original TTL
-- `20251108...` — expiration
-- `[base64...]` — цифровая подпись
-
-**Security benefits:**
-- ✓ Защита от cache poisoning
-- ✓ Аутентичность DNS ответов
-- ✓ Цепочка trust от root до домена
-- ✗ Не шифрует запросы (используйте DoT/DoH)
-
-</details>
-
-<details>
-<summary>🔍 DNSSEC — теория</summary>
-
-### DNSSEC (DNS Security Extensions)
-
-**Проблема:**
-DNS изначально не аутентифицирован — любой может отправить поддельный ответ.
-
-**Решение:**
-DNSSEC добавляет цифровые подписи к DNS records.
-
-**Как работает:**
-
-**1. Zone Signing:**
-```
-Domain owner:
-  1. Генерирует пару ключей (private/public)
-  2. Подписывает все DNS records приватным ключом
-  3. Публикует DNSKEY (публичный ключ) и RRSIG (подписи)
-```
-
-**2. Validation:**
-```
-Resolver:
-  1. Запрашивает DNS record + DNSSEC data
-  2. Получает RRSIG (подпись) и DNSKEY (публичный ключ)
-  3. Проверяет подпись публичным ключом
-  4. Если валидна → устанавливает AD flag (Authenticated Data)
-  5. Если не валидна → SERVFAIL (блокирует ответ)
-```
-
-**3. Chain of Trust:**
-```
-Root (.)
-  ↓ (подписывает)
-.com
-  ↓ (подписывает)
-google.com
-  ↓ (подписывает)
-www.google.com
-```
-
-Каждый уровень подписывает следующий → цепочка доверия от root до конечного домена.
-
-**DNS Security Records:**
-
-**DNSKEY:**
-- Публичный ключ домена
-- Используется для проверки подписей
-- Пример: `dig DNSKEY google.com`
-
-**RRSIG:**
-- Цифровая подпись DNS record
-- Создаётся приватным ключом
-- Проверяется публичным (DNSKEY)
-
-**DS (Delegation Signer):**
-- Hash публичного ключа
-- Публикуется в parent зоне (.com для google.com)
-- Связывает child зону с parent
-
-**NSEC/NSEC3:**
-- Proof of non-existence
-- Доказывает что record НЕ существует
-- NSEC3 — улучшенная версия (privacy)
-
-**Пример валидации:**
+**Пример DNSSEC query:**
 
 ```bash
 $ dig +dnssec google.com
 
-;; flags: qr rd ra ad;  ← AD flag = authenticated!
+;; ANSWER SECTION:
+google.com.     240  IN  A       142.250.185.46
+google.com.     240  IN  RRSIG   A 8 2 300 ...
+                          ↑
+                     DNSSEC signature!
+```
+
+#### Как работает DNSSEC:
+
+```
+1. Resolver запрашивает google.com
+2. DNS сервер возвращает:
+   - A record (IP адрес)
+   - RRSIG (подпись для A record)
+3. Resolver проверяет подпись с DNSKEY
+4. Если подпись valid → ответ легитимный ✓
+5. Если signature invalid → reject ⚠️
+```
+
+> **Katarina:** *"DNSSEC is like HTTPS for DNS. Encryption + Authentication. Without it — man in the middle possible."*
+
+#### DNSSEC adoption (2025):
+
+```
+✅ Enabled:
+- .com, .net, .org (TLDs)
+- google.com, cloudflare.com (major sites)
+- Government domains (.gov)
+
+❌ Not enabled:
+- Many small websites (~40% domains)
+- Some TLDs (развивающиеся страны)
+```
+
+> **LILITH:** *"DNSSEC не universal. Проверяй поддержку для критичных доменов. Без DNSSEC — уязвим к cache poisoning."*
+
+#### "Aha!" момент: DNSSEC ≠ Encryption! 💡
+
+```
+❌ Думаешь: "DNSSEC шифрует DNS запросы"
+✅ Reality:  "DNSSEC ПОДПИСЫВАЕТ ответы, НЕ шифрует"
+
+DNSSEC:    Authentication ✓  Encryption ✗
+DNS over TLS:  Authentication ✓  Encryption ✓
+
+Для полной защиты нужны ОБА:
+- DNSSEC (подпись ответов)
+- DNS over TLS (шифрование запросов)
+```
+
+> **Katarina:** *"Think of it: DNSSEC = signature on letter (integrity). DoT = envelope (privacy). Both needed."*
+
+### 💻 Практика: Проверка DNSSEC (3-5 мин)
+
+#### Задание:
+
+```bash
+# 1. Проверить DNSSEC для major domains
+dig +dnssec google.com
+dig +dnssec cloudflare.com
+
+# Искать в выводе:
+# - RRSIG record (подпись)
+# - ad flag (Authentic Data)
+
+# 2. Проверить домены БЕЗ DNSSEC
+dig +dnssec example.org
+# Если нет RRSIG → DNSSEC not enabled
+
+# 3. Проверить shadow domains (если DNSSEC настроен)
+dig +dnssec shadow-server-01.ops.internal
+
+# 4. Validate DNSSEC chain (advanced)
+delv google.com
+# (если установлен bind9-dnsutils)
+
+# Или через drill:
+drill -D google.com
+# (если установлен ldns-utils)
+```
+
+#### Интерпретация вывода:
+
+```bash
+$ dig +dnssec google.com
+
+;; flags: qr rd ra ad;
+                    ^^
+                    ad = Authentic Data (DNSSEC valid!)
 
 ;; ANSWER SECTION:
-google.com.  82  IN  A  142.250.185.46
-google.com.  82  IN  RRSIG A 8 2 300 ... ← подпись A record
+google.com.     240  IN  A       142.250.185.46
+google.com.     240  IN  RRSIG   A 8 2 300 ...
+                        ^^^^^^
+                        DNSSEC signature present ✓
 ```
 
-**Команды:**
-
+**Если нет RRSIG:**
 ```bash
-# Проверить DNSSEC
-dig +dnssec google.com
-
-# Проверить только валидацию
-dig +dnssec +cd google.com  # CD = Check Disabled
-
-# DNSKEY
-dig DNSKEY google.com
-
-# DS record (в parent зоне)
-dig DS google.com
+# DNSSEC не настроен для этого домена
+# Уязвим к cache poisoning
 ```
 
-**Advantages:**
-- ✓ Защита от cache poisoning
-- ✓ Аутентичность ответов
-- ✓ Integrity (данные не изменены)
+> **LILITH:** *"DNSSEC проверка = обязательна для критичных доменов. Банки, правительство, платёжные системы должны иметь DNSSEC. Если нет — не доверяй."*
 
-**Limitations:**
-- ✗ НЕ шифрует запросы (DoT/DoH для privacy)
-- ✗ Overhead (больше данных, медленнее)
-- ✗ Complexity (сложнее настроить)
-- ✗ Breaking changes (если key rotation сломан → домен down)
+### 🤔 Проверка понимания (1 мин)
 
-**Deployment:**
-- ~40% top domains имеют DNSSEC (2025)
-- Root zone подписана с 2010
-- Все TLDs (.com, .org, etc) поддерживают
+**Katarina:** *"Max, client says 'I have DNSSEC, DNS is encrypted now.' Is this correct?"*
 
-**Best Practices:**
-- Включить DNSSEC на своих доменах
-- Использовать DNSSEC-validating resolver
-- Automated key rotation
-- Мониторинг expiration dates
-- Backup keys
+<details>
+<summary>🤔 Думай перед ответом</summary>
 
-**Related Technologies:**
-- **DNS over TLS (DoT):** DNSSEC + шифрование (port 853)
-- **DNS over HTTPS (DoH):** DNSSEC + HTTPS (port 443)
+**Ответ:**
+
+**НЕТ! DNSSEC ≠ Encryption!**
+
+```
+DNSSEC provides:
+✅ Authentication (подпись)
+✅ Integrity (проверка что ответ не изменён)
+✗ Confidentiality (НЕТ шифрования!)
+
+DNS queries всё ещё VISIBLE для сниффера!
+```
+
+**Правильно:**
+```
+DNSSEC:        Подпись ответов (prevents spoofing)
+DNS over TLS:  Шифрование запросов (prevents sniffing)
+DNS over HTTPS: То же + использует HTTPS (port 443)
+
+Для полной защиты:
+DNSSEC + DoT/DoH
+```
+
+**Пример:**
+
+```
+Без DNSSEC:
+ISP видит: "query google.com"
+Атакующий может: подменить ответ ⚠️
+
+С DNSSEC:
+ISP видит: "query google.com"
+Атакующий НЕ может подменить (подпись неверна) ✓
+
+С DNSSEC + DoT:
+ISP видит: "encrypted TLS traffic to 1.1.1.1"
+ISP НЕ видит: что именно ты запрашиваешь ✓
+Атакующий НЕ может подменить ✓
+```
+
+**Katarina:**
+> *"Correct. DNSSEC = integrity, not privacy. For privacy — use DNS over TLS. Two different problems, two solutions."*
+
+> **LILITH:** *"Криптография = много инструментов для разных задач. DNSSEC, DoT, DoH, HTTPS — каждый решает свою проблему. Понимай разницу."*
 
 </details>
-
-**Результат:**
-```bash
-# Количество доменов с DNSSEC:
-DNSSEC_ENABLED=???
-```
 
 ---
 
-### Задание 8: Финальный DNS Security Audit ⭐⭐⭐
+## Цикл 8: DNS Security Audit — Итоговая проверка (10-15 мин)
 
-**Контекст:**
-Erik: *"Max, good progress. Now — final task. Create comprehensive DNS security audit report. Viktor needs it for operation security assessment."*
+### 🎬 Сюжет (2 мин)
 
-**Задача:**
-Создайте bash скрипт `dns_audit.sh`, который интегрирует все предыдущие 7 заданий и генерирует детальный DNS security audit отчёт.
+Erik:
+> *"Now you understand DNS. Time for final task — comprehensive DNS security audit. Check everything we learned. Document findings. This goes to Viktor."*
 
-**Попробуйте сами (20-30 минут):**
+### 📚 Теория: DNS Security Best Practices (5-7 мин)
 
-Интегрируйте всё что изучили:
-1. DNS lookup для shadow servers (Задание 2)
-2. Проверка разных типов records (Задание 3)
-3. Reverse DNS (Задание 4)
-4. /etc/hosts configuration (Задание 5)
-5. DNS spoofing detection (Задание 6)
-6. DNSSEC validation (Задание 7)
-7. Генерация отчёта в `artifacts/dns_security_report.txt`
+#### Checklist для DNS Security Audit:
+
+**1. Configuration:**
+```bash
+✅ /etc/hosts — no suspicious entries
+✅ /etc/resolv.conf — correct nameservers
+✅ systemd-resolved — status OK
+✅ DNS servers — trusted (not attacker's)
+```
+
+**2. Resolution:**
+```bash
+✅ Shadow domains — NOT in public DNS
+✅ Critical domains — resolve correctly
+✅ Suspicious domains — checked for spoofing
+```
+
+**3. Security:**
+```bash
+✅ DNSSEC — enabled for critical domains
+✅ DNS over TLS — configured (optional but recommended)
+✅ Cache — flushed if suspicious activity
+✅ Performance — query time < 100ms
+```
+
+**4. Monitoring:**
+```bash
+✅ DNS failures — < 5%
+✅ Query latency — monitored
+✅ Suspicious queries — logged
+```
+
+#### Type B Reminder:
+
+> **LILITH:** *"Финальная задача = написать ОТЧЁТ, НЕ bash wrapper для dig! Ты УЖЕ выполнил все проверки вручную (Циклы 1-7). Теперь просто документируй результаты."*
+
+**Что делать:**
+```bash
+✅ Использовать dig, resolvectl, cat напрямую
+✅ Собрать результаты в отчёт
+✅ Минимальный bash для генерации отчёта (100-150 строк)
+❌ НЕ писать bash wrapper для всех DNS команд
+```
+
+**Как Episode 04:**
+```
+Episode 04: apt commands → generate report ✅
+Episode 06: dig commands → generate report ✅
+```
+
+> **Erik:** *"Good sysadmin documents everything. Report is proof of work. Viktor needs it."*
+
+### 💻 Практика: Финальный DNS Security Audit (3-5 мин)
+
+#### Задание:
+
+**Выполнить все проверки вручную:**
 
 ```bash
-# Создайте скрипт dns_audit.sh
-# Используйте starter.sh как шаблон
+# 1. Configuration Check
+cat /etc/hosts | grep -v "^#" | grep -v "^$"
+cat /etc/resolv.conf
+resolvectl status
+
+# 2. Shadow Servers Check
+while read domain; do
+    [[ "$domain" =~ ^# ]] && continue
+    result=$(dig +short "$domain")
+    if [ -n "$result" ]; then
+        echo "⚠️  LEAK: $domain"
+    fi
+done < artifacts/dns_zones.txt
+
+# 3. Spoofing Detection
+while read domain expected_ip; do
+    [[ "$domain" =~ ^# ]] && continue
+    actual=$(dig +short "$domain" | head -1)
+    [ "$actual" != "$expected_ip" ] && echo "⚠️  SPOOF: $domain"
+done < artifacts/suspicious_domains.txt
+
+# 4. DNSSEC Check
+for domain in google.com cloudflare.com; do
+    dig +dnssec "$domain" | grep -q RRSIG && echo "✓ $domain DNSSEC"
+done
+
+# 5. Performance Check
+dig google.com | grep "Query time"
 ```
 
-<details>
-<summary>💡 Подсказка 1 (если застряли > 15 минут)</summary>
-
-**LILITH:**
-> *"Интеграция — это не просто копипаст. Создай функции для каждого задания, потом вызови их последовательно. Каждая функция должна return результат."*
-
-**Структура:**
-```bash
-#!/bin/bash
-set -e
-
-# Global variables
-REPORT_FILE="artifacts/dns_security_report.txt"
-TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
-
-# Function 1: Check shadow servers (Task 2)
-check_shadow_servers() {
-    # Your code from Task 2
-}
-
-# Function 2: Check DNS records (Task 3)
-check_dns_records() {
-    # Your code from Task 3
-}
-
-# Function 3: Reverse DNS (Task 4)
-check_reverse_dns() {
-    # Your code from Task 4
-}
-
-# Function 4: DNS spoofing detection (Task 6)
-detect_dns_spoofing() {
-    # Your code from Task 6
-}
-
-# Function 5: DNSSEC check (Task 7)
-check_dnssec() {
-    # Your code from Task 7
-}
-
-# Function 6: Generate report
-generate_report() {
-    # Combine all results
-}
-
-# Main
-main() {
-    echo "DNS Security Audit..."
-
-    result1=$(check_shadow_servers)
-    result2=$(check_dns_records)
-    # ...
-
-    generate_report "$result1" "$result2" ...
-}
-
-main "$@"
-```
-
-</details>
-
-<details>
-<summary>💡 Подсказка 2 (если застряли > 30 минут)</summary>
-
-**Конкретная реализация key functions:**
+**Теперь сгенерировать отчёт:**
 
 ```bash
-#!/bin/bash
+# Используй starter.sh template или напиши свой minimal script
+./generate_dns_audit_report.sh
 
-# Check shadow servers
-check_shadow_servers() {
-    local file="artifacts/dns_zones.txt"
-    local not_found=0
-
-    while IFS= read -r domain; do
-        [[ -z "$domain" || "$domain" =~ ^# ]] && continue
-
-        result=$(dig +short "$domain" 2>/dev/null)
-        if [ -z "$result" ]; then
-            not_found=$((not_found + 1))
-        fi
-    done < "$file"
-
-    echo "$not_found"  # Return count
-}
-
-# DNS spoofing detection
-detect_dns_spoofing() {
-    local file="artifacts/suspicious_domains.txt"
-    local spoofed=0
-
-    while IFS=' ' read -r domain expected_ip; do
-        [[ "$domain" =~ ^# || -z "$domain" ]] && continue
-
-        actual_ip=$(dig +short "$domain" 2>/dev/null | head -n1)
-        if [ -n "$actual_ip" ] && [ "$actual_ip" != "$expected_ip" ]; then
-            spoofed=$((spoofed + 1))
-        fi
-    done < "$file"
-
-    echo "$spoofed"  # Return spoofed count
-}
-
-# DNSSEC check
-check_dnssec() {
-    local domains=("google.com" "cloudflare.com" "example.com")
-    local secure=0
-
-    for domain in "${domains[@]}"; do
-        if dig +dnssec "$domain" 2>/dev/null | grep -q "RRSIG"; then
-            secure=$((secure + 1))
-        fi
-    done
-
-    echo "$secure"  # Return secure count
-}
-
-# Generate report
-generate_report() {
-    local shadow_ok=$1
-    local spoofed=$2
-    local dnssec_count=$3
-
-    {
-        echo "═══════════════════════════════════════════════════════════"
-        echo "           DNS SECURITY AUDIT REPORT"
-        echo "═══════════════════════════════════════════════════════════"
-        echo ""
-        echo "Date:       $(date)"
-        echo "Location:   Bahnhof Pionen, Stockholm, Sweden"
-        echo "Operator:   Max Sokolov"
-        echo ""
-        echo "[1] Shadow Servers: $shadow_ok not in public DNS ✓"
-        echo "[2] DNS Spoofing:   $spoofed domains spoofed"
-        [ $spoofed -gt 0 ] && echo "    ⚠️  ATTACK DETECTED!"
-        echo "[3] DNSSEC:         $dnssec_count/3 domains secured"
-        echo ""
-        echo "═══════════════════════════════════════════════════════════"
-    } > "artifacts/dns_security_report.txt"
-}
-
-# Main
-main() {
-    echo "Running DNS Security Audit..."
-
-    shadow_ok=$(check_shadow_servers)
-    spoofed=$(detect_dns_spoofing)
-    dnssec=$(check_dnssec)
-
-    generate_report "$shadow_ok" "$spoofed" "$dnssec"
-
-    echo "✓ Report: artifacts/dns_security_report.txt"
-}
-
-main "$@"
+# Результат: artifacts/dns_security_report.txt
 ```
 
-</details>
+#### Что должно быть в отчёте:
 
-<details>
-<summary>✅ Решение (если совсем застряли)</summary>
-
-**Посмотрите референсное решение:**
-```bash
-cat solution/dns_audit.sh
 ```
+═══════════════════════════════════════════════════
+          DNS SECURITY AUDIT REPORT
+═══════════════════════════════════════════════════
 
-Или запустите:
-```bash
-./solution/dns_audit.sh
-```
-
-**Ключевые моменты:**
-1. **Модульность:** Каждая функция = одна задача
-2. **Error handling:** Проверка exit codes
-3. **Reporting:** Детальный и структурированный отчёт
-4. **Security focus:** Приоритет на обнаружение угроз
-
-**Формат отчёта (пример):**
-```
-═══════════════════════════════════════════════════════════════
-           DNS SECURITY AUDIT REPORT
-═══════════════════════════════════════════════════════════════
-
-Date:       2025-10-11 14:00:00
-Location:   Bahnhof Pionen, Stockholm, Sweden 🇸🇪
+Date:       2025-10-11 14:30:00
+Location:   Bahnhof Pionen, Stockholm 🇸🇪
 Operator:   Max Sokolov
-Day:        11 of 60 (KERNEL SHADOWS Operation)
+Audited by: Erik Johansson
 
-════════════════════════════════════════════════════════════════
+[1] CONFIGURATION
+    /etc/hosts:       OK (no suspicious entries)
+    /etc/resolv.conf: OK (nameservers: 8.8.8.8, 1.1.1.1)
+    systemd-resolved: ACTIVE (127.0.0.53)
 
-[1] SHADOW SERVERS CHECK
-    Total internal domains:  15
-    Not in public DNS:       15 ✓
-    Status:                  ✓ SECURE (no information leaks)
+[2] SHADOW SERVERS
+    Checked: 15 internal domains
+    Public leaks: 0
+    Status: ✓ SECURE
 
-[2] DNS RECORDS ANALYSIS
-    Domains checked:         3
-    A records:               3/3 ✓
-    AAAA records:            2/3
-    MX records:              3/3 ✓
-    TXT records:             3/3 ✓
-    NS records:              3/3 ✓
+[3] DNS SPOOFING
+    Checked: 23 suspicious domains
+    Spoofed: 0
+    Status: ✓ CLEAN
 
-[3] REVERSE DNS
-    IPs checked:             4
-    PTR records found:       4/4 ✓
-    All reverse lookups valid
+[4] DNSSEC
+    google.com:      ENABLED ✓
+    cloudflare.com:  ENABLED ✓
+    ops.internal:    NOT ENABLED (internal zone)
 
-[4] DNS SPOOFING DETECTION
-    Suspicious domains:      10
-    Spoofed domains:         0 ✓
-    Status:                  ✓ NO ATTACK DETECTED
+[5] PERFORMANCE
+    Average query time: 28 ms
+    Status: ✓ GOOD (< 50 ms)
 
-    (or if attack detected:)
-    Spoofed domains:         2 ⚠️
-    Status:                  ⚠️ CACHE POISONING DETECTED!
-    Affected:
-      - shadow-server-05.ops.internal
-      - shadow-server-08.ops.internal
+[6] SECURITY RECOMMENDATIONS
+    - Enable DNSSEC for ops.internal zone
+    - Configure DNS over TLS (DoT)
+    - Monitor DNS query logs for anomalies
+    - Regular /etc/hosts audits
 
-[5] DNSSEC VALIDATION
-    Domains checked:         3
-    DNSSEC enabled:          2/3
-    Protected:
-      ✓ google.com
-      ✓ cloudflare.com
-      ✗ example.com (not protected)
-
-[6] /ETC/HOSTS CONFIGURATION
-    Local overrides:         1
-    Test domain:             shadow-test.local → 127.0.0.1 ✓
-
-════════════════════════════════════════════════════════════════
-
-SECURITY ASSESSMENT:
-
-Overall Status: ⚠️  MEDIUM RISK
-
-Issues Found:
-  - 2 domains affected by DNS spoofing (cache poisoning)
-  - 1 domain without DNSSEC protection
-
-Recommendations:
-  1. URGENT: Flush DNS cache on all workstations
-     sudo systemd-resolve --flush-caches
-
-  2. Switch to trusted DNS resolvers:
-     - 8.8.8.8 (Google Public DNS)
-     - 1.1.1.1 (Cloudflare)
-
-  3. Enable DNSSEC validation in /etc/resolv.conf
-
-  4. Consider DNS over TLS (Episode 08)
-
-  5. Report DNS spoofing to Anna (forensics analysis)
-
-════════════════════════════════════════════════════════════════
-
-Next Steps:
-  - Episode 07: Firewalls & iptables (return to Moscow)
-  - Configure firewall rules to block malicious IPs
-  - Rate limiting for DDoS protection
-
-Generated by: dns_audit.sh
-Episode: 06 — DNS & Name Resolution
-Location: Stockholm, Sweden 🇸🇪
-
+═══════════════════════════════════════════════════
 END OF REPORT
 ```
 
-**Что проверить в вашем решении:**
-- ✅ Все 7 функций реализованы
-- ✅ Отчёт генерируется в `artifacts/dns_security_report.txt`
-- ✅ Детальная статистика по каждому разделу
-- ✅ Security assessment с рекомендациями
-- ✅ Error handling для missing files
-- ✅ Красивое форматирование
+> **LILITH:** *"Отчёт = твоё доказательство работы. Viktor читает это. Крылов может читать это (если перехватит). Пиши профессионально."*
+
+### 🤔 Проверка понимания (1 мин)
+
+**Erik:** *"You finished audit. Found 3 spoofed domains. What is your next action?"*
+
+<details>
+<summary>🤔 Думай перед ответом</summary>
+
+**Ответ:**
+
+**Порядок действий при обнаружении DNS spoofing:**
+
+**1. НЕМЕДЛЕННО:**
+```bash
+# Flush DNS cache (remove poisoned entries)
+sudo resolvectl flush-caches
+
+# Или если не systemd-resolved:
+sudo systemd-resolve --flush-caches
+```
+
+**2. ИЗОЛИРОВАТЬ:**
+```bash
+# Добавить правильные записи в /etc/hosts (temporary fix)
+echo "10.50.1.20 shadow-server-05.ops.internal" | sudo tee -a /etc/hosts
+
+# Теперь queries будут использовать /etc/hosts (bypass DNS)
+```
+
+**3. СООБЩИТЬ КОМАНДЕ:**
+```bash
+# Urgent notification
+# Viktor, Anna, Alex должны знать
+
+"⚠️ DNS SPOOFING DETECTED
+ Domains affected: 3
+ Attacker IP: 185.220.101.52 (Tor exit node)
+ Action taken: Cache flushed, /etc/hosts updated
+ Recommendation: Switch to DoT + DNSSEC"
+```
+
+**4. РАССЛЕДОВАНИЕ:**
+```bash
+# Анна (forensics) анализирует:
+# - Когда началось?
+# - Сколько clients affected?
+# - Как Крылов получил доступ к resolver?
+```
+
+**5. ДОЛГОСРОЧНОЕ РЕШЕНИЕ:**
+```bash
+# Configure DNS over TLS (encrypted)
+# Enable DNSSEC validation
+# Monitor DNS logs continuously
+# Rotate DNS resolvers
+```
+
+**Erik:**
+> *"Perfect response. Speed matters in security. Flush cache first, then investigate. Minutes can save hours of damage."*
+
+> **LILITH:** *"DNS инциденты = время критично. Каждая минута poisoned cache = 100+ жертв. Действуй быстро, думай потом."*
 
 </details>
 
-**Требования к финальному скрипту:**
-1. Интегрирует ВСЕ 7 предыдущих заданий
-2. Генерирует детальный security audit report
-3. Обрабатывает ошибки (fallback'ы)
-4. Security assessment + recommendations
-5. Красивое форматирование
-
 ---
 
-## 🎬 Эпилог
+## 🎬 Эпилог: Миссия завершена
 
 ### День 11, 18:00 — Bahnhof Pionen
 
-Erik просматривает отчёт Max:
-> *"Good work, Max. Your DNS audit is comprehensive. Krylov's cache poisoning is now documented. Anna can use this for forensics."*
+Erik проверяет отчёт:
+> *"Excellent work, Max. You found DNS issues we didn't even know about. Viktor will be impressed."*
 
 **Видеозвонок с командой:**
 
-**Anna** (из Москвы):
-> *"Max, excellent report. I found Krylov's DNS server IP in dark web marketplace. He's renting botnet for cache poisoning. We need to block these IPs in firewall — that's Episode 07."*
+**Виктор:**
+> *"Макс, Эрик прислал хороший отчёт. Ты быстро освоил DNS. Это знание спасёт нас много раз. DNS — фундамент интернета, теперь ты понимаешь фундамент."*
 
-**Viktor:**
-> *"Max, stay in Stockholm for one more day. Erik will teach you firewalls. Then you return to Moscow — we'll implement iptables rules to protect our infrastructure."*
+**Анна:**
+> *"DNS аудит нашёл отпечатки Крылова. 3 отравленных домена, все указывают на Tor exit nodes. Он становится изощрённее. Но мы поймали это благодаря твоему аудиту."*
 
-**Alex:**
-> *"Little brother becoming professional. Proud of you. But be careful — Krylov knows you're in Sweden. He's watching."*
-
-Katarina Lindström (в офисе Erik):
-> *"Max, before you go — let me show you DNS over TLS. Privacy is not optional anymore. Episode 08, okay?"*
-
-Erik:
-> *"Max — welcome to Sweden anytime. You're good engineer. Viktor chose right person."*
-
-**Max (думает):**
-> *"Две недели назад я не знал что такое DNS. Сейчас я детектирую cache poisoning в международной инфраструктуре. LILITH была права — технология — универсальный язык."*
+**Алекс:**
+> *"Хорошая работа, братан. DNS security = невидимая работа. Никто не замечает пока всё работает. Но когда ломается — катастрофа."*
 
 **LILITH:**
-> *"DNS — телефонная книга интернета. Но если книга поддельная — весь интернет становится опасным. Ты научился проверять подлинность. Это критический навык. Следующий шаг — firewalls. Защита периметра."*
+> *"DNS Module complete. You learned: dig, systemd-resolved, /etc/hosts, DNSSEC. Next — firewalls. Episode 07 — iptables, attack mitigation. Prepare."*
+
+Erik провожает до выхода из бункера:
+> *"Remember — DNS is trust system. Every query is act of trust. Krylov attacks trust. You defend it. Welcome to security mindset."*
+
+**Notificiation на телефоне:**
+
+```
+[Viktor]: Episode 07 briefing tomorrow
+[Viktor]: Flight to Moscow 08:00
+[Viktor]: New threat detected
+[Viktor]: Be ready
+```
 
 ---
 
-## 🎓 Чему вы научились
+## 🎓 Что вы изучили
 
 ### DNS Fundamentals:
-- Как работает DNS (recursive resolver, authoritative servers)
-- DNS hierarchy (root → TLD → authoritative)
-- DNS records (A, AAAA, CNAME, MX, TXT, NS, SOA, PTR)
+- ✅ DNS = Телефонная книга интернета (name → IP)
+- ✅ DNS Query process (resolver → DNS server → answer)
+- ✅ TTL (Time To Live) и DNS caching
+- ✅ Public vs Private DNS zones
 
-### DNS Tools:
-- `dig` — DNS lookup (детальный)
-- `host` — простой lookup
-- `nslookup` — legacy tool
-- `dig +dnssec` — проверка DNSSEC
+### DNS Record Types:
+- ✅ **A** — IPv4 address
+- ✅ **AAAA** — IPv6 address
+- ✅ **MX** — Mail exchange (lower = higher priority!)
+- ✅ **NS** — Name server
+- ✅ **CNAME** — Canonical name (alias)
+- ✅ **TXT** — Text metadata
+- ✅ **PTR** — Pointer (reverse DNS)
+
+### DNS Tools (Type B Focus!):
+- ✅ **dig** — Основной DNS tool (детальный) 🔧
+- ✅ **host** — Быстрая проверка
+- ✅ **nslookup** — Legacy но работает
+- ✅ **systemd-resolved** — Ubuntu DNS resolver 🔧
+- ✅ **resolvectl** — systemd-resolved control 🔧
 
 ### DNS Configuration:
-- `/etc/hosts` — локальная резолюция
-- `/etc/resolv.conf` — DNS серверы
-- `/etc/nsswitch.conf` — порядок резолюции
+- ✅ **/etc/hosts** — Local DNS (highest priority!)
+- ✅ **/etc/resolv.conf** — DNS servers config
+- ✅ **systemd-resolved** — Ubuntu default resolver
+- ✅ Priority order: hosts → systemd → resolv.conf → DNS
 
 ### DNS Security:
-- DNS spoofing detection
-- Cache poisoning атаки
-- DNSSEC (цифровые подписи)
-- DNS over TLS/HTTPS (шифрование)
+- ✅ **DNS Spoofing** — Поддельные DNS ответы
+- ✅ **Cache Poisoning** — Подделка DNS cache (amplification!)
+- ✅ **DNSSEC** — Криптографические подписи (authentication)
+- ✅ **DNS over TLS (DoT)** — Шифрование DNS queries
+- ✅ **/etc/hosts malware** — Локальная подделка DNS
+
+### Type B Philosophy:
+- ✅ **dig exists → use it, don't wrap it**
+- ✅ Configuration > Scripting (настраивай системы, не переписывай)
+- ✅ Bash для отчётов, НЕ для замены dig
+- ✅ Linux SysAdmin конфигурирует DNS, не оборачивает команды
 
 ### Практические навыки:
-- DNS troubleshooting
-- Security audit
-- Forensics analysis
-- Reporting
+- ✅ DNS lookup с dig (A, MX, NS, TXT records)
+- ✅ Reverse DNS проверка (dig -x)
+- ✅ Конфигурирование /etc/hosts для bypass DNS
+- ✅ Конфигурирование /etc/resolv.conf
+- ✅ systemd-resolved управление
+- ✅ Обнаружение DNS spoofing
+- ✅ DNSSEC валидация
+- ✅ DNS security audit
+
+---
+
+## 📖 Самопроверка
+
+**Ответь на вопросы (не подсматривай!):**
+
+1. Что делает команда `dig +short google.com`?
+2. Что такое TTL и зачем он нужен?
+3. MX record с приоритетом 5 или 10 используется первым?
+4. Что такое Reverse DNS (PTR record)?
+5. Какой файл имеет приоритет: /etc/hosts или DNS?
+6. Почему /etc/hosts опасен для malware?
+7. Что такое DNS cache poisoning?
+8. DNSSEC шифрует DNS queries? (Да/Нет)
+9. Как flush DNS cache в Ubuntu?
+10. В чём разница между dig и systemd-resolved?
+
+<details>
+<summary>Проверить ответы</summary>
+
+1. **Короткий DNS lookup** — возвращает только IP адрес (без деталей)
+2. **TTL = Time To Live** — время хранения DNS записи в cache
+3. **5 используется первым** (lower number = higher priority!)
+4. **IP → hostname** (обратная резолюция)
+5. **/etc/hosts** (всегда проверяется ПЕРВЫМ)
+6. **Malware может добавить fake записи** (facebook.com → attacker IP)
+7. **Подделка DNS cache** — 1 атака, тысячи жертв (amplification)
+8. **НЕТ!** DNSSEC = подпись, НЕ шифрование (DoT = шифрование)
+9. **`sudo resolvectl flush-caches`**
+10. **dig = manual queries, systemd-resolved = system resolver** (Ubuntu default)
+
+</details>
+
+---
+
+## ✅ Проверка выполнения
+
+**Ты готов к следующему эпизоду если:**
+
+- ✅ Понимаешь как работает DNS (name → IP translation)
+- ✅ Умеешь использовать dig для всех типов DNS records
+- ✅ Знаешь разницу между Public и Private DNS
+- ✅ Понимаешь /etc/hosts priority over DNS
+- ✅ Можешь обнаружить DNS spoofing
+- ✅ Знаешь что такое DNSSEC (authentication, не encryption!)
+- ✅ Понимаешь Type B philosophy (dig > bash wrapper)
+- ✅ Можешь настроить systemd-resolved
+- ✅ Сгенерировал DNS security audit report
+
+**Тест:**
+```bash
+# Выполни за 5 минут:
+dig A google.com
+dig MX gmail.com
+dig -x 8.8.8.8
+cat /etc/hosts
+resolvectl status
+dig +dnssec cloudflare.com
+
+# Если все команды понятны → готов! ✅
+```
+
+---
+
+## 📚 Следующий эпизод
+
+**Episode 07: Firewalls & iptables** 🔥
+- Локация: Москва 🇷🇺 (возврат из Стокгольма)
+- DDoS атака в реальном времени (03:47)
+- UFW и iptables под давлением
+- Rate limiting и attack mitigation
+- Сообщение от Крылова в TCP payload
+
+**LILITH:**
+> *"DNS — это доверие. Firewall — это недоверие. Следующий урок — как не доверять НИКОМУ. Включая себя."*
 
 ---
 
 ## 📖 Дополнительные материалы
 
-### Команды DNS (справочник):
+### DNS Commands Cheat Sheet:
 
 ```bash
-# Basic lookup
-dig google.com
-host google.com
-nslookup google.com
+# dig
+dig domain.com              # Full DNS query
+dig +short domain.com       # Only IP
+dig +trace domain.com       # Full resolution path
+dig @8.8.8.8 domain.com     # Specific DNS server
+dig MX domain.com           # Mail exchange
+dig -x IP_ADDRESS           # Reverse DNS
+dig +dnssec domain.com      # DNSSEC validation
 
-# Specific record types
-dig google.com A      # IPv4
-dig google.com AAAA   # IPv6
-dig google.com MX     # Mail
-dig google.com TXT    # Text
-dig google.com NS     # Name servers
+# systemd-resolved
+resolvectl status           # DNS configuration
+resolvectl query domain     # Query domain
+resolvectl flush-caches     # Clear cache
+resolvectl statistics       # Cache stats
 
-# Reverse DNS
-dig -x 8.8.8.8
-
-# DNSSEC
-dig +dnssec google.com
-dig DNSKEY google.com
-dig DS google.com
-
-# Short output
-dig +short google.com
-
-# Specific DNS server
-dig @8.8.8.8 google.com
-dig @1.1.1.1 google.com
-
-# Trace DNS resolution
-dig +trace google.com
+# Configuration
+cat /etc/hosts              # Local DNS
+cat /etc/resolv.conf        # DNS servers
 ```
 
-### Публичные DNS серверы:
+### External Resources:
 
-```bash
-# Google Public DNS
-8.8.8.8 / 8.8.4.4  (IPv4)
-2001:4860:4860::8888 / ::8844  (IPv6)
-DNSSEC: Yes
-
-# Cloudflare
-1.1.1.1 / 1.0.0.1  (IPv4)
-2606:4700:4700::1111 / ::1001  (IPv6)
-DNSSEC: Yes, Privacy-focused
-
-# Quad9
-9.9.9.9 / 149.112.112.112  (IPv4)
-2620:fe::fe / ::9  (IPv6)
-DNSSEC: Yes, Malware blocking
-
-# OpenDNS
-208.67.222.222 / 208.67.220.220  (IPv4)
-DNSSEC: Yes, Content filtering
-```
-
-### Следующие шаги:
-- **Episode 07:** Firewalls & iptables (защита от атак)
-- **Episode 08:** VPN & SSH Tunneling (шифрование трафика)
-- Интеграция DNS + Firewall + VPN = secure infrastructure
+- **RFC 1035** — DNS specification
+- **RFC 4033-4035** — DNSSEC
+- **DNSViz** — https://dnsviz.net (DNSSEC visualization)
+- **dig manual** — `man dig`
+- **systemd-resolved** — `man systemd-resolved`
 
 ---
 
-## ✅ Проверка понимания
+**KERNEL SHADOWS — Episode 06 Complete! 🇸🇪✅**
 
-Прежде чем продолжать, убедитесь что вы понимаете:
+*"DNS — телефонная книга интернета. Если книга поддельная — весь трафик идёт не туда."* — Erik Johansson
 
-1. ✅ Как работает DNS (query, recursion, caching)
-2. ✅ Разницу между A, AAAA, CNAME, MX, TXT, NS records
-3. ✅ Что такое reverse DNS и зачем он нужен
-4. ✅ Как работает /etc/hosts и priority resolution
-5. ✅ Что такое DNS spoofing и cache poisoning
-6. ✅ Как DNSSEC защищает от подделки
-7. ✅ Как обнаружить DNS атаки
-
-**Тест:** Попробуйте объяснить:
-- Почему DNS критичен для безопасности?
-- Как работает DNSSEC chain of trust?
-- Что делать если обнаружен DNS spoofing?
-
----
-
-*"DNS — это не просто телефонная книга. Это фундамент доверия в интернете. Если DNS скомпрометирован — весь трафик под угрозой."* — Erik Johansson
-
-**Episode 06 Complete!** ✓
-
-**Next:** Episode 07 — Firewalls & iptables (return to Moscow) 🇷🇺
-
----
+**Next Stop:** Москва → Episode 07 → Firewalls! 🔥

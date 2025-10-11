@@ -1,255 +1,587 @@
 # Episode 06: DNS & Name Resolution — Artifacts
 
-**Bahnhof Pionen Datacenter, Stockholm, Sweden 🇸🇪**
+**KERNEL SHADOWS — Season 2: Networking**
 
 ---
 
-## 📁 Files
+## 📁 Файлы в этой директории
 
 ### 1. `dns_zones.txt`
-
-**Назначение:** Список internal доменов операции KERNEL SHADOWS.
+**Описание:** Список внутренних (private) доменов Shadow Ops infrastructure.
 
 **Формат:**
 ```
-shadow-server-XX.ops.internal
+# Internal domains (should NOT be in public DNS!)
+shadow-server-01.ops.internal
+shadow-server-02.ops.internal
+...
 ```
 
-**Что проверять:**
-- Эти домены НЕ должны быть в публичном DNS
-- Если `dig shadow-server-01.ops.internal` возвращает IP → утечка информации!
-- Ожидаемый результат: `NXDOMAIN` (domain does not exist)
+**Назначение:** Проверка что internal домены НЕ утекли в public DNS.
 
 **Использование:**
 ```bash
-# Проверить все домены
+# Проверить каждый домен
 while read domain; do
-    [[ "$domain" =~ ^# || -z "$domain" ]] && continue
-    dig +short "$domain"
+    [[ "$domain" =~ ^# ]] && continue
+    result=$(dig +short "$domain")
+    if [ -n "$result" ]; then
+        echo "⚠️  LEAK: $domain is in public DNS!"
+    else
+        echo "✓ OK: $domain (not public)"
+    fi
 done < dns_zones.txt
-
-# Ожидается: пустой вывод (домены не в DNS)
 ```
 
-**Security note:**
-Internal домены (`.ops.internal`) должны резолвиться только в private сети через internal DNS сервер. Если они видны в публичном DNS — это серьёзная утечка информации о инфраструктуре.
+**Ожидаемый результат:** ПУСТО (все internal домены должны быть недоступны через public DNS).
 
 ---
 
 ### 2. `suspicious_domains.txt`
-
-**Назначение:** База данных для обнаружения DNS spoofing.
+**Описание:** Список доменов для проверки на DNS spoofing с их expected IP адресами.
 
 **Формат:**
 ```
-domain expected_ip [comment]
+DOMAIN          EXPECTED_IP        COMMENT
+facebook.com    157.240.1.35       # Social network
+google.com      142.250.185.46     # Search engine
 ```
 
-**Что проверять:**
-- Для каждого домена сравнить actual IP (из DNS) с expected IP
-- Если не совпадают → DNS spoofing / cache poisoning!
+**Назначение:** Обнаружение DNS cache poisoning.
 
 **Использование:**
 ```bash
 # Проверить на spoofing
-while IFS=' ' read -r domain expected_ip comment; do
-    [[ "$domain" =~ ^# || -z "$domain" ]] && continue
-
-    actual_ip=$(dig +short "$domain" | head -n1)
-
-    if [ -n "$actual_ip" ] && [ "$actual_ip" != "$expected_ip" ]; then
+while read domain expected_ip comment; do
+    [[ "$domain" =~ ^# ]] && continue
+    actual=$(dig +short "$domain" | head -1)
+    if [ "$actual" != "$expected_ip" ]; then
         echo "⚠️  SPOOFED: $domain"
-        echo "    Expected: $expected_ip"
-        echo "    Actual:   $actual_ip"
+        echo "   Expected: $expected_ip"
+        echo "   Actual:   $actual"
     fi
 done < suspicious_domains.txt
 ```
 
-**Krylov's Attack:**
-Полковник Krylov использует cache poisoning для подмены DNS ответов. Когда вы запрашиваете `shadow-server-05.ops.internal`, поддельный DNS может вернуть IP под контролем Krylov → MITM attack.
+**Ожидаемый результат:** Все домены должны возвращать expected IP. Если нет → DNS spoofing!
 
 ---
 
-### 3. `network_report.txt` (generated)
+### 3. `dns_security_report.txt` (генерируется)
+**Описание:** Итоговый отчёт DNS security audit.
 
-**Назначение:** Детальный отчёт о DNS security audit.
-
-**Генерируется:** вашим скриптом `dns_audit.sh`
-
-**Содержание:**
-- Shadow servers check (утечки информации)
-- DNS records analysis (A, AAAA, MX, TXT, NS)
-- Reverse DNS check (PTR records)
-- DNS spoofing detection (cache poisoning)
-- DNSSEC validation (security)
-- Security assessment (risk level)
-- Recommendations
-
-**Формат:**
-```
-═══════════════════════════════════════════════════════════════
-           DNS SECURITY AUDIT REPORT
-═══════════════════════════════════════════════════════════════
-
-Date:       2025-10-11 14:00:00
-Location:   Bahnhof Pionen, Stockholm, Sweden 🇸🇪
-Operator:   Max Sokolov
-
-[1] SHADOW SERVERS CHECK
-    Total domains:      15
-    Not in public DNS:  15 ✓
-    Status:             ✓ SECURE
-
-[2] DNS SPOOFING DETECTION
-    Checked:            10 domains
-    Spoofed:            0
-    Status:             ✓ NO ATTACK
-
-[3] DNSSEC VALIDATION
-    Checked:            3 domains
-    DNSSEC enabled:     2/3
-    Protected:
-      ✓ google.com
-      ✓ cloudflare.com
-      ✗ example.com
-
-SECURITY ASSESSMENT:
-  Overall Status: ✓ LOW RISK
-
-  All checks passed. DNS infrastructure is secure.
-
-═══════════════════════════════════════════════════════════════
-```
-
----
-
-## 🛠 Tools
-
-### DNS Lookup Commands
-
+**Генерируется командой:**
 ```bash
-# Basic lookup
+../solution/dns_audit.sh
+```
+
+**Содержит:**
+- DNS configuration status
+- Shadow servers leaks check
+- DNS spoofing detection
+- DNSSEC validation
+- Performance metrics
+- Security recommendations
+
+---
+
+## 🔧 DNS Tools Guide (Type B Approach)
+
+### dig — Основной DNS инструмент
+
+**Базовый lookup:**
+```bash
 dig google.com
-host google.com
+```
 
-# Specific record types
-dig google.com A      # IPv4
-dig google.com AAAA   # IPv6
-dig google.com MX     # Mail servers
-dig google.com TXT    # Text records
-dig google.com NS     # Name servers
-
-# Short output
+**Короткий вывод (только IP):**
+```bash
 dig +short google.com
+```
 
-# Reverse DNS
-dig -x 8.8.8.8
+**Указать DNS сервер:**
+```bash
+dig @8.8.8.8 google.com        # Google DNS
+dig @1.1.1.1 google.com        # Cloudflare DNS
+dig @208.67.222.222 google.com # OpenDNS
+```
 
-# DNSSEC check
+**Разные типы записей:**
+```bash
+dig A google.com       # IPv4
+dig AAAA google.com    # IPv6
+dig MX gmail.com       # Mail servers
+dig NS google.com      # Name servers
+dig TXT google.com     # Text records
+dig ANY google.com     # All records
+```
+
+**Reverse DNS:**
+```bash
+dig -x 8.8.8.8         # IP → hostname
+```
+
+**DNSSEC validation:**
+```bash
 dig +dnssec google.com
+
+# Искать в выводе:
+# - RRSIG record (подпись)
+# - ad flag (Authenticated Data)
 ```
 
-### DNS Security
-
+**Трассировка резолюции:**
 ```bash
-# Check for DNSSEC
-dig +dnssec google.com | grep RRSIG
+dig +trace google.com
 
-# Check multiple DNS servers (detect inconsistency)
-dig @8.8.8.8 google.com      # Google DNS
-dig @1.1.1.1 google.com      # Cloudflare DNS
-dig @9.9.9.9 google.com      # Quad9 DNS
-
-# If results differ → possible DNS spoofing!
+# Показывает весь путь:
+# Root → TLD (.com) → Authoritative DNS
 ```
 
-### Troubleshooting
+---
+
+### systemd-resolved — Ubuntu DNS Resolver
+
+**Статус:**
+```bash
+resolvectl status
+
+# Показывает:
+# - DNS servers
+# - Search domains
+# - DNSSEC status
+# - DNS over TLS config
+```
+
+**Query домена:**
+```bash
+resolvectl query google.com
+
+# Output:
+# google.com: 142.250.185.46
+# -- Information acquired via protocol DNS in 23ms
+```
+
+**С указанием типа:**
+```bash
+resolvectl query --type=MX gmail.com
+resolvectl query --type=TXT google.com
+```
+
+**Статистика cache:**
+```bash
+resolvectl statistics
+
+# Current Cache Size: 147
+# Cache Hits: 1523
+# Cache Misses: 234
+```
+
+**Flush DNS cache:**
+```bash
+sudo resolvectl flush-caches
+
+# Verify:
+resolvectl statistics
+# Current Cache Size: 0
+```
+
+**Конфигурация DNS servers:**
+```bash
+# Показать текущие
+resolvectl dns
+
+# Установить новые (per-interface)
+sudo resolvectl dns eth0 8.8.8.8 1.1.1.1
+```
+
+---
+
+### Configuration Files
+
+**`/etc/hosts` — Локальный DNS (highest priority):**
 
 ```bash
-# Flush DNS cache
-sudo systemd-resolve --flush-caches
+# Просмотр
+cat /etc/hosts
 
-# Check current DNS servers
+# Формат:
+IP_ADDRESS    HOSTNAME    [ALIASES]
+
+# Пример:
+127.0.0.1       localhost
+10.50.1.15      shadow-server-01.ops.internal shadow-01
+
+# Редактирование (осторожно!)
+sudo nano /etc/hosts
+
+# Security check (поиск suspicious entries):
+sudo cat /etc/hosts | grep -v "^#" | grep -v "^$" | grep -v "127.0"
+```
+
+**`/etc/resolv.conf` — DNS servers configuration:**
+
+```bash
+# Просмотр
 cat /etc/resolv.conf
 
-# Test DNS resolution order
-cat /etc/nsswitch.conf | grep hosts
+# Формат:
+nameserver 8.8.8.8
+nameserver 1.1.1.1
+search ops.internal
+options edns0 trust-ad
 
-# Local DNS override
-cat /etc/hosts
+# На Ubuntu обычно managed by systemd-resolved:
+nameserver 127.0.0.53  # systemd-resolved stub
+
+# Для прямого редактирования (не рекомендуется):
+sudo nano /etc/resolv.conf
+
+# Правильный способ (через systemd-resolved):
+sudo resolvectl dns eth0 8.8.8.8 1.1.1.1
+```
+
+**`/etc/systemd/resolved.conf` — systemd-resolved config:**
+
+```bash
+# Просмотр
+cat /etc/systemd/resolved.conf
+
+# Редактирование
+sudo nano /etc/systemd/resolved.conf
+
+[Resolve]
+DNS=8.8.8.8 1.1.1.1
+FallbackDNS=208.67.222.222
+DNSSEC=allow-downgrade
+DNSOverTLS=opportunistic
+
+# После изменений:
+sudo systemctl restart systemd-resolved
 ```
 
 ---
 
-## 🎯 Tasks
+## 🛠️ Troubleshooting Guide
 
-### Task 2: Shadow Servers Check
-Проверьте что internal домены НЕ в публичном DNS.
+### Problem: DNS resolution fails
 
-**Expected:**
-- Все 15 доменов должны возвращать NXDOMAIN
-- Если какой-то домен резолвится → утечка!
+**Симптомы:**
+```bash
+$ dig google.com
+;; connection timed out; no servers could be reached
+```
 
-### Task 6: DNS Spoofing Detection
-Сравните actual DNS ответы с expected IP.
+**Диагностика:**
 
-**Expected:**
-- Internal домены: NXDOMAIN (не в публичном DNS)
-- Если actual IP ≠ expected IP → spoofing!
+```bash
+# 1. Проверить DNS servers в /etc/resolv.conf
+cat /etc/resolv.conf
 
-### Task 7: DNSSEC Validation
-Проверьте DNSSEC для известных доменов.
+# 2. Проверить systemd-resolved
+resolvectl status
 
-**Expected:**
-- `google.com` — DNSSEC enabled ✓
-- `cloudflare.com` — DNSSEC enabled ✓
-- `example.com` — может не иметь DNSSEC
+# 3. Ping DNS server (проверить connectivity)
+ping 8.8.8.8
 
----
+# 4. Проверить если DNS port 53 открыт
+sudo ss -tuln | grep :53
+```
 
-## 🔒 Security Notes
+**Решение:**
 
-### DNS Spoofing Indicators:
-- Unexpected IP addresses
-- Different results from different DNS servers
-- SSL certificate errors (wrong cert for domain)
-- Sudden changes in DNS TTL
+```bash
+# Установить working DNS servers
+sudo resolvectl dns eth0 8.8.8.8 1.1.1.1
 
-### Protection:
-- ✓ Use trusted DNS (8.8.8.8, 1.1.1.1, 9.9.9.9)
-- ✓ Enable DNSSEC validation
-- ✓ Monitor DNS query logs
-- ✓ Use DNS over TLS (DoT) or DNS over HTTPS (DoH)
+# Или flush cache
+sudo resolvectl flush-caches
 
-### Krylov's Tactics:
-- Cache poisoning на public DNS resolvers
-- Rogue DNS servers в compromised networks
-- `/etc/hosts` poisoning при root access
-- DNS amplification для DDoS
-
-**Defense:** DNSSEC + DoT + internal DNS + monitoring
+# Restart systemd-resolved
+sudo systemctl restart systemd-resolved
+```
 
 ---
 
-## 📚 References
+### Problem: Slow DNS queries
 
-**Public DNS Servers:**
-- **8.8.8.8** — Google Public DNS (DNSSEC, fast)
-- **1.1.1.1** — Cloudflare (DNSSEC, privacy-focused)
-- **9.9.9.9** — Quad9 (DNSSEC, malware blocking)
+**Симптомы:**
+```bash
+$ dig google.com
+;; Query time: 523 msec    # Очень медленно!
+```
 
-**DNS Security:**
-- DNSSEC: digital signatures для DNS records
-- DoT (DNS over TLS): шифрование на port 853
-- DoH (DNS over HTTPS): шифрование на port 443
+**Диагностика:**
 
-**Related Episodes:**
-- Episode 05: TCP/IP Fundamentals (networking basics)
-- Episode 07: Firewalls & iptables (блокировка malicious IPs)
-- Episode 08: VPN & SSH Tunneling (encrypted DNS через VPN)
+```bash
+# Попробовать разные DNS servers
+dig @8.8.8.8 google.com    # Google DNS
+dig @1.1.1.1 google.com    # Cloudflare DNS
+
+# Проверить network latency
+ping 8.8.8.8
+traceroute 8.8.8.8
+```
+
+**Решение:**
+
+```bash
+# Сменить DNS server на быстрый
+sudo resolvectl dns eth0 1.1.1.1 8.8.8.8
+
+# Cloudflare (1.1.1.1) обычно самый быстрый
+```
 
 ---
 
-*"DNS — телефонная книга интернета. Если книга поддельная — весь трафик идёт не туда."* — Erik Johansson, Bahnhof Network Engineer
+### Problem: DNS spoofing detected
 
-**Next:** Implement `dns_audit.sh` script!
+**Симптомы:**
+```bash
+$ dig google.com +short
+185.220.101.52    # Неправильный IP!
+```
+
+**Диагностика:**
+
+```bash
+# Проверить через несколько DNS resolvers
+dig @8.8.8.8 +short google.com
+dig @1.1.1.1 +short google.com
+dig @208.67.222.222 +short google.com
+
+# Если результаты РАЗНЫЕ → один resolver скомпрометирован
+```
+
+**Решение:**
+
+```bash
+# 1. НЕМЕДЛЕННО flush DNS cache
+sudo resolvectl flush-caches
+
+# 2. Добавить правильный IP в /etc/hosts (temporary)
+echo "142.250.185.46 google.com" | sudo tee -a /etc/hosts
+
+# 3. Сменить DNS resolver
+sudo resolvectl dns eth0 1.1.1.1 8.8.8.8
+
+# 4. Проверить /etc/hosts на malware
+sudo cat /etc/hosts | grep -v "^#" | grep -v "^$"
+
+# 5. Уведомить команду о инциденте
+```
+
+---
+
+### Problem: `/etc/hosts` malware entries
+
+**Симптомы:**
+```bash
+# facebook.com не открывается или ведёт на suspicious site
+```
+
+**Диагностика:**
+
+```bash
+# Проверить /etc/hosts
+sudo cat /etc/hosts | grep facebook
+
+# Suspicious entry:
+185.220.101.52  facebook.com  # ⚠️ MALWARE!
+```
+
+**Решение:**
+
+```bash
+# 1. Backup /etc/hosts
+sudo cp /etc/hosts /etc/hosts.backup
+
+# 2. Удалить suspicious entries
+sudo nano /etc/hosts
+# (удалить строки с attacker IPs)
+
+# 3. Проверить permissions
+ls -l /etc/hosts
+# Должно быть: -rw-r--r-- root root
+
+# 4. Сделать immutable (optional)
+sudo chattr +i /etc/hosts
+# (теперь даже root не может изменить без chattr -i)
+
+# 5. Full system malware scan
+sudo rkhunter --check
+```
+
+---
+
+### Problem: DNSSEC validation fails
+
+**Симптомы:**
+```bash
+$ dig +dnssec example.com
+; ANSWER SECTION пустой или invalid signature
+```
+
+**Диагностика:**
+
+```bash
+# Проверить DNSSEC support
+dig +dnssec google.com | grep "ad"
+# ad flag должен быть present
+
+# Check systemd-resolved DNSSEC config
+cat /etc/systemd/resolved.conf | grep DNSSEC
+```
+
+**Решение:**
+
+```bash
+# Enable DNSSEC в systemd-resolved
+sudo nano /etc/systemd/resolved.conf
+
+[Resolve]
+DNSSEC=yes
+
+# Restart
+sudo systemctl restart systemd-resolved
+
+# Verify
+resolvectl status | grep DNSSEC
+```
+
+---
+
+## 📊 DNS Tools Comparison
+
+| Tool | Use Case | Output Detail | Speed | Type B ✅ |
+|------|----------|---------------|-------|---------|
+| **dig** | Professional DNS queries | Very detailed | Fast | ✅ Primary |
+| **host** | Quick lookups | Brief | Fast | ✅ OK |
+| **nslookup** | Legacy support | Interactive | Fast | ⚠️ Deprecated |
+| **resolvectl** | systemd-resolved control | System-level | Fast | ✅ Primary |
+| **systemd-resolve** | Old name for resolvectl | Same | Fast | ⚠️ Use resolvectl |
+
+**Type B Recommendation:**
+- **Primary:** `dig` для queries, `resolvectl` для system config
+- **Secondary:** `host` для быстрых проверок
+- **Avoid:** bash wrappers вокруг dig (используй dig напрямую!)
+
+---
+
+## 🔐 Security Best Practices
+
+### 1. DNS Configuration Hardening
+
+```bash
+# Use trusted DNS resolvers
+8.8.8.8, 8.8.4.4          # Google Public DNS
+1.1.1.1, 1.0.0.1          # Cloudflare DNS
+208.67.222.222            # OpenDNS
+
+# Enable DNSSEC
+DNSSEC=yes в /etc/systemd/resolved.conf
+
+# Enable DNS over TLS (encryption)
+DNSOverTLS=yes
+```
+
+### 2. Regular Audits
+
+```bash
+# Weekly DNS audit checklist:
+1. cat /etc/hosts — проверить на malware
+2. resolvectl status — verify DNS servers
+3. dig +dnssec google.com — DNSSEC working
+4. Check query performance (< 100 ms)
+5. Review DNS logs (if enabled)
+```
+
+### 3. Incident Response
+
+```bash
+# DNS spoofing detected:
+1. sudo resolvectl flush-caches       # Immediate
+2. Update /etc/hosts с correct IPs    # Temporary fix
+3. Change DNS resolver                # Switch to trusted
+4. Notify security team                # Escalate
+5. Investigate how cache was poisoned # Forensics
+```
+
+---
+
+## 📖 Дополнительные команды
+
+### DNS cache management:
+
+```bash
+# systemd-resolved
+sudo resolvectl flush-caches
+resolvectl statistics
+
+# dnsmasq (if used)
+sudo systemctl restart dnsmasq
+
+# nscd (if used)
+sudo systemctl restart nscd
+```
+
+### DNS testing:
+
+```bash
+# Test different record types
+for type in A AAAA MX NS TXT; do
+    echo "=== $type ==="
+    dig $type google.com +short
+done
+
+# Test multiple resolvers
+for dns in 8.8.8.8 1.1.1.1 208.67.222.222; do
+    echo "=== $dns ==="
+    dig @$dns google.com +short
+done
+```
+
+### DNS security tools:
+
+```bash
+# Install additional tools
+sudo apt install bind9-dnsutils ldns-utils
+
+# DNSSEC validation (detailed)
+delv google.com
+drill -D google.com
+
+# DNS benchmarking
+namebench  # (separate package)
+```
+
+---
+
+## 🎓 Learning Resources
+
+### Man pages:
+```bash
+man dig
+man host
+man systemd-resolved
+man resolv.conf
+```
+
+### RFCs:
+- **RFC 1035** — Domain Names (DNS specification)
+- **RFC 4033-4035** — DNSSEC specifications
+- **RFC 7858** — DNS over TLS
+- **RFC 8484** — DNS over HTTPS
+
+### Online tools:
+- **DNSViz** — https://dnsviz.net (DNSSEC visualization)
+- **DNS Leak Test** — https://dnsleaktest.com
+- **MXToolbox** — https://mxtoolbox.com (DNS lookup tools)
+
+---
+
+**KERNEL SHADOWS — Episode 06: DNS & Name Resolution**
+
+*"dig exists → use it, don't wrap it"* — Type B Philosophy
+
+*"DNS — телефонная книга интернета. Если книга поддельная — весь трафик идёт не туда."* — Erik Johansson
