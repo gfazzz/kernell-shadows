@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Operation Shadow — Docker Starter</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+            color: #58a6ff;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            max-width: 800px;
+            background: rgba(13, 17, 23, 0.9);
+            border: 2px solid #30363d;
+            border-radius: 8px;
+            padding: 50px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+            text-align: center;
+        }
+        h1 {
+            color: #58a6ff;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px #58a6ff;
+        }
+        .status {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .status-online {
+            color: #3fb950;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+        .status-online::before {
+            content: "● ";
+        }
+        p {
+            color: #8b949e;
+            line-height: 1.6;
+            margin: 15px 0;
+        }
+        .quote {
+            margin-top: 30px;
+            padding: 20px;
+            background: #0d1117;
+            border-left: 4px solid #f78166;
+            font-style: italic;
+            color: #8b949e;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>◢ OPERATION SHADOW ◣</h1>
+        <p>Episode 14: Docker Basics — Starter Template</p>
+        
+        <div class="status">
+            <div class="status-online">Container Running</div>
+            <p>Amsterdam, Netherlands 🇳🇱</p>
+        </div>
+
+        <p>
+            Если ты видишь эту страницу — твой Docker контейнер работает! ✅
+        </p>
+
+        <p>
+            <strong>Следующие шаги:</strong><br>
+            1. Заполни TODO в Dockerfile<br>
+            2. Заполни TODO в docker-compose.yml<br>
+            3. Заполни TODO в nginx.conf<br>
+            4. Запусти: <code>docker-compose up -d</code>
+        </p>
+
+        <div class="quote">
+            "Containers zijn als LEGO. Simple blocks, complex systems."
+            <br>— Sophie van Dijk
+        </div>
+    </div>
+</body>
+</html>
+
