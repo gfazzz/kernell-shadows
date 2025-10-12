@@ -474,3 +474,352 @@ Before considering your backup system "production-ready", verify:
 
 </div>
 
+
+---
+
+## 🔧 Testing Systemd Timers (Episode 12 Modern Approach)
+
+### Setup Systemd Backup Automation
+
+Episode 12 refactored to include **systemd timers** (modern alternative to cron).
+
+**Files:**
+- `solution/configs/systemd/*.service` (backup services)
+- `solution/configs/systemd/*.timer` (schedules)
+
+### Install and Test
+
+```bash
+# 1. Copy systemd units
+sudo cp solution/configs/systemd/*.service /etc/systemd/system/
+sudo cp solution/configs/systemd/*.timer /etc/systemd/system/
+
+# 2. Reload systemd
+sudo systemctl daemon-reload
+
+# 3. Enable timers
+sudo systemctl enable backup-full.timer
+sudo systemctl enable backup-incremental.timer
+sudo systemctl enable backup-health-check.timer
+
+# 4. Start timers
+sudo systemctl start backup-full.timer
+sudo systemctl start backup-incremental.timer
+sudo systemctl start backup-health-check.timer
+
+# 5. Verify timers scheduled
+sudo systemctl list-timers | grep backup
+```
+
+**Expected output:**
+```
+NEXT                         LEFT     LAST  PASSED  UNIT                        
+Sun 2025-10-19 02:00:00 EET  1d left  n/a   n/a     backup-full.timer
+Mon 2025-10-20 02:00:00 EET  2d left  n/a   n/a     backup-incremental.timer
+...  06:00:00 EET             5h left  n/a   n/a     backup-health-check.timer
+```
+
+### Manual Trigger (Test Without Waiting)
+
+```bash
+# Test full backup service
+sudo systemctl start backup-full.service
+
+# Watch logs in real-time
+sudo journalctl -u backup-full.service -f
+
+# Check status
+sudo systemctl status backup-full.service
+```
+
+### Testing Scenarios
+
+#### Test 1: Health Check Timer (Runs Every 6h)
+
+```bash
+# Trigger manually
+sudo systemctl start backup-health-check.service
+
+# Check logs
+sudo journalctl -u backup-health-check.service -n 50
+
+# Verify exit code
+systemctl show -p ExecMainStatus backup-health-check.service
+```
+
+**Success:** ExitStatus=0 (OK), ExitStatus=1 (WARNING), ExitStatus=2 (CRITICAL)
+
+#### Test 2: Persistent Timers (Missed Schedule Recovery)
+
+**Scenario:** Server off during scheduled backup time.
+
+```bash
+# 1. Stop timer
+sudo systemctl stop backup-full.timer
+
+# 2. Check status
+sudo systemctl status backup-full.timer
+# Should show: Loaded, inactive (dead)
+
+# 3. Simulate "missed" schedule
+# (Timer has Persistent=true, so it will run on next boot)
+
+# 4. Restart timer
+sudo systemctl start backup-full.timer
+
+# 5. If schedule was missed, service should run immediately
+sudo journalctl -u backup-full.service --since "5 minutes ago"
+```
+
+**Key feature:** `Persistent=true` means missed schedules will execute on boot!
+
+#### Test 3: Resource Limits
+
+Systemd units have resource limits configured:
+
+```bash
+# Check configured limits
+systemctl show backup-full.service | grep -E "CPU|Memory|Tasks"
+
+# Expected:
+# CPUQuota=50%
+# MemoryLimit=2G
+```
+
+Test during backup:
+
+```bash
+# Start backup
+sudo systemctl start backup-full.service &
+
+# Monitor resource usage
+while systemctl is-active backup-full.service; do
+    systemctl show backup-full.service -p CPUUsageNSec -p MemoryCurrent
+    sleep 1
+done
+```
+
+#### Test 4: Failure Handling
+
+```bash
+# 1. Break backup (simulate failure)
+sudo chmod 000 /backup  # Remove permissions
+
+# 2. Trigger backup
+sudo systemctl start backup-full.service
+
+# 3. Check failure
+systemctl status backup-full.service
+# Should show: failed
+
+# 4. Check logs
+sudo journalctl -u backup-full.service -p err
+
+# 5. Fix and retry
+sudo chmod 755 /backup
+sudo systemctl start backup-full.service
+```
+
+### Comparison: Cron vs Systemd Timers
+
+| Feature | Cron | Systemd Timer |
+|---------|------|---------------|
+| **Missed schedules** | ❌ Lost forever | ✅ Runs on boot (Persistent=true) |
+| **Logging** | ⚠️ Basic (syslog) | ✅ journalctl (structured) |
+| **Dependencies** | ❌ No | ✅ After=network.target |
+| **Resource limits** | ❌ No | ✅ CPUQuota, MemoryLimit |
+| **Randomization** | ❌ No | ✅ RandomizedDelaySec |
+| **Easy monitoring** | ⚠️ Cron logs | ✅ systemctl list-timers |
+
+**Liisa:** *"Cron is legacy. Systemd timers — это modern Linux. Persistent timers гарантируют execution даже если server был offline."*
+
+### Troubleshooting Systemd Timers
+
+#### Timer not listed
+
+```bash
+# Check if timer exists
+ls -l /etc/systemd/system/backup-*.timer
+
+# Reload systemd
+sudo systemctl daemon-reload
+
+# Re-enable
+sudo systemctl enable backup-full.timer
+sudo systemctl start backup-full.timer
+```
+
+#### Timer shows but service doesn't run
+
+```bash
+# Check timer status
+sudo systemctl status backup-full.timer
+
+# Check service status
+sudo systemctl status backup-full.service
+
+# Check logs
+sudo journalctl -u backup-full.service --since "today"
+
+# Check script exists
+ls -l /usr/local/bin/backup_manager.sh
+# Should be: -rwxr-xr-x (executable)
+```
+
+#### Service fails immediately
+
+```bash
+# Check script errors
+sudo journalctl -u backup-full.service -n 50
+
+# Test script manually
+sudo /usr/local/bin/backup_manager.sh backup_full
+
+# Check permissions
+ls -ld /backup
+# Should be: drwxr-xr-x root root
+```
+
+### Advanced: Systemd Timer Calendar Syntax
+
+```
+OnCalendar Examples:
+
+*-*-* 02:00:00         Every day at 02:00
+Sun *-*-* 02:00:00     Every Sunday at 02:00
+Mon..Sat *-*-* 02:00:00  Monday-Saturday at 02:00
+*-*-* 00,06,12,18:00:00  Every 6 hours
+*-*-01 00:00:00        1st of month at midnight
+
+# Test calendar syntax
+systemd-analyze calendar "Sun *-*-* 02:00:00"
+# Shows: Next elapse times
+```
+
+**LILITH:** *"Systemd timers = cron на steroids. Persistent, dependency-aware, resource-limited. Production-ready."*
+
+---
+
+## 📊 Logrotate Testing (Type B Configuration!)
+
+Episode 12 includes **logrotate configuration** for backup logs.
+
+**File:** `solution/configs/logrotate.d/backup`
+
+### Install Logrotate Config
+
+```bash
+# Copy config
+sudo cp solution/configs/logrotate.d/backup /etc/logrotate.d/
+
+# Test configuration (dry-run, no actual rotation)
+sudo logrotate -d /etc/logrotate.d/backup
+```
+
+**Expected output:**
+```
+reading config file /etc/logrotate.d/backup
+...
+rotating pattern: /var/log/backup.log  after 1 days (30 rotations)
+...
+```
+
+### Force Rotation (Test)
+
+```bash
+# Create test log (if doesn't exist)
+sudo touch /var/log/backup.log
+echo "Test log entry $(date)" | sudo tee -a /var/log/backup.log
+
+# Force rotation
+sudo logrotate -f /etc/logrotate.d/backup
+
+# Verify rotation happened
+ls -lh /var/log/backup.log*
+```
+
+**Expected:**
+```
+/var/log/backup.log       (new, empty)
+/var/log/backup.log.1     (old log, uncompressed)
+/var/log/backup.log.2.gz  (older log, compressed)
+```
+
+### Test Postrotate Script
+
+Logrotate config includes `postrotate` section that emails weekly summaries.
+
+```bash
+# Check postrotate section
+grep -A 10 "postrotate" /etc/logrotate.d/backup
+
+# Simulate Monday (day 1 of week)
+# Postrotate should send email if it's Monday
+```
+
+**Note:** Email functionality requires `mail` command installed:
+```bash
+sudo apt install mailutils
+```
+
+### Logrotate Best Practices
+
+**From config:**
+- `daily` — rotate каждый день (для активных backup logs)
+- `rotate 30` — хранить 30 дней (compliance, forensics)
+- `compress` — gzip старые логи (экономия места)
+- `delaycompress` — не compress самый свежий (может дописываться)
+- `create 640 root adm` — новый лог с правильными permissions
+
+**Liisa:** *"Логи backup — это black box после disaster. Храните минимум 30 дней. Forensics требует истории."*
+
+---
+
+## ✅ Complete Testing Checklist
+
+### Systemd Timers
+```
+[ ] All timers installed and enabled
+[ ] Timers appear in 'systemctl list-timers'
+[ ] Manual trigger works (systemctl start backup-full.service)
+[ ] Logs visible in journalctl
+[ ] Resource limits active (CPUQuota, MemoryLimit)
+[ ] Persistent timer recovers missed schedules
+```
+
+### Backup Functionality
+```
+[ ] Full backup creates .tar.gz with checksum
+[ ] Incremental backup uses hard links (space efficient)
+[ ] Offsite sync works (SSH keys configured)
+[ ] Restore tested (at least one successful restore)
+[ ] Health check detects old backups
+[ ] Cleanup removes old backups (retention policy)
+```
+
+### Logrotate
+```
+[ ] Config installed in /etc/logrotate.d/
+[ ] Dry-run test passes (logrotate -d)
+[ ] Force rotation works (logrotate -f)
+[ ] Old logs compressed
+[ ] Postrotate script runs (if Monday)
+```
+
+### Production Ready
+```
+[ ] Documentation complete (DR procedures)
+[ ] Team trained (everyone knows procedures)
+[ ] RTO/RPO measured (business agreed)
+[ ] Monthly restore test scheduled
+[ ] Monitoring configured (health checks every 6h)
+```
+
+**If all checkboxes ✓ — готов к production!**
+
+**Liisa approves!** 🎉
+
+---
+
+**Next:** Season 4 — DevOps & Automation (Amsterdam 🇳🇱)
+

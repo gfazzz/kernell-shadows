@@ -12,14 +12,14 @@ TOTAL_COUNT=0
 
 pass() {
     echo "  ✓ $1"
-    ((PASS_COUNT++))
-    ((TOTAL_COUNT++))
+    PASS_COUNT=$((PASS_COUNT + 1))
+    TOTAL_COUNT=$((TOTAL_COUNT + 1))
 }
 
 fail() {
     echo "  ✗ $1"
-    ((FAIL_COUNT++))
-    ((TOTAL_COUNT++))
+    FAIL_COUNT=$((FAIL_COUNT + 1))
+    TOTAL_COUNT=$((TOTAL_COUNT + 1))
 }
 
 test_section() {
@@ -112,8 +112,8 @@ fi
 
 test_section "6. Checksum Verification"
 
-cd /tmp/ep12-backup/full
-if sha256sum -c test-backup.tar.gz.sha256 &>/dev/null; then
+(cd /tmp/ep12-backup/full && sha256sum -c test-backup.tar.gz.sha256) &>/dev/null
+if [[ $? -eq 0 ]]; then
     pass "Checksum verification successful"
 else
     fail "Checksum verification failed"
@@ -193,6 +193,7 @@ fi
 
 test_section "11. Disaster Recovery Simulation"
 
+ORIG_DIR=$(pwd)
 DR_TEST_DIR="/tmp/ep12-dr-test-$$"
 mkdir -p "$DR_TEST_DIR/data"
 
@@ -228,6 +229,7 @@ else
     fail "Data restore verification failed"
 fi
 
+cd "$ORIG_DIR"
 rm -rf "$DR_TEST_DIR"
 
 test_section "12. Solution Script Functions"
@@ -260,6 +262,176 @@ if grep -q "disaster_recovery_test" solution/backup_manager.sh; then
     pass "Solution contains disaster_recovery_test function"
 else
     fail "Solution missing disaster_recovery_test function"
+fi
+
+test_section "13. Systemd Configuration Files"
+
+if [[ -f "solution/configs/systemd/backup-full.service" ]]; then
+    pass "backup-full.service exists"
+else
+    fail "backup-full.service not found"
+fi
+
+if [[ -f "solution/configs/systemd/backup-full.timer" ]]; then
+    pass "backup-full.timer exists"
+else
+    fail "backup-full.timer not found"
+fi
+
+if [[ -f "solution/configs/systemd/backup-incremental.service" ]]; then
+    pass "backup-incremental.service exists"
+else
+    fail "backup-incremental.service not found"
+fi
+
+if [[ -f "solution/configs/systemd/backup-incremental.timer" ]]; then
+    pass "backup-incremental.timer exists"
+else
+    fail "backup-incremental.timer not found"
+fi
+
+if [[ -f "solution/configs/systemd/backup-offsite.service" ]]; then
+    pass "backup-offsite.service exists"
+else
+    fail "backup-offsite.service not found"
+fi
+
+if [[ -f "solution/configs/systemd/backup-offsite.timer" ]]; then
+    pass "backup-offsite.timer exists"
+else
+    fail "backup-offsite.timer not found"
+fi
+
+if [[ -f "solution/configs/systemd/backup-health-check.service" ]]; then
+    pass "backup-health-check.service exists"
+else
+    fail "backup-health-check.service not found"
+fi
+
+if [[ -f "solution/configs/systemd/backup-health-check.timer" ]]; then
+    pass "backup-health-check.timer exists"
+else
+    fail "backup-health-check.timer not found"
+fi
+
+test_section "14. Systemd Configuration Content"
+
+if grep -q "OnCalendar=" "solution/configs/systemd/backup-full.timer"; then
+    pass "backup-full.timer has OnCalendar schedule"
+else
+    fail "backup-full.timer missing OnCalendar"
+fi
+
+if grep -q "Persistent=true" "solution/configs/systemd/backup-full.timer"; then
+    pass "backup-full.timer has Persistent=true"
+else
+    fail "backup-full.timer missing Persistent setting"
+fi
+
+if grep -q "OnCalendar=Sun" "solution/configs/systemd/backup-full.timer"; then
+    pass "backup-full.timer scheduled for Sunday"
+else
+    fail "backup-full.timer not scheduled for Sunday"
+fi
+
+if grep -q "OnCalendar=Mon..Sat" "solution/configs/systemd/backup-incremental.timer"; then
+    pass "backup-incremental.timer scheduled Monday-Saturday"
+else
+    fail "backup-incremental.timer not scheduled Monday-Saturday"
+fi
+
+if grep -q "CPUQuota=" "solution/configs/systemd/backup-full.service"; then
+    pass "backup-full.service has CPU limits"
+else
+    fail "backup-full.service missing CPU limits"
+fi
+
+if grep -q "MemoryLimit=" "solution/configs/systemd/backup-full.service"; then
+    pass "backup-full.service has memory limits"
+else
+    fail "backup-full.service missing memory limits"
+fi
+
+if grep -q "NoNewPrivileges=true" "solution/configs/systemd/backup-full.service"; then
+    pass "backup-full.service has security hardening"
+else
+    fail "backup-full.service missing security hardening"
+fi
+
+test_section "15. Logrotate Configuration"
+
+if [[ -f "solution/configs/logrotate.d/backup" ]]; then
+    pass "logrotate config exists"
+else
+    fail "logrotate config not found"
+fi
+
+if grep -q "daily" "solution/configs/logrotate.d/backup"; then
+    pass "Logrotate has daily rotation"
+else
+    fail "Logrotate missing rotation frequency"
+fi
+
+if grep -q "rotate 30" "solution/configs/logrotate.d/backup"; then
+    pass "Logrotate keeps 30 days"
+else
+    fail "Logrotate missing retention policy"
+fi
+
+if grep -q "compress" "solution/configs/logrotate.d/backup"; then
+    pass "Logrotate has compression enabled"
+else
+    fail "Logrotate missing compression"
+fi
+
+if grep -q "delaycompress" "solution/configs/logrotate.d/backup"; then
+    pass "Logrotate has delaycompress"
+else
+    fail "Logrotate missing delaycompress"
+fi
+
+if grep -q "create 640" "solution/configs/logrotate.d/backup"; then
+    pass "Logrotate creates logs with correct permissions"
+else
+    fail "Logrotate missing create permissions"
+fi
+
+test_section "16. Starter Structure"
+
+if [[ -d "starter" ]]; then
+    pass "starter/ directory exists"
+else
+    fail "starter/ directory not found"
+fi
+
+if [[ -f "starter/README.md" ]]; then
+    pass "starter/README.md exists"
+else
+    fail "starter/README.md not found"
+fi
+
+if [[ -f "starter/systemd/backup-full.service" ]]; then
+    pass "starter backup-full.service exists"
+else
+    fail "starter backup-full.service not found"
+fi
+
+if [[ -f "starter/systemd/backup-full.timer" ]]; then
+    pass "starter backup-full.timer exists"
+else
+    fail "starter backup-full.timer not found"
+fi
+
+if [[ -f "starter/logrotate.d/backup" ]]; then
+    pass "starter logrotate config exists"
+else
+    fail "starter logrotate config not found"
+fi
+
+if grep -q "TODO" "starter/systemd/backup-full.service"; then
+    pass "starter configs have TODOs"
+else
+    fail "starter configs missing TODOs"
 fi
 
 test_section "Cleanup"
