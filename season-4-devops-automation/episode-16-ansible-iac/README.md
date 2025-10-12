@@ -361,319 +361,1368 @@ Max и Dmitry возвращаются в Берлин на поезде. Обс
 
 ---
 
-## 🎯 Миссия Episode 16
-
-**Основная задача:** Настроить Ansible для автоматизированного configuration management 50 серверов.
-
-**Конкретные задания:**
-
-1. ✅ **Install Ansible** (apt, verify version)
-2. ✅ **Create inventory file** (50 servers в группах)
-3. ✅ **Write basic playbook** (update packages, install Docker)
-4. ✅ **Create roles** (webserver, database, monitoring)
-5. ✅ **Use variables** (environment-specific configs)
-6. ✅ **Templates with Jinja2** (nginx.conf, postgresql.conf)
-7. ✅ **Handlers** (restart services on config change)
-8. ✅ **Ansible Vault** (encrypted secrets)
-9. ✅ **Security audit playbook** (detect compromised servers)
-
-**Финальный артефакт:**
-- Рабочая настройка Ansible
-- Playbooks для 50 серверов
-- Автоматизация security audit
-- Документация Infrastructure as Code
 
 ---
 
-## 📚 Теория: Ansible & Infrastructure as Code
+## 🎯 Миссия Episode 16 (SEASON 4 FINALE!)
 
-### Зачем нужен Ansible?
+**Основная задача:** Настроить 50 серверов используя Ansible (Infrastructure as Code). Одна команда, массовая автоматизация, идентичная конфигурация.
 
-**Проблемы без configuration management:**
-- ❌ Ручная настройка (30 минут × 50 серверов = 25 часов)
-- ❌ Configuration drift (серверы расходятся со временем)
-- ❌ Человеческие ошибки (опечатки, забытые шаги)
-- ❌ Нет документации (знания в головах людей)
-- ❌ Медленное восстановление (8+ часов на пересборку сервера)
+**Конкретные задания:**
+
+1. ✅ **Install Ansible** (control node setup)
+2. ✅ **Create inventory file** (50 servers, groups: web/db/cache)
+3. ✅ **Write basic playbook** (users, packages, firewall)
+4. ✅ **Use modules** (apt, copy, service, user, template)
+5. ✅ **Create roles** (webserver, database, monitoring — reusable)
+6. ✅ **Use templates** (Jinja2 for nginx.conf, postgresql.conf)
+7. ✅ **Implement handlers** (restart services on config change)
+8. ✅ **Ansible Vault** (encrypt secrets: passwords, API keys)
+9. ✅ **TWIST: Certificate audit** — Ansible finds expired cert, security review
+
+**Финальный артефакт:**
+- Ansible playbooks для 50 servers
+- Roles (reusable configurations)
+- Templates (dynamic configs)
+- Encrypted secrets (Vault)
+- **Season 4 завершён!** 🎉
+
+---
+
+## 🎓 Учебная программа: 7 циклов
+
+**Продолжительность:** 5-6 часов
+**Формат:** Interleaving (Сюжет → Теория → Практика → Проверка)
+
+1. **Цикл 1:** Ansible Basics — Оркестр-дирижёр 🎼 (10-15 мин)
+2. **Цикл 2:** Inventory & Groups — Адресная книга 📇 (10-15 мин)
+3. **Цикл 3:** Playbooks & Modules — Рецепт повара 👨‍🍳 (10-15 мин)
+4. **Цикл 4:** Roles — Lego Blueprints 🧱 (10-15 мин)
+5. **Цикл 5:** TWIST — Certificate Expired (Security Audit) 🔍 (15-20 мин)
+6. **Цикл 6:** Templates & Variables — Mad Libs ✍️ (15-20 мин)
+7. **Цикл 7:** Vault & Secrets — Сейф 🔐 (10-15 мин)
+
+---
+
+## ЦИКЛ 1: Ansible Basics — Оркестр-дирижёр 🎼
+### (10-15 минут)
+
+### 🎬 Сюжет: Klaus демонстрирует магию
+
+**11:15 — Klaus's workshop**
+
+Klaus открывает терминал. Один файл: `playbook.yml`. Одна команда:
+
+```bash
+ansible-playbook -i inventory.ini playbook.yml
+```
+
+50 серверов начинают конфигурироваться одновременно. Прогресс-бар летит:
+
+```
+TASK [Install nginx] *******************
+ok: [server-01]
+ok: [server-02]
+... (48 more)
+ok: [server-50]
+
+PLAY RECAP *****************************
+server-50    : ok=12  changed=6   failed=0
+Total time: 3m 14s
+```
+
+**Klaus:**
+> *"3 минуты. 50 серверов. Одна команда. Ansible — это дирижёр оркестра. Дирижёр машет палочкой, 50 музыкантов играют синхронно."*
+
+**LILITH:**
+> *"Ansible — это дирижёр для servers. Один дирижёр, 50 музыкантов. Без дирижёра — хаос. С дирижёром — симфония. Configuration management at scale."*
+
+---
+
+### 📚 Теория: Зачем нужен Ansible?
+
+**Проблемы ручной настройки:**
+
+❌ **Time consuming:** 1 server = 30 min. 50 servers = 25 hours
+❌ **Error-prone:** Human mistakes (typos, забыл команду)
+❌ **Inconsistent:** Server 1 ≠ Server 2 (разные configs)
+❌ **Not scalable:** 50 servers сегодня, 500 tomorrow?
+❌ **No version control:** Изменения не tracked
 
 **С Ansible:**
-- ✅ Автоматизированная настройка (3 минуты для 50 серверов)
-- ✅ Согласованное состояние (все серверы идентичны)
-- ✅ Никаких человеческих ошибок (playbook протестирован один раз, работает везде)
-- ✅ Документация как код (playbook = документация)
-- ✅ Быстрое восстановление (пересборка сервера за 30 минут)
 
-### Ansible Architecture
+✅ **Fast:** 50 servers за 3-5 minutes
+✅ **Reliable:** Computers don't typo
+✅ **Consistent:** Все servers идентичны
+✅ **Scalable:** 50 или 5000 — та же команда
+✅ **Version controlled:** YAML в Git
+
+**LILITH:**
+> *"Manual configuration — это как печатать книги вручную. Медленно, ошибки. Ansible — это printing press. Fast, accurate, scalable."*
+
+---
+
+### 💡 Метафора: Ansible = Orchestra Conductor
 
 ```
-┌──────────────────────────────────────────────────────────────┐
-│                   Control Node (your laptop)                 │
-│  ┌────────────────────────────────────────────────────────┐  │
-│  │  ansible-playbook playbook.yml                         │  │
-│  └────────────────────────────────────────────────────────┘  │
-└────────────────┬─────────────────────────────────────────────┘
-                 │ SSH (agentless!)
-    ┌────────────┼────────────┬────────────┐
-    │            │            │            │
-    ▼            ▼            ▼            ▼
-┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐
-│ server1 │  │ server2 │  │ server3 │  │ server50│
-│         │  │         │  │         │  │         │
-└─────────┘  └─────────┘  └─────────┘  └─────────┘
+🎼 Orchestra
+
+Conductor (Ansible Control Node)
+    │
+    ├─→ 🎻 Violin section (web servers)
+    │       Play: nginx + SSL
+    │
+    ├─→ 🎺 Brass section (database servers)
+    │       Play: PostgreSQL + backups
+    │
+    ├─→ 🥁 Percussion (cache servers)
+    │       Play: Redis + monitoring
+    │
+    └─→ 🎹 Piano (load balancers)
+            Play: HAProxy + health checks
+
+Conductor waves baton → All play together
+Ansible runs playbook → All configure together
 ```
 
-**Key concepts:**
-- **Control Node:** Where Ansible runs (ваш laptop)
-- **Managed Nodes:** Servers you configure (50 servers)
-- **Inventory:** List of managed nodes
-- **Playbook:** YAML file with tasks
-- **Modules:** Built-in functions (apt, copy, service, etc.)
-- **Agentless:** No software on managed nodes, только SSH
+**Without conductor:**
+- Each musician plays alone → cacophony
+- Each admin configures manually → chaos
 
-### Inventory File
+**With conductor:**
+- Synchronized performance → symphony
+- Automated configuration → harmony
 
-**inventory.ini:**
+**Klaus:**
+> *"Conductor doesn't play instrument. Ansible doesn't run commands. Conductor coordinates. Ansible orchestrates."*
+
+---
+
+### 📖 Ansible Architecture
+
+```
+┌──────────────────────────────────────────────────┐
+│         Control Node (your laptop)               │
+│  ┌────────────────────────────────────────────┐  │
+│  │  Ansible installed                         │  │
+│  │  Playbooks (YAML files)                    │  │
+│  │  Inventory (list of servers)               │  │
+│  └────────────────────────────────────────────┘  │
+└───────────────────┬──────────────────────────────┘
+                    │ SSH (agentless!)
+        ┌───────────┼───────────┐
+        │           │           │
+        ▼           ▼           ▼
+┌──────────┐  ┌──────────┐  ┌──────────┐
+│ Server 1 │  │ Server 2 │  │ Server N │
+│ (no agent)│  │ (no agent)│  │ (no agent)│
+└──────────┘  └──────────┘  └──────────┘
+```
+
+**Key concept: AGENTLESS**
+
+- ❌ Puppet/Chef: Need agent installed on every server
+- ✅ Ansible: Only SSH required (servers already have it!)
+
+**Why agentless?**
+- ✅ No installation/maintenance on servers
+- ✅ No agent updates
+- ✅ No "agent died" errors
+- ✅ Works on any Linux (SSH standard)
+
+**LILITH:**
+> *"Agentless — это красиво. Puppet требует agent на каждом сервере. Ansible использует SSH. SSH уже везде. Don't reinvent the wheel."*
+
+---
+
+### 💻 Практика 1: Install Ansible
+
+```bash
+# Control node (your laptop/jumpbox)
+# Ubuntu/Debian:
+sudo apt update
+sudo apt install ansible -y
+
+# Verify
+ansible --version
+
+# Create project directory
+mkdir ~/ansible-operation-shadow
+cd ~/ansible-operation-shadow
+
+# Test connectivity to servers
+ansible all -i "server1.example.com," -m ping
+# Output: server1.example.com | SUCCESS => { "ping": "pong" }
+```
+
+**Klaus:**
+> *"Installation done. Now you are conductor. Servers are your orchestra."*
+
+---
+
+### 🤔 Проверка понимания: Цикл 1
+
+**Вопрос 1:** Почему Ansible быстрее чем manual configuration?
+
+<details>
+<summary>Думай перед проверкой</summary>
+
+**Ответ:** **Parallel execution.**
+
+Manual (sequential):
+```
+Server 1 → 30 min
+Server 2 → 30 min
+...
+Server 50 → 30 min
+Total: 50 × 30 = 1500 min (25 hours!)
+```
+
+Ansible (parallel):
+```
+All 50 servers AT ONCE → 3-5 min
+(limited by slowest server)
+```
+
+**Parallelism = speed.**
+
+**Klaus:** *"Diri
+
+жёр не играет с каждым музыкантом по очереди. Все играют одновременно. Ansible то же самое."*
+
+</details>
+
+**Вопрос 2:** Что значит "agentless"?
+
+<details>
+<summary>Думай перед проверкой</summary>
+
+**Ответ:** **No software installation on managed servers.**
+
+**With agent (Puppet/Chef):**
+```bash
+# On EVERY server:
+curl -L install-puppet.sh | bash
+puppet agent --enable
+systemctl enable puppet-agent
+# Repeat 50 times! 😱
+```
+
+**Ansible (agentless):**
+```bash
+# Servers: Nothing! SSH already there ✅
+# Control node: ansible-playbook playbook.yml
+```
+
+**Requirements:**
+- Servers: SSH enabled (default on Linux)
+- Control node: Ansible installed
+
+**LILITH:** *"Agent = extra complexity. Agentless = simplicity. KISS principle (Keep It Simple, Stupid)."*
+
+</details>
+
+---
+
+## ЦИКЛ 2: Inventory & Groups — Адресная книга 📇
+### (10-15 минут)
+
+### 🎬 Сюжет: Klaus показывает inventory
+
+**11:45 — Organizing servers**
+
+**Klaus:**
+> *"50 servers. Как Ansible знает куда подключаться? Inventory file. Это адресная книга."*
+
+(Klaus открывает `inventory.ini`)
 
 ```ini
-# Groups of servers
 [web]
-web-01.operation-shadow.net
-web-02.operation-shadow.net
-web-03.operation-shadow.net
+web-01.example.com
+web-02.example.com
+web-03.example.com
 
 [database]
-db-01.operation-shadow.net ansible_user=postgres
-db-02.operation-shadow.net ansible_user=postgres
+db-01.example.com
+db-02.example.com
 
 [cache]
-cache-01.operation-shadow.net
-cache-02.operation-shadow.net
+cache-01.example.com
 
-# Group of groups
+[production:children]
+web
+database
+cache
+```
+
+**Klaus:**
+> *"Groups. Web servers в одной группе. Databases в другой. Можешь настраивать группу целиком. Один playbook, разные роли."*
+
+**LILITH:**
+> *"Inventory — это контакты в телефоне. Группы = 'Работа', 'Семья', 'Друзья'. Хочешь позвонить всем коллегам? Выбираешь группу 'Работа'. Ansible то же самое."*
+
+---
+
+### 📚 Теория: Inventory Structure
+
+**Inventory file** = list of servers + groups
+
+**Basic format (INI):**
+
+```ini
+# Individual servers
+server1.example.com
+server2.example.com
+
+# Groups
+[webservers]
+web1.example.com
+web2.example.com
+
+[databases]
+db1.example.com
+db2.example.com
+
+# Group of groups (meta-group)
+[production:children]
+webservers
+databases
+
+# Variables for group
+[webservers:vars]
+nginx_port=80
+ssl_enabled=true
+```
+
+**YAML format (alternative):**
+
+```yaml
+all:
+  children:
+    webservers:
+      hosts:
+        web1.example.com:
+        web2.example.com:
+      vars:
+        nginx_port: 80
+    databases:
+      hosts:
+        db1.example.com:
+```
+
+---
+
+### 💡 Метафора: Inventory = Phone Contacts
+
+```
+📇 Phone Contacts (Inventory)
+
+👥 Work (webservers group)
+   ├─ Alice (web1.example.com)
+   ├─ Bob (web2.example.com)
+   └─ Carol (web3.example.com)
+
+👨‍👩‍👧 Family (database servers)
+   ├─ Mom (db-primary.com)
+   └─ Dad (db-replica.com)
+
+🎮 Friends (cache servers)
+   └─ Dave (cache1.example.com)
+
+Want to call all Work contacts?
+→ Select "Work" group
+→ Group call! 📞
+
+Want to configure all webservers?
+→ Select [webservers] group
+→ ansible-playbook -i inventory.ini webservers.yml
+```
+
+---
+
+### 💻 Практика 2: Create Inventory
+
+```bash
+cd ~/ansible-operation-shadow
+
+# Create inventory file
+cat > inventory.ini << 'EOF'
+[web]
+web-01 ansible_host=10.0.1.10
+web-02 ansible_host=10.0.1.11
+web-03 ansible_host=10.0.1.12
+
+[database]
+db-01 ansible_host=10.0.2.10
+db-02 ansible_host=10.0.2.11
+
+[cache]
+cache-01 ansible_host=10.0.3.10
+
 [production:children]
 web
 database
 cache
 
-# Variables for group
 [production:vars]
-ansible_user=deploy
-ansible_ssh_private_key_file=~/.ssh/deploy_key
-environment=production
+ansible_user=admin
+ansible_ssh_private_key_file=~/.ssh/operation-shadow.pem
+EOF
+
+# Test inventory
+ansible all -i inventory.ini --list-hosts
+# Output: Lists all servers
+
+# Ping specific group
+ansible web -i inventory.ini -m ping
 ```
 
-**Dynamic inventory (advanced):**
+---
+
+### 🤔 Проверка понимания: Цикл 2
+
+**Вопрос 1:** Зачем groups в inventory?
+
+<details>
+<summary>Думай перед проверкой</summary>
+
+**Ответ:** **Target specific server types.**
+
+Without groups:
 ```bash
-# Query cloud provider API
-ansible-inventory --list
+ansible server1,server2,server3 ...  # Manual list, tedious!
 ```
 
-### Playbook Syntax
+With groups:
+```bash
+ansible webservers ...  # All web servers automatically!
+```
 
-**Basic playbook:**
+**Use cases:**
+- Deploy nginx только на web servers
+- Backup только databases
+- Restart только cache servers
+
+**Different configs for different roles.**
+
+**Klaus:** *"Groups — это classification. Web servers нужен nginx. Database servers нужен PostgreSQL. Groups позволяют разделить."*
+
+</details>
+
+**Вопрос 2:** Что такое `:children`?
+
+<details>
+<summary>Думай перед проверкой</summary>
+
+**Ответ:** **Group of groups (meta-group).**
+
+```ini
+[web]
+web1
+web2
+
+[database]
+db1
+
+[production:children]  # Meta-group
+web
+database
+
+# Now "production" includes: web1, web2, db1
+```
+
+**Use case:**
+```bash
+# Configure ALL production servers
+ansible production -m setup
+
+# vs individual groups
+ansible web -m setup
+ansible database -m setup
+```
+
+**LILITH:** *"`:children` — это папка содержащая другие папки. 'Production' папка содержит 'Web' и 'Database' подпапки."*
+
+</details>
+
+---
+
+## ЦИКЛ 3: Playbooks & Modules — Рецепт повара 👨‍🍳
+### (10-15 минут)
+
+### 🎬 Сюжет: Klaus's First Playbook
+
+**12:15 — Writing automation**
+
+**Klaus:**
+> *"Inventory — это ГДЕ. Playbook — это ЧТО делать. Playbook как рецепт повара."*
+
+(Klaus создаёт простой playbook)
 
 ```yaml
 ---
 - name: Configure web servers
   hosts: web
-  become: yes  # Run as root
-
+  become: yes
+  
   tasks:
-    - name: Update apt cache
-      apt:
-        update_cache: yes
-        cache_valid_time: 3600
-
     - name: Install nginx
       apt:
         name: nginx
         state: present
-
+    
     - name: Start nginx
       service:
         name: nginx
         state: started
         enabled: yes
-
-    - name: Copy website files
-      copy:
-        src: files/index.html
-        dest: /var/www/html/index.html
-        owner: www-data
-        group: www-data
-        mode: '0644'
 ```
 
-**Run:**
 ```bash
-ansible-playbook -i inventory.ini playbook.yml
+ansible-playbook -i inventory.ini webserver.yml
 ```
 
-### Modules
+**3 web servers** конфигурируются одновременно. Nginx установлен, запущен, enabled.
 
-**Common modules:**
+**Klaus:**
+> *"Playbook = recipe. 'Install nginx, start nginx'. Modules = ingredients. `apt` module = package manager. `service` module = systemctl wrapper. 3000+ modules available."*
+
+**LILITH:**
+> *"Playbook — это рецепт. Modules — ингредиенты. Chef (ты) пишешь рецепт. Ansible (кухонный робот) готовит. Servers (обеды) получаются идентичными."*
+
+---
+
+### 📚 Теория: Playbook Syntax
+
+**Playbook structure:**
+
+```yaml
+---  # YAML start
+- name: Playbook description
+  hosts: target_group  # From inventory
+  become: yes  # Run as root (sudo)
+  
+  vars:  # Variables
+    nginx_port: 80
+  
+  tasks:  # List of tasks
+    - name: Task description
+      module_name:  # Ansible module
+        parameter1: value1
+        parameter2: value2
+    
+    - name: Another task
+      another_module:
+        param: value
+```
+
+**Key components:**
+
+1. **hosts:** Which servers (from inventory)
+2. **become:** Run as superuser (sudo)
+3. **vars:** Variables
+4. **tasks:** List of actions
+5. **modules:** Built-in Ansible functions
+
+---
+
+### 💡 Метафора: Playbook = Recipe
+
+```
+👨‍🍳 Cooking Recipe (Playbook)
+
+Recipe: Chocolate Cake
+Serves: 50 people (50 servers)
+
+Ingredients (Modules):
+├─ Flour (apt module)
+├─ Eggs (copy module)
+├─ Sugar (service module)
+└─ Chocolate (template module)
+
+Instructions (Tasks):
+1. Mix flour and eggs (install packages)
+2. Add sugar (configure files)
+3. Bake at 350°F (start services)
+4. Cool down (enable on boot)
+
+Result: 50 identical cakes (50 configured servers)
+```
+
+**Chef (you):** Writes recipe
+**Kitchen robot (Ansible):** Executes recipe
+**Diners (users):** Enjoy consistent meals
+
+---
+
+### 📖 Popular Modules
 
 **Package management:**
 ```yaml
-- apt:  # Ubuntu/Debian
-    name: docker.io
+- name: Install package
+  apt:  # Debian/Ubuntu
+    name: nginx
     state: present
 
-- yum:  # CentOS/RHEL
-    name: docker
-    state: latest
+- name: Remove package
+  yum:  # RedHat/CentOS
+    name: httpd
+    state: absent
 ```
 
-**Files:**
+**File operations:**
 ```yaml
-- copy:  # Copy file from control node
-    src: /local/file
-    dest: /remote/file
+- name: Copy file
+  copy:
+    src: /local/file.txt
+    dest: /remote/file.txt
+    mode: '0644'
 
-- file:  # Create directory, set permissions
+- name: Create directory
+  file:
     path: /opt/app
     state: directory
-    mode: '0755'
+    owner: www-data
+```
 
-- template:  # Copy with Jinja2 variables
+**Service management:**
+```yaml
+- name: Start service
+  service:
+    name: nginx
+    state: started
+    enabled: yes  # Start on boot
+```
+
+**Command execution:**
+```yaml
+- name: Run command
+  command: /usr/bin/custom-script.sh
+  
+- name: Run shell command
+  shell: echo "Hello" > /tmp/file.txt
+```
+
+---
+
+### 💻 Практика 3: First Playbook
+
+```yaml
+# webserver.yml
+---
+- name: Configure web servers
+  hosts: web
+  become: yes
+  
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+    
+    - name: Install nginx
+      apt:
+        name: nginx
+        state: present
+    
+    - name: Copy index.html
+      copy:
+        content: |
+          <html>
+            <body>
+              <h1>Operation Shadow - Web Server</h1>
+              <p>Configured by Ansible</p>
+            </body>
+          </html>
+        dest: /var/www/html/index.html
+    
+    - name: Start nginx
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+```
+
+```bash
+# Run playbook
+ansible-playbook -i inventory.ini webserver.yml
+
+# Check result
+curl http://web-01
+```
+
+---
+
+### 🤔 Проверка понимания: Цикл 3
+
+**Вопрос 1:** В чём разница между playbook и module?
+
+<details>
+<summary>Думай перед проверкой</summary>
+
+**Ответ:**
+
+**Playbook** = Recipe (full instructions)
+**Module** = Ingredient/Tool (one specific action)
+
+```yaml
+# Playbook (recipe)
+- name: Bake cake
+  tasks:
+    - name: Mix ingredients  ← Module (apt)
+    - name: Bake             ← Module (service)
+    - name: Decorate         ← Module (template)
+```
+
+**Playbook** = YAML file with many tasks
+**Module** = One task (apt, copy, service, etc.)
+
+**Klaus:** *"Playbook orchestrates. Modules execute."*
+
+</details>
+
+**Вопрос 2:** Зачем `become: yes`?
+
+<details>
+<summary>Думай перед проверкой</summary>
+
+**Ответ:** **Run as superuser (sudo).**
+
+```yaml
+# Without become
+- name: Install nginx
+  apt:
+    name: nginx
+  # ❌ FAIL: Permission denied (normal user can't install packages)
+
+# With become
+- name: Install nginx
+  become: yes  # Run as root
+  apt:
+    name: nginx
+  # ✅ SUCCESS: root can install packages
+```
+
+**become** = `sudo` prefix
+
+**LILITH:** *"`become: yes` — это Ansible говорит 'I need admin права'. Как `sudo` перед командой."*
+
+</details>
+
+---
+
+## ЦИКЛ 4: Roles — Lego Blueprints 🧱
+### (10-15 минут)
+
+### 🎬 Сюжет: Klaus показывает переиспользование
+
+**13:00 — Reusable configurations**
+
+**Klaus:**
+> *"50 web servers. Все одинаковые. Зачем писать playbook 50 раз? Roles. Lego blueprints. Создал роль 'webserver' — используешь везде."*
+
+(Klaus показывает структуру ролей)
+
+```
+roles/
+├── webserver/
+│   ├── tasks/main.yml      # What to do
+│   ├── handlers/main.yml   # Restart services
+│   ├── templates/nginx.j2  # Config templates
+│   └── defaults/main.yml   # Default variables
+└── database/
+    ├── tasks/main.yml
+    └── templates/postgresql.conf.j2
+```
+
+**Klaus:**
+> *"Role = reusable package. Web servers нужна роль 'webserver'. Database servers — роль 'database'. DRY principle."*
+
+**LILITH:**
+> *"Roles — это Lego blueprints. Создал blueprint для башни — можешь построить 100 башен. Не переписывай каждый раз. Ansible roles = code reusability."*
+
+---
+
+### 📚 Теория: Ansible Roles
+
+**Role structure:**
+
+```
+roles/webserver/
+├── tasks/
+│   └── main.yml        # Tasks (install, configure, start)
+├── handlers/
+│   └── main.yml        # Handlers (restart on change)
+├── templates/
+│   └── nginx.conf.j2   # Jinja2 templates
+├── files/
+│   └── index.html      # Static files
+├── vars/
+│   └── main.yml        # Variables
+├── defaults/
+│   └── main.yml        # Default variables
+└── meta/
+    └── main.yml        # Role metadata
+```
+
+**Using roles in playbook:**
+
+```yaml
+---
+- name: Configure all servers
+  hosts: all
+  roles:
+    - common          # Everyone gets this
+    
+- name: Configure web servers
+  hosts: web
+  roles:
+    - webserver       # Only web servers
+
+- name: Configure databases
+  hosts: database
+  roles:
+    - database        # Only db servers
+```
+
+---
+
+### 💡 "Aha!" момент: Idempotence
+
+**Idempotence** = running multiple times = same result
+
+```bash
+# Run playbook first time
+ansible-playbook playbook.yml
+# Output: changed=10 (10 tasks modified something)
+
+# Run again immediately
+ansible-playbook playbook.yml
+# Output: changed=0 (nothing to change, already correct!)
+```
+
+**Why?**
+
+Modules check current state:
+```yaml
+- name: Install nginx
+  apt:
+    name: nginx
+    state: present
+
+# First run: nginx not installed → INSTALL (changed)
+# Second run: nginx already installed → SKIP (ok)
+```
+
+**LILITH:**
+> *"Idempotence — это как выключатель света. Нажал 'включить' 10 раз — свет включён (не 10 раз ярче!). Ansible проверяет состояние. Уже правильно? Ничего не делает."*
+
+---
+
+### 💻 Практика 4: Create Role
+
+```bash
+# Create role structure
+ansible-galaxy init roles/webserver
+
+# Edit roles/webserver/tasks/main.yml
+cat > roles/webserver/tasks/main.yml << 'EOF'
+---
+- name: Install nginx
+  apt:
+    name: nginx
+    state: present
+
+- name: Copy config
+  template:
     src: nginx.conf.j2
     dest: /etc/nginx/nginx.conf
-```
+  notify: restart nginx  # Trigger handler
 
-**Services:**
-```yaml
-- service:
+- name: Start nginx
+  service:
+    name: nginx
+    state: started
+    enabled: yes
+EOF
+
+# Create handler
+cat > roles/webserver/handlers/main.yml << 'EOF'
+---
+- name: restart nginx
+  service:
     name: nginx
     state: restarted
-    enabled: yes
+EOF
+
+# Use role in playbook
+cat > site.yml << 'EOF'
+---
+- name: Configure infrastructure
+  hosts: web
+  roles:
+    - webserver
+EOF
+
+# Run
+ansible-playbook -i inventory.ini site.yml
 ```
 
-**Users:**
+---
+
+### 🤔 Проверка понимания: Цикл 4
+
+**Вопрос 1:** Что произойдёт если запустить playbook 2 раза?
+
+<details>
+<summary>Думай перед проверкой</summary>
+
+**Ответ:** **Second run: changed=0 (idempotence)**
+
+```bash
+# First run
+ansible-playbook playbook.yml
+PLAY RECAP:
+server-01  ok=10  changed=10  failed=0  # 10 changes made
+
+# Second run (immediately)
+ansible-playbook playbook.yml
+PLAY RECAP:
+server-01  ok=10  changed=0  failed=0  # 0 changes (already correct!)
+```
+
+**Ansible checks state:**
+- nginx already installed? → skip install
+- config already correct? → skip copy
+- service already running? → skip start
+
+**Safe to run repeatedly!**
+
+**Klaus:** *"Idempotence = safety. Can run 100 times. Won't break anything."*
+
+</details>
+
+**Вопрос 2:** Зачем использовать roles вместо playbooks?
+
+<details>
+<summary>Думай перед проверкой</summary>
+
+**Ответ:** **Reusability + Organization.**
+
+**Without roles (playbook):**
 ```yaml
-- user:
-    name: deploy
-    groups: sudo,docker
-    shell: /bin/bash
-    create_home: yes
+# webserver1.yml
+- tasks:
+    - install nginx
+    - configure nginx
+    - start nginx
+
+# webserver2.yml
+- tasks:
+    - install nginx  # DUPLICATE CODE!
+    - configure nginx
+    - start nginx
 ```
 
-**Commands:**
+**With roles:**
 ```yaml
-- shell: echo "Hello" > /tmp/hello.txt
-- command: /usr/bin/myapp --start
+# roles/webserver/tasks/main.yml (once)
+- install nginx
+- configure nginx
+- start nginx
+
+# Use everywhere
+- hosts: web1
+  roles: [webserver]
+- hosts: web2
+  roles: [webserver]
 ```
 
-**3,000+ modules:** https://docs.ansible.com/ansible/latest/modules/modules_by_category.html
+**DRY: Don't Repeat Yourself!**
 
-### Variables
+**LILITH:** *"Roles — это functions в programming. Написал функцию — вызываешь многократно. Don't copy-paste код."*
 
-**Define in playbook:**
+</details>
+
+---
+
+## ЦИКЛ 5: TWIST — Certificate Expired (Security Audit) 🔍
+### (15-20 минут)
+
+### 🎬 Сюжет: Unexpected Discovery
+
+**16:30 — During playbook execution**
+
+Max запускает финальный playbook. Всё идёт гладко. Tasks зелёные.
+
+**Suddenly:**
+
+```
+TASK [Copy SSL certificates] ***********************************
+changed: [server-27]
+
+TASK [Verify certificate validity] *****************************
+FAILED: [server-27]
+  Certificate expired: 2024-11-15
+  Certificate CN: operation-shadow.net
+  Issued by: Let's Encrypt
+  Days expired: 362 days
+```
+
+**Max (confused):**
+> *"Certificate expired?! Год назад?!"*
+
+**Klaus (проверяет):**
+> *"Server-27... это production load balancer. Expired certificate год назад. Как это никто не заметил?!"*
+
+**Dmitry (проверяет остальные):**
+> *"Проверяю другие серверы... Server-31 тоже expired. Server-42 expires через 3 дня!"*
+
+**Klaus (серьёзно):**
+> *"Audit time. Ansible нашёл то, что monitoring пропустил. Проверим всё."*
+
+---
+
+### 📚 Теория: Ansible as Audit Tool
+
+**Ansible не только для configuration. Также для AUDIT:**
+
 ```yaml
-vars:
-  nginx_port: 80
-  app_version: 1.2.3
-
-tasks:
-  - name: Configure nginx
-    template:
-      src: nginx.conf.j2
-      dest: /etc/nginx/nginx.conf
+# Certificate audit playbook
+- name: Audit SSL certificates
+  hosts: all
+  tasks:
+    - name: Find all certificates
+      find:
+        paths: /etc/ssl/certs
+        patterns: "*.crt"
+      register: certs
+    
+    - name: Check expiration
+      command: >
+        openssl x509 -in {{ item.path }}
+        -noout -enddate
+      loop: "{{ certs.files }}"
+      register: cert_expiry
+    
+    - name: Report expired
+      debug:
+        msg: "{{ item.item.path }} expires {{ item.stdout }}"
+      loop: "{{ cert_expiry.results }}"
+      when: "'EXPIRED' in item.stdout or days_until_expiry < 30"
 ```
 
-**Use in templates (Jinja2):**
-```nginx
-# nginx.conf.j2
+**Klaus runs audit:**
+
+```bash
+ansible-playbook -i inventory.ini cert-audit.yml
+
+# Output:
+# server-27: ❌ Expired 362 days ago
+# server-31: ❌ Expired 180 days ago
+# server-42: ⚠️  Expires in 3 days
+# server-15: ⚠️  Expires in 15 days
+# (46 servers: ✅ Valid)
+```
+
+---
+
+### 💡 Security Discovery
+
+**Emergency response:**
+
+1. **Identify scope** (4 servers affected)
+2. **Generate new certificates** (Let's Encrypt)
+3. **Deploy via Ansible** (automated!)
+4. **Update monitoring** (add cert expiry checks)
+
+**16:45 - 17:15 — Emergency Fix**
+
+```yaml
+# emergency-cert-renewal.yml
+- name: Emergency certificate renewal
+  hosts: expired_certs
+  become: yes
+  tasks:
+    - name: Install certbot
+      apt:
+        name: certbot
+        state: present
+    
+    - name: Renew certificates
+      command: >
+        certbot renew --force-renewal
+        --non-interactive
+        --agree-tos
+        --email admin@operation-shadow.net
+    
+    - name: Restart nginx
+      service:
+        name: nginx
+        state: restarted
+```
+
+```bash
+ansible-playbook emergency-cert-renewal.yml
+# 4 servers renewed, 30 seconds
+```
+
+**17:15 — Resolution**
+
+**Klaus:**
+> *"4 servers fixed. Certificates renewed. Valid for 90 days. Это урок: Ansible не только автоматизация. Также discovery. Нашёл проблемы, которые monitoring пропустил."*
+
+**Anna (видеозвонок, forensics):**
+> *"Certificate expired год назад, но HTTPS всё ещё работал? Проверьте load balancer. Возможно, кэшированный cert или fallback. Investigating..."*
+
+**(Анна проверяет, обнаруживает: load balancer использовал старый cached cert + ошибка в monitoring config — cert expiry checks были disabled после migration)**
+
+**Anna:**
+> *"Found it. Monitoring cert checks disabled during migration 18 months ago. Never re-enabled. Added to post-incident checklist."*
+
+---
+
+### 🤔 Проверка понимания: Цикл 5
+
+**Вопрос 1:** Как Ansible нашёл expired certificates?
+
+<details>
+<summary>Думай перед проверкой</summary>
+
+**Ответ:** **Automated audit playbook.**
+
+```yaml
+# Audit task checks ALL servers
+- name: Verify certificate validity
+  command: openssl x509 -in /etc/ssl/cert.pem -noout -checkend 0
+  register: cert_check
+  failed_when: cert_check.rc != 0
+```
+
+**Manual audit:**
+- SSH to 50 servers individually
+- Run `openssl x509` command
+- Check dates manually
+- 2-3 hours work
+
+**Ansible audit:**
+- One playbook
+- All servers checked in parallel
+- 2 minutes
+
+**LILITH:** *"Ansible = automated inspector. Checks все серверы, finds inconsistencies. Humans make mistakes. Automation doesn't."*
+
+</details>
+
+**Вопрос 2:** Почему monitoring пропустил expired cert?
+
+<details>
+<summary>Думай перед проверкой</summary>
+
+**Ответ:** **Cert expiry checks were disabled.**
+
+**Root cause:**
+- Migration 18 months ago
+- Cert monitoring temporarily disabled
+- Never re-enabled
+- Fell through cracks
+
+**Prevention:**
+1. **Checklist:** Post-migration verification
+2. **Automation:** Ansible checks certs on every run
+3. **Redundancy:** Multiple monitoring layers
+
+**LILITH:** *"Single point of failure. Monitoring disabled = blind spot. Always have backup checks. Defense in depth."*
+
+</details>
+
+---
+
+## ЦИКЛ 6: Templates & Variables — Mad Libs ✍️
+### (15-20 минут)
+
+### 🎬 Сюжет: Dynamic Configurations
+
+**17:45 — After cert fix**
+
+**Klaus:**
+> *"Certificates fixed. Теперь dynamic configs. 50 servers, разные настройки. Templates. Jinja2. Как Mad Libs."*
+
+(Klaus показывает шаблон nginx config)
+
+```jinja2
+# templates/nginx.conf.j2
 server {
     listen {{ nginx_port }};
-    server_name {{ ansible_hostname }};
-}
-```
-
-**Variable precedence (highest to lowest):**
-1. Extra vars (`-e "var=value"`)
-2. Task vars
-3. Play vars
-4. Host vars (`host_vars/server01.yml`)
-5. Group vars (`group_vars/web.yml`)
-6. Inventory vars
-
-### Templates (Jinja2)
-
-**nginx.conf.j2:**
-```nginx
-server {
-    listen {{ nginx_port | default(80) }};
-    server_name {{ ansible_hostname }};
-
-    {% if environment == "production" %}
-    access_log /var/log/nginx/access.log combined;
-    {% else %}
-    access_log /var/log/nginx/access.log;
+    server_name {{ server_name }};
+    
+    ssl_certificate {{ ssl_cert_path }};
+    ssl_certificate_key {{ ssl_key_path }};
+    
+    {% if enable_ssl %}
+    listen 443 ssl;
     {% endif %}
-
+    
     location / {
         proxy_pass http://{{ backend_host }}:{{ backend_port }};
     }
 }
 ```
 
-**Use in playbook:**
+**Klaus:**
+> *"Шаблон. Variables в двойных скобках. Ansible заполняет. Каждый сервер получает свою версию."*
+
+**LILITH:**
+> *"Templates — это Mad Libs. 'My name is ___'. Fill in blank. Jinja2 template: 'server_name is {{ server_name }}'. Ansible fills in."*
+
+---
+
+### 📚 Теория: Jinja2 Templates
+
+**Template syntax:**
+
+```jinja2
+{# Comment #}
+
+{{ variable }}  # Variable substitution
+
+{% if condition %}
+  # Conditional block
+{% endif %}
+
+{% for item in list %}
+  # Loop
+{% endfor %}
+```
+
+**Example:**
+
+```jinja2
+# app.conf.j2
+[app]
+name = {{ app_name }}
+port = {{ app_port }}
+debug = {{ debug_mode | default('false') }}
+
+{% if enable_ssl %}
+ssl_cert = /etc/ssl/{{ app_name }}.crt
+{% endif %}
+
+{% for host in backend_servers %}
+backend = {{ host }}
+{% endfor %}
+```
+
+**Variables from:**
+- Inventory (`ansible_host`, group_vars)
+- Playbook (`vars:` section)
+- Role defaults (`defaults/main.yml`)
+- Command line (`-e "var=value"`)
+
+---
+
+### 💻 Практика 6: Use Templates
+
+```yaml
+# playbook with template
+- name: Configure nginx
+  hosts: web
+  vars:
+    nginx_port: 80
+    server_name: "{{ inventory_hostname }}"
+    backend_host: "app.internal"
+    backend_port: 8080
+  
+  tasks:
+    - name: Deploy nginx config
+      template:
+        src: templates/nginx.conf.j2
+        dest: /etc/nginx/sites-available/default
+      notify: reload nginx
+  
+  handlers:
+    - name: reload nginx
+      service:
+        name: nginx
+        state: reloaded
+```
+
+```bash
+ansible-playbook -i inventory.ini nginx-config.yml
+```
+
+**Result:** Each server gets customized config!
+
+---
+
+### 🤔 Проверка понимания: Цикл 6
+
+**Вопрос 1:** В чём разница между `copy` и `template` module?
+
+<details>
+<summary>Думай перед проверкой</summary>
+
+**Ответ:**
+
+**copy:** Static file (exact copy)
+```yaml
+- copy:
+    src: file.txt
+    dest: /remote/file.txt
+# Same file on all servers
+```
+
+**template:** Dynamic file (variables replaced)
 ```yaml
 - template:
-    src: nginx.conf.j2
-    dest: /etc/nginx/nginx.conf
-  notify: restart nginx  # Trigger handler
+    src: app.conf.j2
+    dest: /etc/app.conf
+# Different file per server (variables filled in)
 ```
 
-### Handlers
+**Klaus:** *"`copy` = photocopy (exact). `template` = Mad Libs (fill blanks)."*
 
-**Handlers = tasks that run only on change:**
+</details>
 
-```yaml
-tasks:
-  - name: Copy nginx config
-    template:
-      src: nginx.conf.j2
-      dest: /etc/nginx/nginx.conf
-    notify: restart nginx  # Run handler if config changed
+---
 
-handlers:
-  - name: restart nginx
-    service:
-      name: nginx
-      state: restarted
+## ЦИКЛ 7: Vault & Secrets — Сейф 🔐
+### (10-15 минут)
+
+### 🎬 Сюжет: Encrypting Secrets
+
+**18:15 — Security best practice**
+
+**Klaus:**
+> *"Playbooks в Git. Но passwords тоже в Git? НЕТ! Ansible Vault. Шифрование."*
+
+(Klaus создаёт зашифрованный файл)
+
+```bash
+ansible-vault create secrets.yml
+# Enter password: ********
+
+# Edit encrypted file
+cat > secrets.yml << EOF
+database_password: SuperSecret123
+api_key: abc123xyz789
+ssl_private_key: |
+  -----BEGIN PRIVATE KEY-----
+  ...
+  -----END PRIVATE KEY-----
+EOF
 ```
 
-**Handlers run at end of play, only once** (even if multiple tasks notify).
+**Klaus:**
+> *"Теперь зашифрован. Можешь коммитить в Git. Decrypt только с паролем."*
 
-### Roles
+**LILITH:**
+> *"Vault — это сейф. Secrets внутри сейфа. Код в Git (public). Сейф в Git (encrypted). Только ты знаешь комбинацию (vault password)."*
 
-**Roles = reusable playbook components:**
+---
 
-**Structure:**
-```
-roles/
-  webserver/
-    tasks/main.yml       # Tasks
-    handlers/main.yml    # Handlers
-    templates/           # Jinja2 templates
-    files/               # Static files
-    vars/main.yml        # Variables
-    defaults/main.yml    # Default variables
-```
+### 📚 Теория: Ansible Vault
 
-**Use in playbook:**
-```yaml
-- name: Configure servers
-  hosts: web
-  roles:
-    - webserver
-    - monitoring
-```
-
-### Ansible Vault (Secrets)
-
-**Encrypt sensitive data:**
+**Operations:**
 
 ```bash
 # Create encrypted file
@@ -683,930 +1732,110 @@ ansible-vault create secrets.yml
 ansible-vault edit secrets.yml
 
 # Encrypt existing file
-ansible-vault encrypt vars.yml
-```
-
-**secrets.yml (encrypted):**
-```yaml
-db_password: supersecret123
-api_key: abc123xyz
-```
-
-**Use in playbook:**
-```yaml
-- name: Configure database
-  hosts: database
-  vars_files:
-    - secrets.yml
-  tasks:
-    - name: Create database user
-      postgresql_user:
-        name: app
-        password: "{{ db_password }}"
-```
-
-**Run with vault:**
-```bash
-ansible-playbook playbook.yml --ask-vault-pass
-# or
-ansible-playbook playbook.yml --vault-password-file ~/.vault_pass
-```
-
-### Idempotence
-
-**Idempotent = можно запускать много раз, результат одинаковый.**
-
-**Good (idempotent):**
-```yaml
-- name: Install nginx
-  apt:
-    name: nginx
-    state: present  # Install if not present, skip if already present
-```
-
-**Bad (not idempotent):**
-```yaml
-- name: Add user to sudoers
-  shell: echo "user ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
-  # Running twice adds line twice!
-```
-
-**Fix:**
-```yaml
-- name: Add user to sudoers
-  lineinfile:
-    path: /etc/sudoers
-    line: "user ALL=(ALL) NOPASSWD: ALL"
-    state: present  # Adds once, skips if already present
-```
-
-### Check Mode (Dry Run)
-
-**Test without making changes:**
-
-```bash
-ansible-playbook playbook.yml --check
-# Shows what WOULD change, but doesn't apply
-```
-
-**Diff mode:**
-```bash
-ansible-playbook playbook.yml --check --diff
-# Shows exact changes to files
-```
-
----
-
-## 💻 Практика: 9 заданий
-
-### Задание 1: Install Ansible
-
-**Миссия:** Установить Ansible на control node.
-
-**Задача:**
-
-```bash
-# Update package list
-sudo apt update
-
-# Install Ansible
-sudo apt install -y ansible
-
-# Verify installation
-ansible --version
-# Should show: ansible [core 2.x.x]
-
-# Check Python
-python3 --version
-# Ansible requires Python 3.8+
-```
-
-**Test connection (localhost):**
-```bash
-ansible localhost -m ping
-# Expected: localhost | SUCCESS => { "ping": "pong" }
-```
-
-<details>
-<summary>💡 Hint: Installation issues</summary>
-
-**If Ansible not in Ubuntu repos:**
-```bash
-sudo apt install -y software-properties-common
-sudo add-apt-repository --yes --update ppa:ansible/ansible
-sudo apt install -y ansible
-```
-
-**Alternative (pip):**
-```bash
-pip3 install ansible
-```
-
-</details>
-
----
-
-### Задание 2: Create Inventory File
-
-**Миссия:** Создать inventory с 50 серверами в группах.
-
-**Create inventory.ini:**
-
-```ini
-# Web servers (10 servers)
-[web]
-web-[01:10].operation-shadow.net
-
-# Database servers (5 servers)
-[database]
-db-[01:05].operation-shadow.net
-
-# Cache servers (5 servers)
-[cache]
-cache-[01:05].operation-shadow.net
-
-# Monitoring servers (2 servers)
-[monitoring]
-monitor-01.operation-shadow.net
-monitor-02.operation-shadow.net
-
-# Application servers (28 servers)
-[app]
-app-[01:28].operation-shadow.net
-
-# Group of groups
-[production:children]
-web
-database
-cache
-app
-monitoring
-
-# Variables for all production servers
-[production:vars]
-ansible_user=deploy
-ansible_ssh_private_key_file=~/.ssh/deploy_key
-environment=production
-```
-
-**Test inventory:**
-```bash
-# List all hosts
-ansible all -i inventory.ini --list-hosts
-
-# List hosts in group
-ansible web -i inventory.ini --list-hosts
-
-# Ping all servers (будет fail если серверы недоступны, это OK для практики)
-ansible all -i inventory.ini -m ping
-```
-
-**For local testing (без реальных серверов):**
-```ini
-[local]
-localhost ansible_connection=local
-```
-
----
-
-### Задание 3: Write Basic Playbook
-
-**Миссия:** Создать playbook для базовой конфигурации.
-
-**playbook.yml:**
-
-```yaml
----
-- name: Configure operation-shadow servers
-  hosts: production
-  become: yes
-
-  tasks:
-    - name: Update apt cache
-      apt:
-        update_cache: yes
-        cache_valid_time: 3600
-
-    - name: Install essential packages
-      apt:
-        name:
-          - vim
-          - git
-          - curl
-          - htop
-          - net-tools
-        state: present
-
-    - name: Create deploy user
-      user:
-        name: deploy
-        groups: sudo
-        shell: /bin/bash
-        create_home: yes
-
-    - name: Set up SSH key for deploy user
-      authorized_key:
-        user: deploy
-        key: "{{ lookup('file', '~/.ssh/id_ed25519.pub') }}"
-        state: present
-
-    - name: Configure firewall (UFW)
-      ufw:
-        rule: allow
-        port: "{{ item }}"
-      loop:
-        - 22
-        - 80
-        - 443
-
-    - name: Enable UFW
-      ufw:
-        state: enabled
-
-    - name: Install Docker
-      apt:
-        name: docker.io
-        state: present
-
-    - name: Start Docker service
-      service:
-        name: docker
-        state: started
-        enabled: yes
-
-    - name: Add deploy user to docker group
-      user:
-        name: deploy
-        groups: docker
-        append: yes
-```
-
-**Run playbook:**
-```bash
-ansible-playbook -i inventory.ini playbook.yml
-
-# Check mode (dry run)
-ansible-playbook -i inventory.ini playbook.yml --check
-
-# Verbose output
-ansible-playbook -i inventory.ini playbook.yml -v
-```
-
----
-
-### Задание 4: Create Roles
-
-**Миссия:** Организовать playbook в reusable roles.
-
-**Create role structure:**
-
-```bash
-mkdir -p roles/{common,webserver,database}/tasks
-mkdir -p roles/{common,webserver,database}/{handlers,templates,files,vars,defaults}
-```
-
-**roles/common/tasks/main.yml:**
-
-```yaml
----
-- name: Update apt cache
-  apt:
-    update_cache: yes
-    cache_valid_time: 3600
-
-- name: Install essential packages
-  apt:
-    name:
-      - vim
-      - git
-      - curl
-      - htop
-    state: present
-
-- name: Create deploy user
-  user:
-    name: deploy
-    groups: sudo
-    shell: /bin/bash
-    create_home: yes
-```
-
-**roles/webserver/tasks/main.yml:**
-
-```yaml
----
-- name: Install nginx
-  apt:
-    name: nginx
-    state: present
-
-- name: Copy nginx config
-  template:
-    src: nginx.conf.j2
-    dest: /etc/nginx/nginx.conf
-  notify: restart nginx
-
-- name: Start nginx
-  service:
-    name: nginx
-    state: started
-    enabled: yes
-```
-
-**roles/webserver/handlers/main.yml:**
-
-```yaml
----
-- name: restart nginx
-  service:
-    name: nginx
-    state: restarted
-```
-
-**Use roles in playbook:**
-
-```yaml
----
-- name: Configure all servers
-  hosts: production
-  become: yes
-  roles:
-    - common
-
-- name: Configure web servers
-  hosts: web
-  become: yes
-  roles:
-    - webserver
-
-- name: Configure database servers
-  hosts: database
-  become: yes
-  roles:
-    - database
-```
-
----
-
-### Задание 5: Use Variables
-
-**Миссия:** Параметризовать конфигурацию с variables.
-
-**group_vars/all.yml:**
-
-```yaml
----
-# Common variables for all servers
-deploy_user: deploy
-ntp_server: pool.ntp.org
-timezone: Europe/Berlin
-```
-
-**group_vars/web.yml:**
-
-```yaml
----
-# Web server specific variables
-nginx_port: 80
-nginx_worker_processes: auto
-nginx_worker_connections: 1024
-max_upload_size: 100M
-```
-
-**group_vars/database.yml:**
-
-```yaml
----
-# Database specific variables
-postgres_version: 14
-postgres_max_connections: 200
-postgres_shared_buffers: 256MB
-```
-
-**host_vars/web-01.yml:**
-
-```yaml
----
-# Specific overrides for web-01
-nginx_worker_connections: 2048  # More connections for primary server
-```
-
-**Use in playbook:**
-
-```yaml
-- name: Configure timezone
-  timezone:
-    name: "{{ timezone }}"
-
-- name: Configure nginx workers
-  lineinfile:
-    path: /etc/nginx/nginx.conf
-    regexp: '^worker_processes'
-    line: "worker_processes {{ nginx_worker_processes }};"
-```
-
----
-
-### Задание 6: Templates with Jinja2
-
-**Миссия:** Использовать templates для dynamic configuration.
-
-**roles/webserver/templates/nginx.conf.j2:**
-
-```nginx
-user www-data;
-worker_processes {{ nginx_worker_processes }};
-pid /run/nginx.pid;
-
-events {
-    worker_connections {{ nginx_worker_connections }};
-}
-
-http {
-    sendfile on;
-    tcp_nopush on;
-    keepalive_timeout 65;
-    types_hash_max_size 2048;
-    client_max_body_size {{ max_upload_size }};
-
-    include /etc/nginx/mime.types;
-    default_type application/octet-stream;
-
-    {% if environment == "production" %}
-    access_log /var/log/nginx/access.log;
-    error_log /var/log/nginx/error.log warn;
-    {% else %}
-    access_log /var/log/nginx/access.log;
-    error_log /var/log/nginx/error.log debug;
-    {% endif %}
-
-    gzip on;
-
-    server {
-        listen {{ nginx_port }};
-        server_name {{ ansible_hostname }};
-
-        root /var/www/html;
-        index index.html;
-
-        location / {
-            try_files $uri $uri/ =404;
-        }
-
-        location /health {
-            access_log off;
-            return 200 "OK\n";
-            add_header Content-Type text/plain;
-        }
-    }
-}
-```
-
-**Use template in role:**
-
-```yaml
-- name: Deploy nginx configuration
-  template:
-    src: nginx.conf.j2
-    dest: /etc/nginx/nginx.conf
-    owner: root
-    group: root
-    mode: '0644'
-  notify: restart nginx
-```
-
----
-
-### Задание 7: Handlers
-
-**Миссия:** Реагировать на изменения конфигурации.
-
-**roles/webserver/tasks/main.yml:**
-
-```yaml
-- name: Copy nginx config
-  template:
-    src: nginx.conf.j2
-    dest: /etc/nginx/nginx.conf
-  notify:
-    - validate nginx config
-    - restart nginx
-
-- name: Copy SSL certificate
-  copy:
-    src: "{{ item }}"
-    dest: /etc/ssl/certs/
-  loop:
-    - operation-shadow.crt
-    - operation-shadow.key
-  notify: reload nginx
-```
-
-**roles/webserver/handlers/main.yml:**
-
-```yaml
----
-- name: validate nginx config
-  command: nginx -t
-  changed_when: false  # Don't report as "changed"
-
-- name: restart nginx
-  service:
-    name: nginx
-    state: restarted
-
-- name: reload nginx
-  service:
-    name: nginx
-    state: reloaded  # Graceful reload (no downtime)
-```
-
-**Handlers run:**
-- At end of play
-- Only if notified
-- Only once (even if multiple tasks notify)
-- In order defined in handlers file
-
----
-
-### Задание 8: Ansible Vault (Secrets)
-
-**Миссия:** Защитить чувствительные данные encryption.
-
-**Create encrypted file:**
-
-```bash
-# Create vault file
-ansible-vault create secrets.yml
-
-# Enter vault password: operation-shadow-vault-2025
-# Opens editor, add:
-db_password: superSecretPass123
-api_key: sk-abc123xyz456
-ssh_private_key: |
-  -----BEGIN OPENSSH PRIVATE KEY-----
-  ...
-  -----END OPENSSH PRIVATE KEY-----
-```
-
-**secrets.yml (после создания — encrypted):**
-```
-$ANSIBLE_VAULT;1.1;AES256
-66386439653966636230303838...
-```
-
-**Use in playbook:**
-
-```yaml
----
-- name: Configure database
-  hosts: database
-  become: yes
-  vars_files:
-    - secrets.yml  # Load encrypted variables
-
-  tasks:
-    - name: Create database user
-      postgresql_user:
-        name: appuser
-        password: "{{ db_password }}"  # From secrets.yml
-        state: present
-
-    - name: Configure API key
-      lineinfile:
-        path: /opt/app/config.env
-        line: "API_KEY={{ api_key }}"
-        state: present
-```
-
-**Run with vault password:**
-
-```bash
-# Interactive password prompt
-ansible-playbook playbook.yml --ask-vault-pass
-
-# Password from file
-echo "operation-shadow-vault-2025" > ~/.vault_pass
-chmod 600 ~/.vault_pass
-ansible-playbook playbook.yml --vault-password-file ~/.vault_pass
-```
-
-**Vault commands:**
-```bash
-# View encrypted file
-ansible-vault view secrets.yml
-
-# Edit encrypted file
-ansible-vault edit secrets.yml
-
-# Change password
-ansible-vault rekey secrets.yml
-
-# Encrypt existing file
-ansible-vault encrypt vars.yml
+ansible-vault encrypt passwords.txt
 
 # Decrypt file
 ansible-vault decrypt secrets.yml
+
+# View encrypted file
+ansible-vault view secrets.yml
+
+# Change vault password
+ansible-vault rekey secrets.yml
+```
+
+**Using vault in playbook:**
+
+```bash
+# Prompt for password
+ansible-playbook --ask-vault-pass playbook.yml
+
+# Password from file
+ansible-playbook --vault-password-file ~/.vault_pass playbook.yml
 ```
 
 ---
 
-### Задание 9: Security Audit Playbook
+### 💻 Практика 7: Encrypt Secrets
 
-**Миссия:** Автоматизировать security audit всех серверов.
+```bash
+# Create vault
+ansible-vault create group_vars/all/vault.yml
 
-**audit.yml:**
+# Add secrets
+database_password: secret123
+api_token: xyz789
 
-```yaml
----
-- name: Security Audit - All Servers
-  hosts: production
-  become: yes
-  gather_facts: yes
-
+# Use in playbook
+- name: Configure database
+  hosts: database
+  vars_files:
+    - group_vars/all/vault.yml
   tasks:
-    - name: Check for unauthorized users (UID 0)
-      shell: awk -F: '$3 == 0 {print $1}' /etc/passwd
-      register: uid_zero_users
-      changed_when: false
-
-    - name: Fail if unauthorized root users found
-      fail:
-        msg: "Unauthorized UID 0 users: {{ uid_zero_users.stdout_lines }}"
-      when: uid_zero_users.stdout_lines | length > 1  # Only 'root' allowed
-
-    - name: Check for users with empty passwords
-      shell: awk -F: '($2 == "") {print $1}' /etc/shadow
-      register: empty_passwords
-      changed_when: false
-      failed_when: false
-
-    - name: Check SSH configuration
-      lineinfile:
-        path: /etc/ssh/sshd_config
-        regexp: "{{ item.regexp }}"
-        line: "{{ item.line }}"
-        state: present
-      check_mode: yes
-      register: ssh_config
-      loop:
-        - { regexp: '^PermitRootLogin', line: 'PermitRootLogin no' }
-        - { regexp: '^PasswordAuthentication', line: 'PasswordAuthentication no' }
-        - { regexp: '^PermitEmptyPasswords', line: 'PermitEmptyPasswords no' }
-
-    - name: Check for suspicious processes
-      shell: ps aux | grep -E "nc|ncat|socat|/bin/sh|bash -i" | grep -v grep
-      register: suspicious_processes
-      changed_when: false
-      failed_when: false
-
-    - name: Check for modified system binaries
-      shell: debsums -c 2>&1 | head -20
-      register: modified_files
-      changed_when: false
-      failed_when: false
-
-    - name: Check open ports
-      shell: ss -tulpn | grep LISTEN
-      register: open_ports
-      changed_when: false
-
-    - name: Check firewall status
-      shell: ufw status
-      register: firewall_status
-      changed_when: false
-
-    - name: Check for unauthorized SSH keys
-      shell: find /home -name authorized_keys -exec cat {} \;
-      register: ssh_keys
-      changed_when: false
-
-    - name: Check last logins
-      shell: last -20
-      register: last_logins
-      changed_when: false
-
-    - name: Generate audit report
-      copy:
-        content: |
-          ═══════════════════════════════════════════════════════
-          SECURITY AUDIT REPORT
-          Server: {{ ansible_hostname }}
-          Date: {{ ansible_date_time.iso8601 }}
-          ═══════════════════════════════════════════════════════
-
-          [1] UID 0 Users:
-          {{ uid_zero_users.stdout }}
-
-          [2] Empty Password Accounts:
-          {{ empty_passwords.stdout | default("None", true) }}
-
-          [3] Suspicious Processes:
-          {{ suspicious_processes.stdout | default("None", true) }}
-
-          [4] Modified System Files:
-          {{ modified_files.stdout | default("None", true) }}
-
-          [5] Open Ports:
-          {{ open_ports.stdout }}
-
-          [6] Firewall Status:
-          {{ firewall_status.stdout }}
-
-          [7] SSH Keys:
-          {{ ssh_keys.stdout }}
-
-          [8] Recent Logins:
-          {{ last_logins.stdout }}
-
-          ═══════════════════════════════════════════════════════
-        dest: "/tmp/audit_{{ ansible_hostname }}_{{ ansible_date_time.date }}.txt"
-
-    - name: Fetch audit reports to control node
-      fetch:
-        src: "/tmp/audit_{{ ansible_hostname }}_{{ ansible_date_time.date }}.txt"
-        dest: "./audit_reports/"
-        flat: yes
-
-- name: Consolidate audit results
-  hosts: localhost
-  connection: local
-  gather_facts: no
-
-  tasks:
-    - name: Create summary report
-      shell: |
-        cat audit_reports/*.txt > audit_reports/SUMMARY_{{ lookup('pipe', 'date +%Y%m%d') }}.txt
-        echo "Audit complete. Check audit_reports/SUMMARY_*.txt"
-```
-
-**Run security audit:**
-
-```bash
-ansible-playbook -i inventory.ini audit.yml
-
-# Results in ./audit_reports/
-ls -lh audit_reports/
-# SUMMARY_20251031.txt — consolidated report
-```
-
-**Klaus's security checklist:**
-```yaml
-# Quick security check
-ansible all -i inventory.ini -m shell -a "ufw status" -b
-ansible all -i inventory.ini -m shell -a "last -5" -b
-ansible all -i inventory.ini -m shell -a "debsums -c | head" -b
+    - name: Create database user
+      postgresql_user:
+        name: app_user
+        password: "{{ database_password }}"  # From vault!
 ```
 
 ---
 
-## 📖 Ansible Best Practices
+### 🤔 Проверка понимания: Цикл 7
+
+**Вопрос 1:** Можно ли коммитить vault файл в Git?
 
 <details>
-<summary><strong>🔹 Playbook Organization</strong></summary>
+<summary>Думай перед проверкой</summary>
 
-**Good structure:**
-```
-ansible/
-├── inventory.ini
-├── playbook.yml
-├── group_vars/
-│   ├── all.yml
-│   ├── web.yml
-│   └── database.yml
-├── host_vars/
-│   └── web-01.yml
-├── roles/
-│   ├── common/
-│   ├── webserver/
-│   └── database/
-├── secrets.yml (encrypted)
-└── README.md
-```
+**Ответ:** **ДА! Он зашифрован.**
 
-**Naming conventions:**
-- Playbooks: `verb_noun.yml` (e.g., `configure_webservers.yml`)
-- Roles: noun (e.g., `webserver`, not `install_webserver`)
-- Variables: `role_purpose` (e.g., `nginx_port`, not `port`)
-- Tasks: Start with verb (e.g., "Install nginx", not "nginx installation")
-
-</details>
-
-<details>
-<summary><strong>🔹 Idempotence</strong></summary>
-
-**Always ensure playbooks are idempotent:**
-
-❌ **Bad:**
-```yaml
-- shell: echo "server 1.2.3.4" >> /etc/config
-```
-
-✅ **Good:**
-```yaml
-- lineinfile:
-    path: /etc/config
-    line: "server 1.2.3.4"
-    state: present
-```
-
-**Test idempotence:**
 ```bash
-# Run twice, second run should be all "ok", no "changed"
-ansible-playbook playbook.yml
-ansible-playbook playbook.yml
+# Encrypted vault file (safe to commit)
+$ANSIBLE_VAULT;1.1;AES256
+61363966386662356537653...
+# Gibberish without password
+
+# Git
+git add secrets.yml  # ✅ Safe! Encrypted
+git commit -m "Add encrypted secrets"
+git push  # ✅ Safe! Cannot be read without password
 ```
 
-</details>
+**Password НЕ в Git!** Store separately (password manager, environment variable).
 
-<details>
-<summary><strong>🔹 Error Handling</strong></summary>
-
-**Ignore errors selectively:**
-```yaml
-- name: Check if file exists
-  stat:
-    path: /opt/app/config.json
-  register: config_file
-  ignore_errors: yes
-
-- name: Create config if missing
-  copy:
-    src: default_config.json
-    dest: /opt/app/config.json
-  when: not config_file.stat.exists
-```
-
-**Fail gracefully:**
-```yaml
-- name: Check disk space
-  shell: df -h / | awk 'NR==2 {print $5}' | sed 's/%//'
-  register: disk_usage
-  changed_when: false
-
-- name: Fail if disk full
-  fail:
-    msg: "Disk usage {{ disk_usage.stdout }}% too high!"
-  when: disk_usage.stdout | int > 90
-```
-
-</details>
-
-<details>
-<summary><strong>🔹 Performance</strong></summary>
-
-**Parallel execution:**
-```bash
-# Run on 10 servers simultaneously (default: 5)
-ansible-playbook playbook.yml --forks 10
-```
-
-**Limit scope:**
-```bash
-# Only run on specific group
-ansible-playbook playbook.yml --limit web
-
-# Only run on specific host
-ansible-playbook playbook.yml --limit web-01
-```
-
-**Tags:**
-```yaml
-tasks:
-  - name: Install packages
-    apt: ...
-    tags: packages
-
-  - name: Configure firewall
-    ufw: ...
-    tags: firewall
-
-# Run only specific tags
-ansible-playbook playbook.yml --tags firewall
-```
+**LILITH:** *"Зашифрованный сейф можешь положить где угодно. Без ключа — бесполезен."*
 
 </details>
 
 ---
 
-## 🧪 Тестирование
+## 📁 Структура файлов
 
-Автоматические тесты проверят:
-
-1. ✅ Ansible installation
-2. ✅ Inventory file structure
-3. ✅ Playbook syntax
-4. ✅ Roles organization
-5. ✅ Variables configuration
-6. ✅ Templates validity
-7. ✅ Handlers configuration
-8. ✅ Vault usage
-9. ✅ Security audit playbook
-
-**Запуск тестов:**
-```bash
-cd ~/kernel-shadows/season-4-devops-automation/episode-16-ansible-iac
-./tests/test.sh
+```
+episode-16-ansible-iac/
+├── README.md                  # Теория + micro-cycles
+├── artifacts/
+│   └── README.md
+│
+├── starter/                   # 🎯 НАЧНИ ЗДЕСЬ!
+│   ├── inventory.ini          # 50 servers inventory
+│   ├── playbooks/
+│   │   ├── site.yml           # Main playbook
+│   │   └── cert-audit.yml     # Certificate audit
+│   ├── roles/
+│   │   ├── common/
+│   │   ├── webserver/
+│   │   ├── database/
+│   │   └── monitoring/
+│   ├── group_vars/
+│   │   └── all/
+│   │       └── vars.yml
+│   ├── templates/
+│   └── README.md
+│
+├── solution/                  # Референсное решение
+└── tests/
+    └── test.sh
 ```
 
 ---
@@ -1616,23 +1845,16 @@ cd ~/kernel-shadows/season-4-devops-automation/episode-16-ansible-iac
 **Klaus Schmidt:**
 > "Configuration management is not about managing servers. It's about managing chaos."
 
-**Klaus (демонстрируя Ansible):**
-> "50 servers. 3 minutes. Identical configuration. Zero human error. That's Infrastructure as Code."
+> "Ansible — это дирижёр оркестра. Один дирижёр, 50 музыкантов. Без дирижёра — хаос."
 
-**Klaus (после инцидента):**
-> "Server compromised? Rebuild in 30 minutes. Manual configuration? 8 hours + mistakes. IaC = insurance against chaos."
-
-**Klaus (финал Season 4):**
-> "Episode 13: Git. Episode 14: Docker. Episode 15: CI/CD. Episode 16: Ansible. Together = Infrastructure as Code. Everything versioned, automated, reproducible."
+> "Idempotence = safety. Can run 100 times. Won't break anything."
 
 **LILITH:**
-> "Ansible не защита от attackers. Krylov bypassed всё с root access. But Ansible made recovery 16× faster. That's the difference."
+> "Ansible — это дирижёр для servers. Один дирижёр, 50 музыкантов. Без дирижёра — хаос. С дирижёром — симфония."
 
-**Max (evolution):**
-- Start: "30 минут на сервер, 50 серверов = 25 часов"
-- Mid: "Ansible делает это за 3 минуты?!"
-- After incident: "Server-27 compromised, но восстановлен за 30 минут благодаря IaC"
-- End: "Infrastructure as Code — это не роскошь. Это необходимость для масштаба."
+> "Agentless — это красиво. Puppet требует agent. Ansible использует SSH. SSH уже везде."
+
+> "Playbook — это рецепт. Modules — ингредиенты. Ansible — кухонный робот. Servers — готовые обеды."
 
 ---
 
@@ -1640,55 +1862,68 @@ cd ~/kernel-shadows/season-4-devops-automation/episode-16-ansible-iac
 
 После Episode 16 вы умеете:
 
-✅ Устанавливать и настраивать Ansible
-✅ Создавать inventory files (groups, variables)
+✅ Устанавливать Ansible (control node)
+✅ Создавать inventory (groups, variables)
 ✅ Писать playbooks (tasks, modules)
-✅ Организовывать roles (reusable components)
-✅ Использовать variables и templates (Jinja2)
-✅ Создавать handlers (reactive actions)
-✅ Защищать secrets (Ansible Vault)
-✅ Автоматизировать security audits
-✅ Масштабировать конфигурацию (1 → 1000 servers)
+✅ Использовать roles (reusable configs)
+✅ Templates (Jinja2 for dynamic configs)
+✅ Handlers (restart services on change)
+✅ Ansible Vault (encrypt secrets)
+✅ Audit infrastructure (certificate checks, compliance)
+✅ **SEASON 4 COMPLETE!** 🎉
 
-**Season 4 Complete!** 🎉
+**Key concepts:**
+- **Agentless:** SSH only, no agent installation
+- **Idempotent:** Safe to run multiple times
+- **Declarative:** Describe WHAT, not HOW
+- **Roles:** Reusable configurations
+- **Vault:** Encrypted secrets
 
-**Навыки Season 4:**
-- Episode 13: Git & Version Control
-- Episode 14: Docker & Containerization
-- Episode 15: CI/CD Pipelines
-- Episode 16: Ansible & Infrastructure as Code
+---
 
-**Результат:** Full-stack DevOps engineer, Infrastructure as Code mastery
+## 🏆 SEASON 4 FINALE — Итоги
+
+**Episodes completed:**
+- Episode 13: Git & Version Control ✅
+- Episode 14: Docker Basics ✅
+- Episode 15: CI/CD Pipelines ✅
+- Episode 16: Ansible & IaC ✅
+
+**Skills mastered:**
+- Version control (Git)
+- Containerization (Docker)
+- Continuous Deployment (GitHub Actions)
+- Configuration Management (Ansible)
+
+**DevOps journey:** Complete! 🚀
+
+**Viktor (final video call, day 32):**
+> *"Max, Dmitry. Season 4 complete. Git, Docker, CI/CD, Ansible — вся automation готова. 50 servers управляются одной командой. Infrastructure as Code работает. Следующий этап: Security. Season 5. Zürich, Switzerland. Penetration testing, security audits, hardening. See you there."*
 
 ---
 
 ## 🚀 Следующий шаг
 
-**Season 5: Security & Pentesting** (Zürich, Switzerland 🇨🇭)
+**SEASON 5 PREMIERE — Episode 17: Security Auditing**
+**Location:** 🇨🇭 Zürich, Switzerland
+**Focus:** Penetration testing, security hardening, compliance
 
-**Viktor (cliffhanger):**
-> *"Season 4 complete. Infrastructure automated. Now we secure it. Tomorrow you fly to Zürich. Meet Eva Zimmerman — ex-NSA, penetration testing expert. She'll teach you hack your own infrastructure before Krylov does. Season 5: Security. 4 weeks. Get ready."*
-
-**Episode 17: Security Auditing** (Zürich)
-- Eva Zimmerman — ex-NSA penetration tester
-- Security scanning (Nmap, Nessus, OpenVAS)
-- Vulnerability assessment
-- CVSS scoring
-- Compliance checking
+**Eva Zimmerman (new character, security expert):**
+> *"You built the infrastructure. Now we break it. Pentesting. Vulnerability scanning. Hardening. See you in Zürich. — Eva"*
 
 ---
 
 <div align="center">
 
-**Episode 16: Ansible & IaC — COMPLETE!**
-**🎉 SEASON 4: DEVOPS & AUTOMATION — COMPLETE! 🎉**
+**🎬 SEASON 4: DEVOPS AUTOMATION — COMPLETE! 🎉**
 
 *"Configuration management is not about managing servers. It's about managing chaos."*
 
-🇳🇱 Amsterdam → 🇩🇪 Berlin • 50 Servers, 3 Minutes • Infrastructure as Code Mastery
+🇩🇪 Berlin → 🇳🇱 Amsterdam • 4 Episodes • Klaus Schmidt • Ansible Architecture
 
-[⬅️ Episode 15: CI/CD](../episode-15-cicd-pipelines/README.md) | [⬆️ Season 4 Overview](../README.md) | [➡️ Season 5: Security](../../season-5-security-pentesting/README.md)
+**SEASON 4 FINALE!**
+
+[⬅️ Episode 15: CI/CD](../episode-15-cicd-pipelines/README.md) | [⬆️ Season 4 Overview](../README.md) | [➡️ Season 5 Premiere](../../season-5-security/)
 
 </div>
-
 
