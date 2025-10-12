@@ -6,33 +6,33 @@
 /var/log/backup.log {
     # Rotate daily (active backup systems generate lots of logs)
     daily
-    
+
     # Keep 30 days (compliance, forensics, troubleshooting)
     rotate 30
-    
+
     # Compress old logs (gzip, save disk space)
     compress
-    
+
     # Don't compress most recent rotated log (might still be written to)
     delaycompress
-    
+
     # Don't error if log file doesn't exist
     missingok
-    
+
     # Don't rotate if log is empty (no unnecessary files)
     notifempty
-    
+
     # Create new log with proper permissions after rotation
     # 640 = rw-r----- (owner: rw, group: r, others: none)
     create 640 root adm
-    
+
     # dateext: use YYYYMMDD extension instead of numbers
     dateext
     dateformat -%Y%m%d
-    
+
     # Run scripts only once for all rotated logs
     sharedscripts
-    
+
     # Post-rotation script
     postrotate
         # Send weekly summary email (if Monday and mail command available)
@@ -40,7 +40,7 @@
             if command -v mail >/dev/null 2>&1; then
                 # Get previous log (just rotated)
                 PREV_LOG="/var/log/backup.log.1"
-                
+
                 if [ -f "$PREV_LOG" ]; then
                     # Extract last 1000 lines and send
                     tail -1000 "$PREV_LOG" | \
@@ -49,7 +49,7 @@
                 fi
             fi
         fi
-        
+
         # Notify systemd services (HUP signal to reload if needed)
         if command -v systemctl >/dev/null 2>&1; then
             # Don't fail if services aren't running

@@ -68,11 +68,12 @@
   - Учит Max LVM, disk management, production reliability
 
 - **Liisa Kask** (Episode 12)
-  - Backup engineer, ex-Skype Estonia
+  - Backup engineer, ex-Skype Estonia (10 лет опыта)
   - Возраст: ~30 лет, энергичная, параноидальная про бэкапы
-  - Стиль: "3-2-1 backup rule" фанатик
-  - Цитата: *"Backup'ы как страховка. Надеешься, что не понадобятся, но рад, что есть."*
-  - Учит Max backup strategies, disaster recovery
+  - Стиль: "3-2-1-T backup rule" фанатик, systemd evangelist
+  - Цитата: *"Untested backup = no backup. Test restore every month."*
+  - Учит Max backup strategies, disaster recovery, systemd timers, logrotate
+  - Скайп научил: 300M users не ждут, persistent timers критичны
 
 **Antagonist:**
 - **Полковник Крылов** — ФСБ Управление "К", охотится за Алексом, атакует инфраструктуру
@@ -97,9 +98,10 @@
 
 **Практика:**
 - Создать учётные записи для команды операции (Виктор, Алекс, Анна, Дмитрий)
-- Настроить sudo для Алекса (только network команды, НЕ всё)
-- Ограничить доступ Анны к логам (read-only)
-- Настроить ACL для shared папки
+- Настроить sudo через `/etc/sudoers.d/` для каждого пользователя
+- Настроить resource limits через `/etc/security/limits.conf`
+- Настроить PAM для session logging
+- Конфигурирование системы (Type B), минимум bash scripting
 
 **Сюжет:**
 Макс встречается с Андреем Волковым в старом университете. Белые ночи, канал за окном, чай. Андрей рассказывает о Unix permissions philosophy: principle of least privilege. Виктор требует настроить доступы правильно после взлома.
@@ -122,9 +124,11 @@
 
 **Практика:**
 - Создать systemd service для мониторинга (`monitor.service`)
-- Настроить systemd timer для backup
-- Убить зависший процесс (симуляция атаки)
+- Настроить systemd timer для автоматического запуска
+- Настроить resource limits (CPUQuota, MemoryLimit)
+- Security hardening services (NoNewPrivileges, ProtectSystem)
 - Анализ логов через journalctl
+- Конфигурирование systemd units (Type B), минимум bash
 
 **Сюжет:**
 Анна: *"На сервере запущен подозрительный процесс. PID 6623."* Макс с помощью Бориса находит backdoor процесс `sshd_backdoor` (маскировка под sshd). Удаляют через systemd.
@@ -146,10 +150,12 @@
 - (Bonus) RAID: типы (0, 1, 5, 10), `mdadm`
 
 **Практика:**
-- Добавить новый диск к серверу
-- Создать LVM: расширяемый том для `/var/log`
-- Настроить автомонтирование в fstab
-- Расширить LVM без downtime (как в production)
+- Добавить новый диск к серверу (GPT partitioning)
+- Создать LVM: расширяемый том для `/var/log` и других директорий
+- Настроить автомонтирование через `/etc/fstab`
+- Настроить systemd disk monitoring (service + timer)
+- Расширить LVM без downtime (production-ready)
+- Конфигурирование системы (Type B), disk management + fstab + systemd
 
 **Сюжет:**
 Макс в Таллине. Средневековые башни + fiber optic. Kristjan показывает X-Road infrastructure. Анна: *"Логи заполнили диск. `/var/log` 95%. СРОЧНО."* Виктор добавляет 500GB диск. LVM решение без downtime.
@@ -164,20 +170,23 @@
 
 **Тема:** Резервное копирование и восстановление
 - Стратегии backup: full, incremental, differential
-- 3-2-1 rule: 3 copies, 2 media types, 1 offsite
-- Инструменты: `rsync`, `tar`, `dd`, `borg`
-- Remote backup: `rsync` через SSH
-- Автоматизация: cron/systemd timer + rsync
-- Восстановление: testing, disaster recovery
+- 3-2-1-T rule: 3 copies, 2 media types, 1 offsite, TESTED
+- Инструменты: `rsync`, `tar`, `dd`
+- Remote backup: `rsync` через SSH + ключи
+- Автоматизация: **systemd timers** (modern Linux, не cron)
+- Logrotate: ротация backup логов
+- Восстановление: testing, disaster recovery, RTO/RPO
 
 **Практика:**
-- Настроить rsync backup на удалённый сервер
-- Создать incremental backup скрипт
-- Симуляция: "случайно удалили базу данных" — восстановление
-- Тестирование восстановления (DR drill)
+- Написать bash скрипт для backup (8 функций: full, incremental, offsite, restore, health check, cleanup, DR test, report)
+- Настроить **systemd timers** для автоматизации (4 timers: full, incremental, offsite, health-check)
+- Настроить **logrotate** для backup логов (daily, rotate 30)
+- Настроить SSH ключи для offsite backup
+- Симуляция: emergency restore (Krylov attack, база удалена)
+- Type B подход: 40% bash script + 60% systemd/logrotate configs
 
 **Сюжет:**
-**КАТАСТРОФА:** Атака Крылова — сервер скомпрометирован, база данных удалена. Паника. Liisa: *"У меня 3 копии всего. Skype научил параноидности."* Виктор: *"У нас есть backup с вчерашнего дня."* Успешное восстановление. Облегчение.
+**КАТАСТРОФА (3:47 AM):** Звонок Анны: *"Атака Крылова! База удалена! 4.3 GB данных!"* Макс в панике звонит Liisa. Она спокойна: *"Дыши. Три вопроса: когда последний backup? где хранится? ты проверял целостность?"* Макс не знает ни одного ответа. Liisa: *"Классика. Untested backup = no backup."* Встреча в e-Residency office, 04:10. Командный центр. Krylov был внутри 72 часа — incremental backups скомпрометированы. Нужен full backup недельной давности. Restore 4.2 GB, checksums совпадают. 06:30: *"УСПЕХ. Данные восстановлены."* Liisa учит Макса: 3-2-1-T rule, systemd timers, persistent scheduling, disaster recovery testing. **Урок:** "Untested backup = no backup. Test restore every month."
 
 ---
 
@@ -186,13 +195,15 @@
 После Season 3 вы сможете:
 
 ✅ **Управлять пользователями и группами**
-✅ **Настраивать permissions (chmod/chown) и ACL**
-✅ **Конфигурировать sudo безопасно**
+✅ **Настраивать permissions (chmod/chown), ACL, PAM**
+✅ **Конфигурировать sudo безопасно через `/etc/sudoers.d/`**
 ✅ **Управлять процессами и signals**
-✅ **Создавать и настраивать systemd services**
-✅ **Работать с дисками, LVM, fstab**
-✅ **Настраивать backup стратегии (rsync, incremental)**
-✅ **Восстанавливать данные после инцидента**
+✅ **Создавать systemd services с security hardening**
+✅ **Настраивать systemd timers (persistent scheduling)**
+✅ **Работать с дисками, LVM, fstab, disk monitoring**
+✅ **Настраивать backup стратегии (3-2-1-T rule)**
+✅ **Автоматизировать через systemd + logrotate**
+✅ **Восстанавливать данные после инцидента (disaster recovery)**
 ✅ **Думать как sysadmin: least privilege, defense in depth**
 
 ---
@@ -211,6 +222,15 @@
 - Backup → CI/CD, disaster recovery в production
 
 **Философия:** System Administration — это фундамент. Без понимания users, processes, disks невозможно администрировать cloud/containers/Kubernetes.
+
+**Type B Approach (после рефакторинга v0.4.5.9-12):**
+Season 3 использует **Type B** подход — акцент на **конфигурирование системы**, а не bash scripting:
+- Episode 09: Конфигурирование через `/etc/sudoers.d/`, `/etc/security/limits.conf`, PAM
+- Episode 10: Настройка systemd units с security hardening
+- Episode 11: Конфигурирование `/etc/fstab` + systemd disk monitoring
+- Episode 12: Systemd timers + logrotate (40% bash, 60% configs)
+
+**Правило:** Используй готовые инструменты (systemd, PAM, logrotate), не переписывай их bash скриптами.
 
 ---
 
@@ -270,14 +290,20 @@ Season 3 учит не просто командам, а **системному 
 ### Security:
 - ⚠️ **НИКОГДА не давайте полный sudo всем**
 - ⚠️ **Проверяйте /etc/sudoers через visudo** (защита от syntax errors)
+- ⚠️ **Используйте `/etc/sudoers.d/` для модульности**
 - ⚠️ **Permissions на /etc/shadow должны быть 640 или 600**
+- ⚠️ **Systemd services: включайте security hardening** (NoNewPrivileges, ProtectSystem)
+- ⚠️ **Systemd timers: используйте Persistent=true** (не пропустите запуски)
 - ⚠️ **Тестируйте backup recovery, а не только backup creation**
+- ⚠️ **"Untested backup = no backup"** — тестируйте restore каждый месяц
 
 ### LILITH подход:
 - "Root — это оружие. Используй мудро."
 - "Процессы не врут про PID. Но врут про имя."
 - "Диски как жизнь. Места всегда мало."
-- "Backup'ы — это страховка. Надеешься, что не понадобятся, но рад, что есть."
+- "Untested backup = no backup. Test restore every month."
+- "Systemd timers > cron. Persistent = надёжность."
+- "Используй готовые инструменты. Не переписывай systemd bash скриптом."
 
 ---
 
@@ -285,9 +311,10 @@ Season 3 учит не просто командам, а **системному 
 
 После прохождения Season 3 Макс:
 - ✅ Понимает users/groups/permissions на глубоком уровне
-- ✅ Может настроить systemd services для production
+- ✅ Может настроить systemd services для production (hardening, resource limits)
 - ✅ Управляет дисками через LVM без downtime
-- ✅ Настроил backup систему для всей операции
+- ✅ Настроил backup систему с systemd timers + logrotate
+- ✅ Протестировал disaster recovery (emergency restore в 3:47 AM!)
 - ✅ Готов к DevOps (Season 4) и Security (Season 5)
 
 Виктор: *"Хорошая работа. Теперь наши системы защищены. Едем в Амстердам — DevOps следующий шаг."*
