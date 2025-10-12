@@ -207,7 +207,61 @@ test_smart_capability() {
 }
 
 ################################################################################
-# Category 7: Report Test
+# Category 7: Production Monitoring Tests (systemd)
+################################################################################
+
+test_monitoring_script_exists() {
+    if [[ -f "/usr/local/bin/disk-monitor.sh" ]]; then
+        echo "    Monitoring script installed: /usr/local/bin/disk-monitor.sh"
+        return 0
+    else
+        echo "    Monitoring script not found (not installed yet)"
+        return 1
+    fi
+}
+
+test_monitoring_service_exists() {
+    if [[ -f "/etc/systemd/system/disk-monitor.service" ]]; then
+        echo "    disk-monitor.service file exists"
+        return 0
+    else
+        echo "    disk-monitor.service not found"
+        return 1
+    fi
+}
+
+test_monitoring_timer_exists() {
+    if [[ -f "/etc/systemd/system/disk-monitor.timer" ]]; then
+        echo "    disk-monitor.timer file exists"
+        return 0
+    else
+        echo "    disk-monitor.timer not found"
+        return 1
+    fi
+}
+
+test_monitoring_timer_active() {
+    if systemctl is-active disk-monitor.timer &>/dev/null; then
+        echo "    disk-monitor.timer is ACTIVE"
+        return 0
+    else
+        echo "    disk-monitor.timer not active (enable with: systemctl enable --now disk-monitor.timer)"
+        return 1
+    fi
+}
+
+test_monitoring_timer_enabled() {
+    if systemctl is-enabled disk-monitor.timer &>/dev/null; then
+        echo "    disk-monitor.timer is ENABLED (starts on boot)"
+        return 0
+    else
+        echo "    disk-monitor.timer not enabled"
+        return 1
+    fi
+}
+
+################################################################################
+# Category 8: Report Test
 ################################################################################
 
 test_report_exists() {
@@ -257,7 +311,15 @@ run_test "Disk listing" test_disk_listing
 run_test "SMART capability" test_smart_capability
 echo
 
-echo -e "${BLUE}=== Category 7: Report ===${NC}"
+echo -e "${BLUE}=== Category 7: Production Monitoring ===${NC}"
+run_test "Monitoring script installed" test_monitoring_script_exists
+run_test "systemd service file exists" test_monitoring_service_exists
+run_test "systemd timer file exists" test_monitoring_timer_exists
+run_test "Timer is active" test_monitoring_timer_active
+run_test "Timer is enabled" test_monitoring_timer_enabled
+echo
+
+echo -e "${BLUE}=== Category 8: Report ===${NC}"
 run_test "Audit report exists" test_report_exists
 echo
 

@@ -306,6 +306,62 @@ sudo smartctl -a /dev/sda
 
 ---
 
+### Test 4: Production Monitoring (systemd)
+
+```bash
+# 1. Check if monitoring is installed
+ls -l /usr/local/bin/disk-monitor.sh
+ls -l /etc/systemd/system/disk-monitor.*
+
+# 2. Check systemd timer status
+systemctl status disk-monitor.timer
+
+# 3. List when timer will run next
+systemctl list-timers disk-monitor.timer
+# Expected output:
+# NEXT                         LEFT       LAST  PASSED  UNIT                   ACTIVATES
+# Sat 2025-10-11 13:30:00 UTC  15min left n/a   n/a     disk-monitor.timer     disk-monitor.service
+
+# 4. Manually trigger monitoring (test without waiting)
+sudo systemctl start disk-monitor.service
+
+# 5. View monitoring logs
+sudo journalctl -u disk-monitor.service -n 50
+
+# 6. View timer logs
+sudo journalctl -u disk-monitor.timer -n 20
+
+# 7. Simulate high disk usage to trigger alert
+sudo dd if=/dev/zero of=/mnt/databases/testfile bs=1M count=50000
+# (adjust count to reach 90% usage)
+
+# 8. Trigger monitoring manually
+sudo systemctl start disk-monitor.service
+
+# 9. Check logs for CRITICAL alert
+sudo journalctl -u disk-monitor.service -n 20 | grep CRITICAL
+# Should see: "CRITICAL: /mnt/databases is XX% full"
+
+# 10. Cleanup test file
+sudo rm /mnt/databases/testfile
+
+# 11. Verify timer is enabled (starts on boot)
+systemctl is-enabled disk-monitor.timer
+# Expected: enabled
+
+# 12. Test systemd calendar syntax (when does it run?)
+systemd-analyze calendar "*:0/30"
+# Shows next 5 run times for "every 30 minutes"
+```
+
+**Expected results:**
+- ✅ Timer runs every 30 minutes
+- ✅ Alerts sent when disk usage ≥ 90%
+- ✅ Logs visible in journalctl
+- ✅ Timer survives reboot (if enabled)
+
+---
+
 ## 💡 Pro Tips
 
 ### 1. Always Test Backups
@@ -373,6 +429,33 @@ find /mnt/data -type f -size +100M -exec ls -lh {} \;
 
 # Disk usage by file type
 find /mnt/data -type f | sed 's/.*\.//' | sort | uniq -c | sort -rn
+```
+
+---
+
+### 5. systemd Timer Troubleshooting
+
+```bash
+# Timer not running?
+# 1. Check if timer is loaded
+systemctl list-unit-files | grep disk-monitor
+
+# 2. Check for errors in timer
+systemctl status disk-monitor.timer
+
+# 3. Check service can run manually
+sudo systemctl start disk-monitor.service
+sudo journalctl -u disk-monitor.service -n 20
+
+# 4. Check OnCalendar syntax is valid
+systemd-analyze calendar "*:0/30"
+
+# 5. Reload if you edited timer
+sudo systemctl daemon-reload
+sudo systemctl restart disk-monitor.timer
+
+# 6. View all active timers
+systemctl list-timers --all
 ```
 
 ---
