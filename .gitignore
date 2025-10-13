@@ -121,3 +121,13 @@ season-*/episode-*/artifacts/test_environment/*
 
 # Progress tracker (индивидуальный для каждого студента)
 .progress
+!**/episode-*/solution/apparmor/
+!**/episode-*/solution/apparmor/**
+!**/episode-*/solution/sysctl.d/
+!**/episode-*/solution/sysctl.d/**
+!**/episode-*/solution/service-configs/
+!**/episode-*/solution/service-configs/**
+!**/episode-*/solution/exploits/
+!**/episode-*/solution/exploits/**
+!**/episode-*/solution/reports/
+!**/episode-*/solution/reports/**

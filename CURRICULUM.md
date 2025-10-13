@@ -833,18 +833,23 @@ Dmitry: *"50 серверов вручную? Нет. Docker, Ansible, CI/CD. Е
 - Zero Trust architecture
 
 **Практика:**
-- Настроить AppArmor profiles для критических сервисов
-- Kernel hardening через sysctl
-- Audit системы через OpenSCAP и Lynis
-- Применить CIS Benchmarks
-- Настроить secure boot
-- Автоматизация hardening через Ansible (используя Episode 16)
+- Baseline audit через Lynis (68/100 → 92/100)
+- Создать AppArmor profiles для Apache, MySQL
+- Kernel hardening через sysctl (38+ параметров)
+- Применить CIS Benchmarks Level 2 (92% compliance)
+- Service hardening (SSH, Apache, MySQL)
+- Firewall configuration (UFW default deny)
+- Автоматизация через Ansible (50 серверов за 6 часов)
+- Red team validation testing (Alex)
 
 **Артефакты:**
-- `apparmor/profiles/` — кастомные AppArmor profiles
-- `/etc/sysctl.d/99-hardening.conf` — kernel security parameters
-- `ansible/hardening-playbook.yml` — автоматизация hardening
-- `hardening_report.md` — финальный security audit
+- `artifacts/baseline_audit/lynis_baseline.txt` — pre-hardening audit
+- `artifacts/cis_benchmarks/` — CIS checklist и highlights
+- `apparmor/profiles/` — production AppArmor profiles (Apache, MySQL)
+- `sysctl.d/99-hardening.conf` — kernel security (ASLR, SYN cookies, etc)
+- `service-configs/` — hardened configs (SSH, Apache)
+- `ansible/hardening-playbook.yml` — полная автоматизация
+- `hardening_report.md` — comprehensive security report
 
 **Тип:** Configuration (Type B) — системное конфигурирование
 
