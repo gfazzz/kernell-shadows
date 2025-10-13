@@ -741,32 +741,36 @@ Dmitry: *"50 серверов вручную? Нет. Docker, Ansible, CI/CD. Е
 
 **Теория:**
 - Методология пентеста (reconnaissance, scanning, exploitation, post-exploitation)
-- Kali tools: metasploit, burp suite, sqlmap, hydra, john the ripper
-- Web application security testing
-- Network penetration testing
-- Password cracking и brute-forcing
-- Reporting vulnerabilities
+- Web application security testing (burp suite, OWASP Top 10)
+- SQL injection manual exploitation
+- Password security testing (hydra, john the ripper)
+- Metasploit Framework basics
+- Vulnerability verification и exploitation
+- Ethical hacking principles
 
 **Практика:**
-- Установить pentest инструменты
-- Провести pentest веб-приложения команды
-- Network penetration testing
-- Password security audit
-- Написать bash скрипт для автоматизации pentest workflow
+- Установить pentest инструменты в Ubuntu (НЕ Kali!)
+- Провести web app pentest на тестовом приложении
+- SQL injection manual exploitation
+- Password cracking практика
+- Использовать metasploit для проверки уязвимостей
+- Написать детальный pentest отчёт
 
 **Артефакты:**
-- `pentest_automation.sh` — bash скрипт для координации инструментов
-- `scan_results/` — результаты сканирований
-- `pentest_report.md` — отчёт о найденных уязвимостях
+- `vulnerable_app/` — тестовое веб-приложение для практики
+- `scan_results/` — результаты сканирований (вручную сохранённые)
+- `exploits/` — примеры найденных эксплойтов
+- `pentest_report.md` — детальный отчёт о найденных уязвимостях
 
-**Тип:** Automation (Type A) — bash скрипт для оркестрации pentest tools
+**Тип:** Manual Pentesting (Type B) — ручная работа с pentest tools, НЕ bash scripting
 
 **Сюжет:**
 - Алекс: "Audit показал проблемы. Теперь тестируем как атакующий. Я покажу как работал в ФСБ."
 - Ethical hacking — команда тестирует свои же серверы
-- Найдено: SQL injection, слабые пароли, misconfigured services
+- Ручной pentest, каждый шаг осознанно
+- Найдено: SQL injection в админке, слабые пароли, RCE через file upload
 - Виктор: "Лучше мы найдём дыры, чем Крылов."
-- LILITH: "Знай врага. Стань врагом. Потом защищайся от себя."
+- LILITH: "Pentest — это искусство, не автоматизация. Каждая уязвимость уникальна."
 
 ---
 
