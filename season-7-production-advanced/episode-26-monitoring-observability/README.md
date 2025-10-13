@@ -389,36 +389,36 @@ Scenario: Production web app, 1000 req/sec.
 ```
 
 **Retrieval (scraper):**
-- Pulls metrics from `/metrics` endpoints
-- Default interval: 15s (configurable)
-- Parallel scraping (hundreds of targets simultaneously)
-- Timeout: 10s default
+- Забирает метрики с `/metrics` endpoints
+- Интервал по умолчанию: 15 секунд (настраивается)
+- Параллельный scraping (сотни targets одновременно)
+- Timeout: 10 секунд по умолчанию
 
 **Time-series DB (TSDB):**
-- Compressed storage (1 byte per sample typical)
-- Retention: 15 days default (configurable)
-- Efficient для millions of time-series
-- Stored on disk (persistent volume needed)
+- Сжатое хранилище (обычно 1 байт на sample)
+- Retention: 15 дней по умолчанию (настраивается)
+- Эффективно для миллионов time-series
+- Хранится на диске (нужен persistent volume)
 
 **HTTP Server:**
 - Web UI: http://prometheus:9090
 - API: http://prometheus:9090/api/v1/query
-- Query PromQL interactively
+- Интерактивные PromQL запросы
 
 **Rules Engine:**
-- Recording rules (pre-compute expensive queries)
-- Alerting rules (detect problems, send to Alertmanager)
+- Recording rules (пре-вычисление дорогих запросов)
+- Alerting rules (обнаружение проблем, отправка в Alertmanager)
 
 ---
 
-#### 2. **Targets** (what Prometheus monitors):
+#### 2. **Targets** (что мониторит Prometheus):
 
-**Types:**
-- **Kubernetes resources:** pods, nodes, services
-- **Exporters:** node_exporter (system metrics), blackbox_exporter (endpoint probes)
-- **Applications:** your app with `/metrics` endpoint
+**Типы:**
+- **Kubernetes ресурсы:** pods, nodes, services
+- **Exporters:** node_exporter (системные метрики), blackbox_exporter (проверка endpoints)
+- **Приложения:** твоё приложение с `/metrics` endpoint
 
-**Metrics endpoint format (Prometheus exposition format):**
+**Формат metrics endpoint (Prometheus exposition format):**
 
 ```
 # HELP http_requests_total Total HTTP requests
@@ -471,7 +471,7 @@ scrape_configs:
 
 Prometheus автоматически находит все pods с annotation `prometheus.io/scrape: "true"`.
 
-**Supported service discovery:**
+**Поддерживаемые механизмы service discovery:**
 - Kubernetes (pods, services, nodes, endpoints)
 - Consul, Eureka, Zookeeper
 - AWS EC2, Azure, GCP
@@ -481,37 +481,37 @@ Prometheus автоматически находит все pods с annotation `
 
 #### 4. **Metric Types:**
 
-**Counter** (only goes up):
+**Counter** (только растёт):
 ```
 http_requests_total 1000
-# ...15 seconds later...
-http_requests_total 1050  # +50 requests
+# ...15 секунд спустя...
+http_requests_total 1050  # +50 запросов
 ```
-Use cases: requests count, errors count, bytes sent
+Применение: счётчик запросов, счётчик ошибок, отправленные байты
 
-**Gauge** (can go up and down):
+**Gauge** (может расти и падать):
 ```
 memory_usage_bytes 2147483648
-# ...later...
-memory_usage_bytes 2047483648  # decreased
+# ...позже...
+memory_usage_bytes 2047483648  # уменьшилось
 ```
-Use cases: CPU %, memory usage, temperature, concurrent requests
+Применение: % CPU, использование памяти, температура, текущие подключения
 
-**Histogram** (distribution of values):
+**Histogram** (распределение значений):
 ```
-http_request_duration_seconds_bucket{le="0.1"} 500   # 500 requests < 100ms
-http_request_duration_seconds_bucket{le="0.5"} 800   # 800 requests < 500ms
-http_request_duration_seconds_bucket{le="1.0"} 950   # 950 requests < 1s
+http_request_duration_seconds_bucket{le="0.1"} 500   # 500 запросов < 100ms
+http_request_duration_seconds_bucket{le="0.5"} 800   # 800 запросов < 500ms
+http_request_duration_seconds_bucket{le="1.0"} 950   # 950 запросов < 1s
 ```
-Use cases: latency, request sizes
+Применение: задержка (latency), размеры запросов
 
-**Summary** (like histogram but client-side quantiles):
+**Summary** (как histogram, но quantiles на стороне клиента):
 ```
-http_request_duration_seconds{quantile="0.5"} 0.15   # Median: 150ms
+http_request_duration_seconds{quantile="0.5"} 0.15   # Медиана: 150ms
 http_request_duration_seconds{quantile="0.95"} 0.45  # p95: 450ms
 http_request_duration_seconds{quantile="0.99"} 0.80  # p99: 800ms
 ```
-Use cases: latency percentiles
+Применение: процентили задержки
 
 ---
 
@@ -534,10 +534,10 @@ sum by (method) (http_requests_total)
 ```
 
 **Best practices для labels:**
-- ✅ Low cardinality (method: GET/POST/PUT/DELETE — OK)
-- ❌ High cardinality (user_id label — BAD! millions of users = millions of time-series)
-- ✅ Filterable dimensions (status code, method, endpoint)
-- ❌ Dynamic values (timestamps, UUIDs)
+- ✅ Низкая кардинальность (method: GET/POST/PUT/DELETE — OK)
+- ❌ Высокая кардинальность (user_id label — ПЛОХО! миллионы users = миллионы time-series)
+- ✅ Фильтруемые измерения (status code, method, endpoint)
+- ❌ Динамические значения (timestamps, UUIDs)
 
 ---
 
@@ -623,29 +623,29 @@ Match metric type to use case:
 **Ответы:**
 
 1. **HTTP requests count** → **Counter**
-   - Only increases (never decreases)
-   - Use `rate()` to get requests/sec
+   - Только растёт (никогда не уменьшается)
+   - Используй `rate()` для получения запросов/сек
 
 2. **Current memory usage** → **Gauge**
-   - Can go up and down
-   - Use directly in queries
+   - Может расти и падать
+   - Используется напрямую в запросах
 
 3. **Request latency distribution** → **Histogram**
-   - Need percentiles (p50, p95, p99)
-   - Shows distribution across buckets
+   - Нужны процентили (p50, p95, p99)
+   - Показывает распределение по buckets
 
 4. **Current temperature** → **Gauge**
-   - Can increase or decrease
-   - Snapshot of current value
+   - Может увеличиваться или уменьшаться
+   - Снимок текущего значения
 
 5. **Bytes transferred total** → **Counter**
-   - Only increases
-   - Use `rate()` to get bytes/sec
+   - Только растёт
+   - Используй `rate()` для получения байт/сек
 
 **Правило большого пальца:**
-- Counting events → Counter
-- Measuring current value → Gauge
-- Measuring distribution → Histogram/Summary
+- Счёт событий → Counter
+- Измерение текущего значения → Gauge
+- Измерение распределения → Histogram/Summary
 
 </details>
 
@@ -658,27 +658,27 @@ Match metric type to use case:
 
 **Ответы (3 главных причины):**
 
-**1. Failure detection:**
-- **Pull:** Scrape fails → Prometheus сразу знает target down
-- **Push:** Target down → просто нет данных (может быть network issue или target dead, неясно)
+**1. Обнаружение сбоев:**
+- **Pull:** Scrape не удался → Prometheus сразу знает что target недоступен
+- **Push:** Target недоступен → просто нет данных (сетевая проблема или target мёртв, неясно)
 
-**2. Centralized control:**
-- **Pull:** Prometheus контролирует scraping (interval, timeout, targets)
-- **Push:** Targets контролируют (могут overwhelm collector, DDoS risk)
+**2. Централизованный контроль:**
+- **Pull:** Prometheus контролирует scraping (интервал, timeout, targets)
+- **Push:** Targets контролируют (могут перегрузить collector, риск DDoS)
 
 **3. Service discovery:**
 - **Pull:** Prometheus автоматически находит targets (Kubernetes service discovery)
-- **Push:** Targets должны знать куда отправлять (configuration propagation problem)
+- **Push:** Targets должны знать куда отправлять (проблема распространения конфигурации)
 
-**4. Debugging (bonus):**
+**4. Отладка (бонус):**
 - **Pull:** Можно вручную curl target `/metrics` endpoint для проверки
-- **Push:** Нужен доступ к target для debugging
+- **Push:** Нужен доступ к target для отладки
 
 **Когда push лучше:**
-- Short-lived jobs (batch jobs, serverless) — используй Pushgateway
-- Firewall ограничения (target не доступен извне) — используй agent
+- Краткоживущие задачи (batch jobs, serverless) — используй Pushgateway
+- Ограничения firewall (target недоступен извне) — используй agent
 
-**Вывод:** Pull = default choice для long-running services. Push = edge cases only.
+**Вывод:** Pull = выбор по умолчанию для долгоживущих сервисов. Push = только для edge cases.
 
 </details>
 
@@ -700,23 +700,23 @@ Match metric type to use case:
 
 ### 📚 Теория: Prometheus на Kubernetes (7-10 мин)
 
-**Deployment Options:**
+**Варианты развёртывания:**
 
-#### Option 1: Prometheus Operator (recommended для production)
+#### Вариант 1: Prometheus Operator (рекомендуется для production)
 - CRDs: ServiceMonitor, PodMonitor, PrometheusRule
 - Автоматическая конфигурация
 - Сложнее для начала
 
-#### Option 2: Helm Chart
+#### Вариант 2: Helm Chart
 - Быстрый старт
-- Pre-configured для Kubernetes
+- Преднастроен для Kubernetes
 - Используем для Episode 26
 
-#### Option 3: Manual manifests (educational)
+#### Вариант 3: Вручную через manifests (образовательно)
 - Полный контроль
 - Понимание каждого компонента
 
-**Мы используем Helm** (баланс между простотой и production-readiness).
+**Мы используем Helm** (баланс между простотой и production-готовностью).
 
 ### Prometheus Stack Components:
 
@@ -741,15 +741,15 @@ Match metric type to use case:
 └──────────────────────────────────────────────┘
 ```
 
-**Components:**
+**Компоненты:**
 
-1. **Prometheus Server** — core (scraping, storage, queries)
-2. **Alertmanager** — alert handling
-3. **Grafana** — visualization
-4. **node-exporter** — system metrics (CPU, Memory, Disk)
-5. **kube-state-metrics** — Kubernetes state metrics (deployments, pods status)
+1. **Prometheus Server** — ядро (scraping, хранение, запросы)
+2. **Alertmanager** — обработка alerts
+3. **Grafana** — визуализация
+4. **node-exporter** — системные метрики (CPU, Memory, Disk)
+5. **kube-state-metrics** — метрики состояния Kubernetes (deployments, статусы pods)
 
-### Installation Steps:
+### Шаги установки:
 
 ```bash
 # 1. Add Helm repo
@@ -769,7 +769,7 @@ helm install prometheus prometheus-community/kube-prometheus-stack \
 kubectl get pods -n monitoring
 ```
 
-**Installed resources:**
+**Установленные ресурсы:**
 
 ```
 NAME                                                     READY   STATUS
@@ -781,7 +781,7 @@ alertmanager-prometheus-kube-prometheus-alertmanager-0   2/2     Running
 prometheus-kube-prometheus-operator-xxxxx                1/1     Running
 ```
 
-**Access URLs:**
+**URL для доступа:**
 
 ```bash
 # Prometheus UI
@@ -842,20 +842,20 @@ echo "Grafana: http://localhost:3000 (admin/admin123)"
 
 **Ответ:** **Persistent storage + stable identity.**
 
-**StatefulSet provides:**
-1. **Persistent Volume** — TSDB data сохраняется при restart
-2. **Stable network identity** — prometheus-0 (не random pod name)
-3. **Ordered deployment** — guaranteed startup order
-4. **Controlled updates** — rolling update с контролем
+**StatefulSet предоставляет:**
+1. **Persistent Volume** — TSDB data сохраняется при перезапуске
+2. **Стабильную сетевую идентификацию** — prometheus-0 (не случайное имя pod)
+3. **Упорядоченное развёртывание** — гарантированный порядок запуска
+4. **Контролируемые обновления** — rolling update с контролем
 
 **Почему важно:**
 - Prometheus хранит time-series data на диске (retention 15 дней)
-- Pod restart → data должна сохраниться (PersistentVolume)
-- Deployment бы создал новый pod с empty disk (data loss!)
+- Перезапуск pod → данные должны сохраниться (PersistentVolume)
+- Deployment бы создал новый pod с пустым диском (потеря данных!)
 
-**Kubernetes patterns:**
-- **Stateless apps** (nginx, API) → Deployment
-- **Stateful apps** (databases, Prometheus) → StatefulSet
+**Kubernetes паттерны:**
+- **Stateless приложения** (nginx, API) → Deployment
+- **Stateful приложения** (базы данных, Prometheus) → StatefulSet
 
 </details>
 
@@ -952,7 +952,7 @@ kube_pod_container_status_restarts_total
 rate(http_requests_total{status="200"}[5m])
 
 # Error rate (%)
-sum(rate(http_requests_total{status=~"5.."}[5m])) / 
+sum(rate(http_requests_total{status=~"5.."}[5m])) /
 sum(rate(http_requests_total[5m])) * 100
 ```
 
@@ -1009,22 +1009,22 @@ Dashboard (collection of panels)
       └─ Panel 5: Alert list
 ```
 
-**Panel Types:**
-- **Graph:** Time-series line chart
-- **Stat:** Single number with trend
+**Типы панелей:**
+- **Graph:** Линейный график time-series
+- **Stat:** Одно число с трендом
 - **Gauge:** Progress bar/gauge
-- **Table:** Data in table format
-- **Heatmap:** Density visualization
-- **Alert list:** Active alerts
+- **Table:** Данные в табличном формате
+- **Heatmap:** Визуализация плотности
+- **Alert list:** Активные alerts
 
-**Creating Dashboard:**
+**Создание Dashboard:**
 
-1. Add data source (Prometheus already configured)
-2. Create dashboard
-3. Add panel
-4. Write PromQL query
-5. Configure visualization
-6. Save dashboard
+1. Добавить data source (Prometheus уже настроен)
+2. Создать dashboard
+3. Добавить панель
+4. Написать PromQL запрос
+5. Настроить визуализацию
+6. Сохранить dashboard
 
 **Example Panel — CPU Usage:**
 
@@ -1101,7 +1101,7 @@ spec:
       annotations:
         summary: "High CPU usage on pod {{ $labels.pod }}"
         description: "CPU usage > 90% for 5 minutes"
-    
+
     # Alert 2: Pod not Ready
     - alert: PodNotReady
       expr: kube_pod_status_phase{namespace="shadow-ops",phase!="Running"} == 1
@@ -1113,10 +1113,10 @@ spec:
         description: "Pod in {{ $labels.phase }} phase for 5 minutes"
 ```
 
-**Alert States:**
-- **Inactive:** Condition false (no problem)
-- **Pending:** Condition true, waiting `for` duration
-- **Firing:** Condition true for `for` duration → alert sent
+**Состояния Alert:**
+- **Inactive:** Условие ложно (нет проблемы)
+- **Pending:** Условие истинно, ждём `for` duration
+- **Firing:** Условие истинно в течение `for` duration → alert отправлен
 
 **Alertmanager Config:**
 
@@ -1131,14 +1131,14 @@ stringData:
   alertmanager.yaml: |
     global:
       slack_api_url: 'https://hooks.slack.com/services/xxx'
-    
+
     route:
       receiver: 'slack-notifications'
       group_by: ['alertname', 'cluster']
       group_wait: 30s
       group_interval: 5m
       repeat_interval: 4h
-    
+
     receivers:
     - name: 'slack-notifications'
       slack_configs:
@@ -1147,11 +1147,11 @@ stringData:
 ```
 
 **Best Practices:**
-- ✅ Alert на symptoms (high latency) не causes (high CPU)
-- ✅ Include runbooks в annotations
-- ✅ Use severity levels (critical, warning, info)
-- ✅ Group related alerts (не spam 100 alerts)
-- ❌ Don't alert на everything (alert fatigue)
+- ✅ Alert на симптомы (высокая задержка) а не причины (высокий CPU)
+- ✅ Включай runbooks в annotations
+- ✅ Используй уровни severity (critical, warning, info)
+- ✅ Группируй связанные alerts (не спамь 100 алертов)
+- ❌ Не создавай alerts на всё (усталость от алертов)
 
 ---
 
@@ -1199,27 +1199,27 @@ spec:
 
 ### 📚 Теория: Common Issues (сокращённо)
 
-**Issue 1: No Data in Grafana**
-- Check: Prometheus targets (Status → Targets)
-- Check: Prometheus data source в Grafana
-- Check: PromQL query syntax
+**Проблема 1: Нет данных в Grafana**
+- Проверь: Prometheus targets (Status → Targets)
+- Проверь: Prometheus data source в Grafana
+- Проверь: Синтаксис PromQL запроса
 
-**Issue 2: Alert не fires**
-- Check: Alerting rules loaded (Status → Rules)
-- Check: Alert condition true (Graph → Expression)
-- Check: `for` duration (pending → firing time)
+**Проблема 2: Alert не срабатывает**
+- Проверь: Alerting rules загружены (Status → Rules)
+- Проверь: Условие Alert истинно (Graph → Expression)
+- Проверь: `for` duration (время pending → firing)
 
-**Issue 3: High Cardinality**
-- Problem: Too many unique label combinations
-- Symptom: Prometheus OOMKilled, slow queries
-- Solution: Reduce labels (remove user_id, request_id)
+**Проблема 3: Высокая кардинальность**
+- Проблема: Слишком много уникальных комбинаций labels
+- Симптом: Prometheus OOMKilled, медленные запросы
+- Решение: Уменьши labels (убери user_id, request_id)
 
 **Best Practices:**
-- ✅ Monitor SLIs (Service Level Indicators): latency, availability, error rate
-- ✅ Define SLOs (Service Level Objectives): 99.9% uptime, p95 < 500ms
-- ✅ Alert на SLO violations
-- ✅ Use dashboards для exploration, alerts для action
-- ✅ Retention: 15-30 days (longer = more storage)
+- ✅ Мониторь SLIs (Service Level Indicators): задержка, доступность, процент ошибок
+- ✅ Определи SLOs (Service Level Objectives): 99.9% uptime, p95 < 500ms
+- ✅ Alert при нарушении SLO
+- ✅ Используй dashboards для исследования, alerts для действий
+- ✅ Retention: 15-30 дней (больше = больше места)
 
 ---
 
@@ -1262,14 +1262,14 @@ spec:
 
 Apply: `kubectl apply -f custom-alerts.yaml`
 
-### Задание 4: Test Alert
+### Задание 4: Тест Alert
 
-1. Generate high CPU: `kubectl run stress --image=polinux/stress -- stress --cpu 4`
-2. Wait 5 minutes
-3. Check Alertmanager: http://localhost:9093
-4. Verify alert fires
-5. Delete stress pod: `kubectl delete pod stress`
-6. Verify alert resolves
+1. Создай нагрузку CPU: `kubectl run stress --image=polinux/stress -- stress --cpu 4`
+2. Подожди 5 минут
+3. Проверь Alertmanager: http://localhost:9093
+4. Убедись что alert сработал
+5. Удали stress pod: `kubectl delete pod stress`
+6. Убедись что alert разрешился
 
 ---
 
@@ -1305,28 +1305,28 @@ Apply: `kubectl apply -f custom-alerts.yaml`
 - ✅ Kubernetes monitoring (ServiceMonitor, kube-state-metrics)
 - ✅ Troubleshooting (no data, alert issues, high cardinality)
 
-**Monitoring stack deployed:**
+**Развёрнутый monitoring stack:**
 - 1 Prometheus Server (StatefulSet)
-- 1 Grafana instance
+- 1 экземпляр Grafana
 - 1 Alertmanager
-- N node-exporters (per node)
+- N node-exporters (по одному на node)
 - 1 kube-state-metrics
-- Custom dashboards + alert rules
+- Кастомные dashboards + правила alerts
 
-**Time spent:** 5-6 hours  
-**Complexity:** ⭐⭐⭐⭐☆  
-**Production readiness:** 70% (monitoring active, needs alert tuning)
+**Время прохождения:** 5-6 часов
+**Сложность:** ⭐⭐⭐⭐☆
+**Production готовность:** 70% (мониторинг активен, нужна настройка alerts)
 
 ---
 
 ## 🔗 СЛЕДУЮЩИЙ ЭПИЗОД
 
 **Episode 27: Performance Tuning**
-- Performance profiling (perf, top, iostat)
-- Kernel tuning (sysctl optimization)
-- Database optimization (SQL queries, indexes)
-- Caching strategies (Redis)
-- **Персонаж:** Ólafur Þórsson (performance engineer)
+- Профилирование производительности (perf, top, iostat)
+- Тюнинг ядра (оптимизация sysctl)
+- Оптимизация базы данных (SQL запросы, индексы)
+- Стратегии кэширования (Redis)
+- **Персонаж:** Ólafur Þórsson (инженер по производительности)
 
 **День 53 операции** — 7 дней до финала
 
