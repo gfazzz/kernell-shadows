@@ -42,25 +42,28 @@ Episode 23 of 32
 
 ## 🎬 Сюжет: Сеть IoT датчиков
 
-### День 45, утро — Шэньчжэнь, IoT Factory
+### День 45, раннее утро — Шэньчжэнь, IoT фабрика
 
-**Li Wei** ведёт Макса на IoT фабрику. Конвейеры. Тысячи крошечных sensors.
+**Li Wei** ведёт Макса через огромную фабрику. Конвейеры. Роботы. Тысячи крошечных плат.
 
-*"Вот где рождаются датчики. Temperature, motion, door sensors. ESP32, STM32, Raspberry Pi Zero. Миллиарды устройств по всему миру. Все говорят на MQTT."*
+**Li Wei:** *"Здесь собирают 3 миллиона IoT датчиков в месяц. Temperature sensors для холодильников. Motion detectors для сигнализаций. Door sensors для умных домов. Всё на MQTT."*
 
-Он показывает warehouse network:
+**Макс:** *"Три миллиона в месяц?!"*
+
+**Li Wei:** *"Шэньчжэнь — IoT столица мира. 80% мировых IoT устройств делают в радиусе 50км отсюда. Видишь ту линию? DHT22 temperature sensors. $0.80 за штуку. Продают миллионами."*
+
+Он указывает на огромный склад:
 
 ```
-IoT Sensor Network:
-- 50+ temperature sensors (DHT22)
-- 20+ motion detectors (PIR)
-- 10+ door sensors (magnetic reed)
-- 1 MQTT broker (Mosquitto)
-- Python aggregator для данных
-- Dashboard для мониторинга
+Warehouse Inventory (real-time):
+├─ Temperature Sensors (DHT22): 450,000 units
+├─ Motion Detectors (PIR): 280,000 units
+├─ Door Sensors (Reed): 320,000 units
+├─ ESP32 Controllers: 180,000 units
+└─ MQTT Brokers running: 2,500+ instances
 ```
 
-**Li Wei:** *"HTTP для IoT? Слишком тяжёлый. TCP handshake каждый раз. JSON overhead. Батарея умирает за день. MQTT — это minimalism. Publish-Subscribe. Broker координирует. Battery life — недели, месяцы."*
+**Li Wei:** *"HTTP для IoT? Представь: батарейка-powered sensor. TCP handshake каждые 60 секунд. JSON overhead. HTTP headers 200-500 байт. MQTT headers — 2 байта. Батарея умрёт за день против месяца. IoT нужен minimalism."*
 
 ---
 
@@ -74,9 +77,15 @@ IoT Sensor Network:
 
 **Алекс (security warning):**
 
-*"IoT = самое слабое звено. Mirai botnet, 2016 — миллионы IoT устройств взломаны. Li Wei, security обязательна. TLS, authentication, ACL."*
+*"IoT — самое слабое звено. October 2016 помнишь? Mirai botnet. 600,000 IoT devices взломаны. Использовали для DDoS на DNS. Half of internet упал на 11 часов. All because IoT без безопасности."*
 
-**Li Wei:** *"Знаю. Episode 20 hardening. TLS для encryption. Username/password auth. ACL для topic permissions. Только authorized devices могут публиковать в sensors/."*
+**Li Wei кивает:**
+
+*"Mirai был wake-up call. Default passwords. No encryption. Telnet открыт. Китайские DVR cameras стали zombie army. 1Tbps DDoS attack. Крупнейший на тот момент."*
+
+**LILITH (активируется):**
+
+*"Mirai code опубликован. Теперь каждый скрипт-кидди может запустить IoT botnet. Shodan.io показывает 20+ миллионов незащищённых IoT devices СЕЙЧАС. Твоя задача — не попасть в эту статистику."*
 
 ---
 
@@ -94,9 +103,17 @@ IoT Sensor Network:
 
 **Сроки:** 4-5 часов
 
-**Li Wei:** *"Начнём с basics. MQTT протокол. Потом broker setup. Потом sensors. Потом security. Шаг за шагом."*
+**Li Wei:** *"MQTT появился в 1999. IBM создали для нефтепроводов в Сахаре. Satellite connectivity, low bandwidth, unreliable. Нужен был протокол который работает в худших условиях. Они создали. Теперь это стандарт для IoT."*
 
-**LILITH** (активируется): *"IoT Security — это oxymoron. Internet of Things = Internet of Threats. Каждый sensor — potential attack vector. Default passwords, no encryption, outdated firmware. Mirai ботнет за один день взломал 600,000 устройств. Твоя задача — не стать следующей жертвой."*
+**Макс:** *"Почему не HTTP? REST API?"*
+
+**Li Wei смеётся:**
+
+*"HTTP для IoT? Представь: батарейка-powered sensor. TCP handshake каждые 60 секунд. JSON overhead. HTTP headers 200-500 байт. MQTT headers — 2 байта. Батарея умрёт за день против месяца. IoT нужен minimalism."*
+
+**Li Wei:** *"Episode 21 — GPIO hardware. Episode 22 — дроны. Теперь Episode 23 — IoT networks. От одного устройства к distributed system. Ready?"*
+
+**LILITH:** *"IoT Security — это oxymoron. Internet of Things = Internet of Threats. Каждый sensor — attack vector. Default credentials, outdated firmware, no encryption. Recipe for disaster. Твоя миссия — prove me wrong."*
 
 ---
 
@@ -116,20 +133,29 @@ IoT Sensor Network:
 
 ### 🎬 Сюжет
 
-**Li Wei рисует на доске:**
+**Li Wei открывает старый ноутбук IBM ThinkPad:**
+
+*"1999 год. Andy Stanford-Clark (IBM) и Arlen Nipper (Arcom) летят в Сахару. Oil pipeline мониторинг. Satellite link — 9600 baud. Постоянные обрывы. HTTP не подходит. Они придумали MQTT."*
+
+**Макс:** *"MQ... что?"*
+
+**Li Wei:** *"Message Queue Telemetry Transport. Изначально для IBM MQ messaging. Потом адаптировали. 2013 — OASIS standard. 2016 — Mirai показал что security критичен. 2025 — миллиарды devices."*
+
+Он показывает graph на экране:
 
 ```
-HTTP (Request/Response):
-Client: "Дай мне данные"
-Server: "Вот данные"
-
-MQTT (Publish/Subscribe):
-Sensor: "Публикую: temp=22°C" → Broker
-                                  ↓
-                        Все подписчики получают
+MQTT Evolution:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1999: IBM создаёт для oil pipelines (proprietary)
+2010: Royalty-free open spec
+2013: OASIS standard (v3.1.1)
+2014: Eclipse Mosquitto becomes популярным
+2016: MIRAI BOTNET → wake-up call security!
+2019: MQTT 5.0 (новые features)
+2025: 15+ billion IoT devices используют MQTT
 ```
 
-**Li Wei:** *"HTTP — это телефонный звонок. Спросил — ответили. Повесил трубку. MQTT — это радио. Станция вещает. Кто хочет — слушает. Без прямого контакта."*
+**Li Wei:** *"Сейчас MQTT везде. Facebook Messenger использует (mobile app messaging). AWS IoT Core — MQTT. Azure IoT Hub — MQTT. Alibaba Cloud — MQTT. Стандарт де-факто."*
 
 ### 📚 Теория: Протокол MQTT
 
@@ -141,6 +167,8 @@ Sensor: "Публикую: temp=22°C" → Broker
 - Стал стандартом для IoT (2013)
 - Минимальный overhead (2 байта заголовок!)
 - Работает через TCP/IP
+
+**Li Wei:** *"Минимализм — это философия MQTT. Каждый байт на счету. Satellite link 1999 года стоил $10 per kilobyte. Они не могли тратить bandwidth на JSON и HTTP headers. Нужен был efficient protocol. И создали."*
 
 **Зачем MQTT для IoT?**
 
@@ -187,7 +215,9 @@ Aggregator: "Подписан на 'sensors/#'" (все sensors)
 Не нужно спрашивать
 ```
 
-**LILITH:** *"HTTP = лично спросить у каждого продавца 'есть ли новости?' MQTT = подписаться на газету, она сама приходит. Для IoT с тысячами sensors HTTP = безумие. MQTT = здравый смысл."*
+**Li Wei:** *"HTTP = лично спросить у каждого 'есть новости?' каждые 5 секунд (polling). MQTT = подписаться один раз, broker доставляет когда есть (push). Для IoT с тысячами sensors HTTP = безумие."*
+
+**LILITH:** *"Pub/Sub = decoupling. Publisher не знает Subscriber. Subscriber не знает Publisher. Broker координирует. Это как Tor network — anonymous communication. Но здесь для efficiency, не privacy. Один broker падает — вся система слепая. Single point of failure. Clustering brokers критичен в production."*
 
 #### Pub/Sub Pattern
 
@@ -195,7 +225,7 @@ Aggregator: "Подписан на 'sensors/#'" (все sensors)
 
 ```
         Publishers               Broker              Subscribers
-                                                                                
+
 Sensor 1: temp  ──┐                                ┌──> Dashboard
 Sensor 2: temp  ──┼──→  [Topic: sensors/temp]  ───┼──> Data Logger
 Sensor 3: motion──┼──→  [Topic: sensors/motion]───┼──> Alert System
@@ -282,11 +312,13 @@ client.subscribe("sensors/#")
 ```
 Плохо: Сказать почтальону "доставь мне письма от:
        - Вася, Петя, Маша, ...(100 имён)"
-       
+
 Хорошо: "Доставь мне ВСЮ почту по этому адресу"
 ```
 
-**Li Wei:** *"Wildcards — это не лень. Это архитектурная best practice. Broker умнее вас в фильтрации. Пусть он работает."*
+**Li Wei:** *"На IoT фабрике 10,000 sensors. Без wildcards = 10,000 subscriptions = broker падает. С wildcards = 1 subscription = работает. Broker оптимизирован для pattern matching, не для тысяч exact matches."*
+
+**LILITH:** *"Wildcards = power и опасность. Subscribe на '#' = получаешь ВСЁ. Видел как junior dev подписал dashboard на '#'. 10,000 messages/sec. Browser crash. Server crash. Всё упало. Always используй specific patterns. '#' = ядерная опция."*
 
 </details>
 
@@ -424,7 +456,9 @@ MQTT = Message Bus
 - MQTT только для real-time delivery
 ```
 
-**Li Wei:** *"MQTT как конвейер на фабрике. Детали движутся, рабочие берут. Конвейер НЕ склад! Для хранения нужен warehouse (database). MQTT = transport, not storage."*
+**Li Wei:** *"На IoT фабрике видел ошибку: developer думал Broker = storage. 1 год данных. 50GB in-memory. Broker crash. Lost всё. MQTT не для хранения. MQTT для транспорта. Store в proper DB."*
+
+**LILITH:** *"Mirai botnet использовал это. Devices публиковали credentials в topics. No retention = after reboot исчезли. Attackers не сохранили. Lost access к 30% infected devices. Их же ошибка спасла часть жертв. Irony."*
 
 </details>
 
@@ -446,7 +480,11 @@ listener 1883
 allow_anonymous true  ← ОПАСНО!
 ```
 
-**Li Wei:** *"Это базовая конфигурация. Для обучения OK. В production — катастрофа. Любой может подключиться. Любой может публиковать куда угодно. Mirai botnet именно так и работал."*
+**Li Wei:** *"Это default config. Любой может подключиться. Любой может публиковать куда угодно. Mirai именно так работал. Default credentials, no auth."*
+
+**Макс:** *"А как правильно?"*
+
+**Li Wei:** *"TLS для encryption. Username/password для auth. ACL для permissions. Три слоя защиты."*
 
 ### 📚 Теория: Mosquitto Broker Setup
 
@@ -469,6 +507,8 @@ log_type all
 persistence true
 persistence_location /var/lib/mosquitto/
 ```
+
+**Li Wei:** *"Это работает, но в production это suicide. Порт 1883 открыт миру. No encryption. No auth. Shodan.io находит 100,000+ таких brokers. Free access для attackers."*
 
 #### Production конфигурация
 
@@ -494,13 +534,52 @@ tls_version tlsv1.2
 
 # Connection limits
 max_connections 1000
+max_queued_messages 10000
 
 # Persistence
 persistence true
+persistence_location /var/lib/mosquitto/
 autosave_interval 300
+
+# QoS Settings
+max_inflight_messages 20
+upgrade_outgoing_qos false
+
+# Security
+require_certificate false  # Client cert опционально
+use_identity_as_username false
 ```
 
-#### Authentication
+**Изменения:**
+- `1883` → `8883` (TLS port)
+- `allow_anonymous true` → `false` (auth required!)
+- Добавлены: TLS, password file, ACL
+
+**Li Wei:** *"Это minimum для production. Episode 20 hardening помнишь? Те же принципы. Defense in depth."*
+
+#### 🏠 Метафора 2: Ночной клуб
+
+**Небезопасный broker = Клуб без security:**
+```
+Вход открыт (port 1883)
+Любой входит (allow_anonymous)
+Никто не проверяет (no auth)
+Все слышат всё (no encryption)
+→ Chaos!
+```
+
+**Безопасный broker = Клуб с VIP защитой:**
+```
+VIP вход (port 8883)
+Лицо в списке? (authentication)
+Правильная секция? (ACL permissions)
+Приватный разговор (TLS encryption)
+→ Controlled access!
+```
+
+**LILITH:** *"IoT без security = unlocked nightclub selling drugs. Welcome attackers! Mirai proof. 600k devices с telnet:telnet credentials. Публичный list. Script kiddies downloaded, ran, botnet ready. Zero effort attack because zero security."*
+
+#### Authentication (Username/Password)
 
 **Password file создание:**
 ```bash
@@ -513,6 +592,36 @@ mosquitto_passwd /etc/mosquitto/passwd dashboard
 
 # Формат файла:
 # username:hashed_password
+```
+
+**Формат файла (/etc/mosquitto/passwd):**
+```
+admin:$7$101$l8gPBVx...  # Bcrypt hashed
+iot_device:$7$101$2fK9...
+dashboard:$7$101$9xPq...
+```
+
+**Li Wei:** *"Bcrypt hashing. Cost factor 12 (2^12 iterations). Rainbow tables бесполезны. Даже если password file украден, brute-force займёт годы для strong passwords."*
+
+**В mosquitto.conf:**
+```conf
+password_file /etc/mosquitto/passwd
+allow_anonymous false
+```
+
+**Connect с authentication:**
+```bash
+# Publish с auth
+mosquitto_pub -h localhost -p 8883 \
+  --cafile ca.crt \
+  -u iot_device -P password \
+  -t "sensors/temp" -m "22.5"
+
+# Subscribe с auth
+mosquitto_sub -h localhost -p 8883 \
+  --cafile ca.crt \
+  -u dashboard -P password \
+  -t "sensors/#" -v
 ```
 
 #### Access Control List (ACL)
@@ -572,7 +681,13 @@ Sensor temp_01:
   sensors/temp_02/data ✗ запрещено
 ```
 
-**Li Wei:** *"ACL — это не параноя. Это необходимость. IoT устройство взломано? Пусть. Но без ACL оно контролирует только себя, не всю сеть. Defense in depth."*
+**Статистика:**
+- 80,000 vulnerable brokers найдено
+- 50,000 без ACL → compromised
+- 30,000 с ACL → protected
+- ACL saved 30k networks!
+
+**Li Wei:** *"ACL — это не паранойя. Это необходимость. Даже если credentials украдены, ACL ограничивает damage. Principle of least privilege. Episode 20 concept applied to MQTT."*
 
 </details>
 
@@ -721,12 +836,12 @@ client.loop_forever()  # Блокирует
 def on_message(client, userdata, msg):
     topic = msg.topic
     payload = msg.payload.decode()
-    
+
     if "temperature" in topic:
         temp = float(payload)
         if temp > 25:
             print(f"⚠️ High temp: {temp}°C")
-    
+
     elif "motion" in topic:
         if payload == "detected":
             print("🚨 Motion detected!")
@@ -806,10 +921,10 @@ class TemperatureSensor:
         self.client = mqtt.Client("temp_room_01")
         self.client.username_pw_set("iot_sensor", "password")
         self.client.on_connect = self.on_connect
-    
+
     def on_connect(self, client, userdata, flags, rc):
         print(f"✓ Connected: {rc}")
-    
+
     def publish_reading(self):
         temp = 20 + random.uniform(-2, 2)
         data = {
@@ -817,14 +932,14 @@ class TemperatureSensor:
             "temperature": round(temp, 1),
             "timestamp": int(time.time())
         }
-        
+
         self.client.publish(TOPIC, json.dumps(data), qos=1)
         print(f"📤 Temp: {data['temperature']}°C")
-    
+
     def run(self):
         self.client.connect(BROKER, PORT)
         self.client.loop_start()
-        
+
         try:
             while True:
                 self.publish_reading()
@@ -854,11 +969,11 @@ mosquitto_sub -h localhost -u dashboard -P password -t "sensors/#" -v
 
 ### 🎬 Сюжет
 
-**Алекс (видеозвонок, критично):**
+**Алекс (видеозвонок, urgent):**
 
-*"Li Wei! Я sniff-нул MQTT трафик. Temperature readings в plaintext! Любой с Wireshark видит всё. TLS обязателен!"*
+*"Li Wei! Wireshark capture показал — MQTT traffic в plaintext! Temperature readings видны. Patterns понятны. Это intelligence leak!"*
 
-**Li Wei:** *"Понял. Episode 20 hardening recall. Генерируем CA, server cert, client cert. TLS 1.2+. Perfect Forward Secrecy. Standard stuff."*
+**Li Wei:** *"Порт 1883 = no encryption. Нужен 8883 + TLS. Episode 20 SSL certificates remember? Same concept."*
 
 ### 📚 Теория: MQTT с TLS
 
@@ -874,11 +989,13 @@ Sensor → Broker: temperature=22.5 (plaintext!)
 
 **С TLS (порт 8883):**
 ```
-Sensor → Broker: [зашифрованный payload]
+Sensor → Broker: [encrypted: 0x8a4f2b...]
               ↓
-         Wireshark sees: 0x8a4f2b... (garbage)
-         Attacker: ¯\_(ツ)_/¯
+       Wireshark видит: garbage (зашифровано)
+       Attacker: ¯\_(ツ)_/¯
 ```
+
+**Li Wei:** *"IoT data кажется trivial. 'Просто temperature'. Но patterns reveal behaviour. 22°C в 3am = кто-то дома. 18°C постоянно = никого нет. TLS скрывает это."*
 
 #### Certificate Generation
 
@@ -929,12 +1046,15 @@ cafile /etc/mosquitto/ca.crt
 certfile /etc/mosquitto/server.crt
 keyfile /etc/mosquitto/server.key
 
-# TLS version
+# TLS Version (минимум TLS 1.2!)
 tls_version tlsv1.2
 
-# Require client certificate (опционально)
-require_certificate true
+# Client Certificate (optional)
+require_certificate false
+# Set true для mutual TLS (client cert required)
 ```
+
+**LILITH:** *"TLS 1.0/1.1 deprecated. BEAST, CRIME, POODLE attacks. Only TLS 1.2+ в 2025. Mirai v3 (2018) exploited TLS 1.0 brokers. Protocol downgrade attack. TLS 1.2 minimum, TLS 1.3 preferred."*
 
 #### Python MQTT с TLS
 
@@ -1022,7 +1142,7 @@ Sensors Online: 6
 
 Last readings:
 - room_01: 22.5°C (2s ago)
-- entrance: MOTION DETECTED! (5s ago)  
+- entrance: MOTION DETECTED! (5s ago)
 - main_door: OPEN (1m ago) ⚠️
 ```
 
@@ -1034,7 +1154,7 @@ Last readings:
 
 ```
         Sensors                   Aggregator              Storage/Alerts
-                                                        
+
 temp_01 ─┐                                            ┌→ InfluxDB
 temp_02 ─┼→ [MQTT Broker] → [Python Aggregator] ─┼→ Dashboard
 motion ──┼                                            ├→ Alert System
@@ -1052,14 +1172,14 @@ class SensorAggregator:
         self.client = mqtt.Client("aggregator")
         self.client.on_message = self.on_message
         self.sensors = {}
-    
+
     def on_message(self, client, userdata, msg):
         topic = msg.topic
         data = json.loads(msg.payload.decode())
-        
+
         # Store latest reading
         self.sensors[topic] = data
-        
+
         # Process by type
         if "temperature" in topic:
             self.process_temperature(data)
@@ -1067,16 +1187,16 @@ class SensorAggregator:
             self.process_motion(data)
         elif "door" in topic:
             self.process_door(data)
-    
+
     def process_temperature(self, data):
         temp = data['temperature']
         if temp > 25:
             self.alert(f"High temp: {temp}°C")
-    
+
     def process_motion(self, data):
         if data.get('motion_detected'):
             self.alert("Motion detected!")
-    
+
     def alert(self, message):
         # Publish to alerts topic
         self.client.publish("alerts/critical", message)
@@ -1247,9 +1367,9 @@ cd ~/kernel-shadows/season-6-embedded-iot/episode-23-iot-mqtt
 
 ---
 
-**Статус:** Episode 23 ЗАВЕРШЁН ✅  
-**Далее:** [Episode 24: Kernel Modules & Device Drivers](../episode-24-kernel/)  
-**Сезон:** [Season 6: Embedded Linux & IoT](../)  
+**Статус:** Episode 23 ЗАВЕРШЁН ✅
+**Далее:** [Episode 24: Kernel Modules & Device Drivers](../episode-24-kernel/)
+**Сезон:** [Season 6: Embedded Linux & IoT](../)
 **Курс:** [KERNEL SHADOWS](../../../)
 
 ---
