@@ -29,10 +29,10 @@ echo ""
 run_test() {
     local test_name="$1"
     local test_command="$2"
-    
+
     TESTS_RUN=$((TESTS_RUN + 1))
     echo -e "${YELLOW}[TEST $TESTS_RUN]${NC} $test_name..."
-    
+
     if eval "$test_command" &>/dev/null; then
         echo -e "${GREEN}✓ PASS${NC}"
         TESTS_PASSED=$((TESTS_PASSED + 1))

@@ -151,13 +151,13 @@ check_services() {
 # Function: Generate Summary
 generate_summary() {
     echo -e "${YELLOW}[8/8]${NC} Generating summary..."
-    
+
     # Count resources
     PROMETHEUS_COUNT=$(kubectl get pods -n "$NAMESPACE" -l app.kubernetes.io/name=prometheus --no-headers 2>/dev/null | wc -l)
     GRAFANA_COUNT=$(kubectl get pods -n "$NAMESPACE" -l app.kubernetes.io/name=grafana --no-headers 2>/dev/null | wc -l)
     ALERTMANAGER_COUNT=$(kubectl get pods -n "$NAMESPACE" -l app.kubernetes.io/name=alertmanager --no-headers 2>/dev/null | wc -l)
     RULES_COUNT=$(kubectl get prometheusrules -n "$NAMESPACE" --no-headers 2>/dev/null | wc -l)
-    
+
     {
         echo "───────────────────────────────────────────────────────────"
         echo "8. SUMMARY"
@@ -169,19 +169,19 @@ generate_summary() {
         echo "  - Alertmanager: $ALERTMANAGER_COUNT pods"
         echo "  - PrometheusRules: $RULES_COUNT"
         echo ""
-        
+
         if [[ $PROMETHEUS_COUNT -gt 0 && $GRAFANA_COUNT -gt 0 ]]; then
             echo "✓ Monitoring stack is deployed"
         else
             echo "✗ Monitoring stack incomplete"
         fi
         echo ""
-        
+
         echo "───────────────────────────────────────────────────────────"
         echo "GUÐRÚN'S ASSESSMENT"
         echo "───────────────────────────────────────────────────────────"
         echo ""
-        
+
         if [[ $PROMETHEUS_COUNT -gt 0 && $GRAFANA_COUNT -gt 0 && $ALERTMANAGER_COUNT -gt 0 ]]; then
             echo "Guðrún Ásta:"
             echo "\"Good work. Prometheus collects metrics. Grafana visualizes."
@@ -201,7 +201,7 @@ generate_summary() {
             echo "Status: ⚠ NEEDS FIXES"
         fi
         echo ""
-        
+
         echo "───────────────────────────────────────────────────────────"
         echo "LILITH v7.0 (Production Mode):"
         echo "\"От слепого kubectl к полной observability. Prometheus scrapes"
@@ -211,7 +211,7 @@ generate_summary() {
         echo "───────────────────────────────────────────────────────────"
         echo ""
     } >> "$REPORT_FILE"
-    
+
     echo -e "${GREEN}✓ Summary generated${NC}"
 }
 
@@ -225,7 +225,7 @@ main() {
     check_rules
     check_services
     generate_summary
-    
+
     echo ""
     echo -e "${BLUE}═══════════════════════════════════════════════════════════${NC}"
     echo -e "${GREEN}✓ Audit complete!${NC}"

@@ -54,14 +54,14 @@ command_exists() {
 
 test_performance_audit_script_exists() {
     print_test "Performance audit script exists"
-    
+
     if [ -f "performance_audit.sh" ]; then
         print_pass "performance_audit.sh found"
     else
         print_fail "performance_audit.sh not found"
         return 1
     fi
-    
+
     if [ -x "performance_audit.sh" ]; then
         print_pass "performance_audit.sh is executable"
     else
@@ -72,12 +72,12 @@ test_performance_audit_script_exists() {
 
 test_performance_audit_runs() {
     print_test "Performance audit script runs without errors"
-    
+
     if [ ! -f "performance_audit.sh" ]; then
         print_skip "performance_audit.sh not found"
         return 0
     fi
-    
+
     if ./performance_audit.sh &>/dev/null; then
         print_pass "Script executed successfully"
     else
@@ -88,20 +88,20 @@ test_performance_audit_runs() {
 
 test_performance_audit_generates_report() {
     print_test "Performance audit generates report file"
-    
+
     if [ ! -f "performance_audit.sh" ]; then
         print_skip "performance_audit.sh not found"
         return 0
     fi
-    
+
     # Run script
     ./performance_audit.sh &>/dev/null || true
-    
+
     # Check if report file was created
     report_files=(performance_audit_*.txt)
     if [ -f "${report_files[0]}" ]; then
         print_pass "Report file generated: ${report_files[0]}"
-        
+
         # Check file size (should not be empty)
         size=$(stat -f%z "${report_files[0]}" 2>/dev/null || stat -c%s "${report_files[0]}" 2>/dev/null || echo 0)
         if [ "$size" -gt 100 ]; then
@@ -117,22 +117,22 @@ test_performance_audit_generates_report() {
 
 test_cpu_check_implemented() {
     print_test "CPU check is implemented"
-    
+
     if [ ! -f "performance_audit.sh" ]; then
         print_skip "performance_audit.sh not found"
         return 0
     fi
-    
+
     # Run and check output
     output=$(./performance_audit.sh 2>&1 || true)
-    
+
     if echo "$output" | grep -q "=== CPU PERFORMANCE ==="; then
         print_pass "CPU section found"
     else
         print_fail "CPU section not found"
         return 1
     fi
-    
+
     if echo "$output" | grep -iq "load"; then
         print_pass "CPU load check present"
     else
@@ -142,21 +142,21 @@ test_cpu_check_implemented() {
 
 test_memory_check_implemented() {
     print_test "Memory check is implemented"
-    
+
     if [ ! -f "performance_audit.sh" ]; then
         print_skip "performance_audit.sh not found"
         return 0
     fi
-    
+
     output=$(./performance_audit.sh 2>&1 || true)
-    
+
     if echo "$output" | grep -q "=== MEMORY PERFORMANCE ==="; then
         print_pass "Memory section found"
     else
         print_fail "Memory section not found"
         return 1
     fi
-    
+
     if echo "$output" | grep -iq "memory\|mem\|ram"; then
         print_pass "Memory check present"
     else
@@ -166,19 +166,19 @@ test_memory_check_implemented() {
 
 test_disk_io_check() {
     print_test "Disk I/O check (if iostat available)"
-    
+
     if ! command_exists iostat; then
         print_skip "iostat not installed (install sysstat package for full test)"
         return 0
     fi
-    
+
     if [ ! -f "performance_audit.sh" ]; then
         print_skip "performance_audit.sh not found"
         return 0
     fi
-    
+
     output=$(./performance_audit.sh 2>&1 || true)
-    
+
     if echo "$output" | grep -q "=== DISK I/O PERFORMANCE ==="; then
         print_pass "Disk I/O section found"
     else
@@ -188,14 +188,14 @@ test_disk_io_check() {
 
 test_database_check() {
     print_test "Database check (if database running)"
-    
+
     if [ ! -f "performance_audit.sh" ]; then
         print_skip "performance_audit.sh not found"
         return 0
     fi
-    
+
     output=$(./performance_audit.sh 2>&1 || true)
-    
+
     if echo "$output" | grep -q "=== DATABASE PERFORMANCE ==="; then
         print_pass "Database section found"
     else
@@ -205,19 +205,19 @@ test_database_check() {
 
 test_cache_check() {
     print_test "Cache check (if Redis available)"
-    
+
     if ! command_exists redis-cli; then
         print_skip "Redis not installed"
         return 0
     fi
-    
+
     if [ ! -f "performance_audit.sh" ]; then
         print_skip "performance_audit.sh not found"
         return 0
     fi
-    
+
     output=$(./performance_audit.sh 2>&1 || true)
-    
+
     if echo "$output" | grep -q "=== CACHE PERFORMANCE ==="; then
         print_pass "Cache section found"
     else
@@ -227,14 +227,14 @@ test_cache_check() {
 
 test_sysctl_check() {
     print_test "sysctl settings check"
-    
+
     if [ ! -f "performance_audit.sh" ]; then
         print_skip "performance_audit.sh not found"
         return 0
     fi
-    
+
     output=$(./performance_audit.sh 2>&1 || true)
-    
+
     if echo "$output" | grep -q "=== SYSCTL SETTINGS ==="; then
         print_pass "sysctl section found"
     else
@@ -244,12 +244,12 @@ test_sysctl_check() {
 
 test_colored_output() {
     print_test "Script uses colored status indicators"
-    
+
     if [ ! -f "performance_audit.sh" ]; then
         print_skip "performance_audit.sh not found"
         return 0
     fi
-    
+
     # Check for emoji or colored output
     if grep -q "🟢\|🟡\|🔴" "performance_audit.sh"; then
         print_pass "Colored status indicators present (🟢/🟡/🔴)"
@@ -260,12 +260,12 @@ test_colored_output() {
 
 test_threshold_checks() {
     print_test "Script has threshold checks"
-    
+
     if [ ! -f "performance_audit.sh" ]; then
         print_skip "performance_audit.sh not found"
         return 0
     fi
-    
+
     # Check for threshold variables
     if grep -q "THRESHOLD\|threshold" "performance_audit.sh"; then
         print_pass "Threshold checks present"
@@ -276,14 +276,14 @@ test_threshold_checks() {
 
 test_output_formatting() {
     print_test "Output is well formatted"
-    
+
     if [ ! -f "performance_audit.sh" ]; then
         print_skip "performance_audit.sh not found"
         return 0
     fi
-    
+
     output=$(./performance_audit.sh 2>&1 || true)
-    
+
     # Check for section headers
     section_count=$(echo "$output" | grep -c "===" || echo 0)
     if [ "$section_count" -ge 5 ]; then
@@ -295,26 +295,26 @@ test_output_formatting() {
 
 test_script_best_practices() {
     print_test "Script follows bash best practices"
-    
+
     if [ ! -f "performance_audit.sh" ]; then
         print_skip "performance_audit.sh not found"
         return 0
     fi
-    
+
     # Check for shebang
     if head -1 "performance_audit.sh" | grep -q "^#!/bin/bash"; then
         print_pass "Shebang present"
     else
         print_fail "Shebang missing or incorrect"
     fi
-    
+
     # Check for set -euo pipefail (or at least set -e)
     if grep -q "set -e" "performance_audit.sh"; then
         print_pass "Error handling enabled (set -e)"
     else
         print_fail "No error handling (missing set -e)"
     fi
-    
+
     # Check for functions
     if grep -q "^[a-z_]*() {" "performance_audit.sh"; then
         print_pass "Functions defined"
@@ -325,10 +325,10 @@ test_script_best_practices() {
 
 test_system_tools_available() {
     print_test "Required system tools availability"
-    
+
     local tools=("top" "free" "uptime" "sysctl")
     local missing=0
-    
+
     for tool in "${tools[@]}"; do
         if command_exists "$tool"; then
             print_pass "$tool available"
@@ -337,7 +337,7 @@ test_system_tools_available() {
             ((missing++))
         fi
     done
-    
+
     if [ $missing -gt 0 ]; then
         return 1
     fi
@@ -345,10 +345,10 @@ test_system_tools_available() {
 
 test_optional_tools() {
     print_test "Optional performance tools"
-    
+
     local tools=("iostat" "vmstat" "perf" "htop" "iotop")
     local installed=0
-    
+
     for tool in "${tools[@]}"; do
         if command_exists "$tool"; then
             echo -e "  ${GREEN}✓${NC} $tool available"
@@ -357,7 +357,7 @@ test_optional_tools() {
             echo -e "  ${YELLOW}!${NC} $tool not installed (optional)"
         fi
     done
-    
+
     if [ $installed -gt 0 ]; then
         print_pass "$installed optional tools available"
     else
@@ -375,7 +375,7 @@ main() {
     echo " KERNEL SHADOWS - Season 7"
     echo "========================================"
     echo ""
-    
+
     # Run tests
     test_performance_audit_script_exists || true
     test_performance_audit_runs || true
@@ -392,7 +392,7 @@ main() {
     test_script_best_practices || true
     test_system_tools_available || true
     test_optional_tools || true
-    
+
     # Summary
     echo ""
     echo "========================================"
@@ -402,7 +402,7 @@ main() {
     echo -e "${GREEN}Passed:       $TESTS_PASSED${NC}"
     echo -e "${RED}Failed:       $TESTS_FAILED${NC}"
     echo ""
-    
+
     if [ $TESTS_FAILED -eq 0 ]; then
         echo -e "${GREEN}✅ ALL TESTS PASSED!${NC}"
         echo ""

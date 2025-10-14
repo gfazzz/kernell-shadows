@@ -112,11 +112,11 @@ sum by (method) (rate(http_requests_total[5m]))
 ### Error Rate
 ```promql
 # Error rate (%)
-sum(rate(http_requests_total{status=~"5.."}[5m])) / 
+sum(rate(http_requests_total{status=~"5.."}[5m])) /
 sum(rate(http_requests_total[5m])) * 100
 
 # 4xx rate
-sum(rate(http_requests_total{status=~"4.."}[5m])) / 
+sum(rate(http_requests_total{status=~"4.."}[5m])) /
 sum(rate(http_requests_total[5m])) * 100
 ```
 
@@ -129,7 +129,7 @@ histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m]))
 histogram_quantile(0.99, rate(http_request_duration_seconds_bucket[5m]))
 
 # Average latency
-rate(http_request_duration_seconds_sum[5m]) / 
+rate(http_request_duration_seconds_sum[5m]) /
 rate(http_request_duration_seconds_count[5m])
 ```
 
@@ -193,11 +193,11 @@ avg(up{job="kubernetes-nodes"}) * 100
 ### Resource Saturation
 ```promql
 # CPU saturation
-sum(rate(container_cpu_usage_seconds_total[5m])) / 
+sum(rate(container_cpu_usage_seconds_total[5m])) /
 sum(machine_cpu_cores) * 100
 
 # Memory saturation
-sum(container_memory_usage_bytes) / 
+sum(container_memory_usage_bytes) /
 sum(machine_memory_bytes) * 100
 ```
 
@@ -227,7 +227,7 @@ container_memory_usage_bytes / container_spec_memory_limit_bytes > 0.9
 
 ### High Error Rate
 ```promql
-sum(rate(http_requests_total{status=~"5.."}[5m])) / 
+sum(rate(http_requests_total{status=~"5.."}[5m])) /
 sum(rate(http_requests_total[5m])) > 0.01
 ```
 

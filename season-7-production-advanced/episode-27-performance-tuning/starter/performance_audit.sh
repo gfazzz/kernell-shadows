@@ -38,7 +38,7 @@ IOWAIT_THRESHOLD=10       # %
 print_status() {
     local status=$1
     local message=$2
-    
+
     case $status in
         "OK")
             echo "🟢 $message"
@@ -67,25 +67,25 @@ command_exists() {
 check_cpu() {
     echo ""
     echo "=== CPU PERFORMANCE ==="
-    
+
     # TODO: Implement CPU check
     # - Get load average (use 'uptime' or 'cat /proc/loadavg')
     # - Get number of CPU cores (use 'nproc')
     # - Compare load vs cores
     # - Check iowait (use 'iostat' or 'vmstat')
-    # 
+    #
     # Print status:
     # - OK if load < cores
     # - WARNING if load < cores * 1.5
     # - CRITICAL if load >= cores * 1.5
-    
+
     print_status "WARNING" "CPU check not implemented yet!"
 }
 
 check_memory() {
     echo ""
     echo "=== MEMORY PERFORMANCE ==="
-    
+
     # TODO: Implement memory check
     # - Get total/used/free memory (use 'free -m')
     # - Calculate usage percentage
@@ -96,14 +96,14 @@ check_memory() {
     # - WARNING if usage < MEMORY_THRESHOLD + 10
     # - CRITICAL if usage >= MEMORY_THRESHOLD + 10
     # - CRITICAL if swap is being used
-    
+
     print_status "WARNING" "Memory check not implemented yet!"
 }
 
 check_disk_io() {
     echo ""
     echo "=== DISK I/O PERFORMANCE ==="
-    
+
     # TODO: Implement disk I/O check
     # - Use 'iostat -x 1 3' to get disk stats
     # - Check %util (utilization)
@@ -113,19 +113,19 @@ check_disk_io() {
     # - OK if %util < DISK_UTIL_THRESHOLD
     # - WARNING if %util < DISK_UTIL_THRESHOLD + 10
     # - CRITICAL if %util >= DISK_UTIL_THRESHOLD + 10
-    
+
     if ! command_exists iostat; then
         print_status "WARNING" "iostat not installed (install sysstat package)"
         return
     fi
-    
+
     print_status "WARNING" "Disk I/O check not implemented yet!"
 }
 
 check_database() {
     echo ""
     echo "=== DATABASE PERFORMANCE ==="
-    
+
     # TODO: Implement database check
     # MySQL:
     # - Check if running: systemctl is-active mysql
@@ -140,7 +140,7 @@ check_database() {
     # - OK if no slow queries
     # - WARNING if < 10 slow queries
     # - CRITICAL if >= 10 slow queries
-    
+
     if systemctl is-active --quiet mysql 2>/dev/null; then
         print_status "WARNING" "MySQL database check not implemented yet!"
     elif systemctl is-active --quiet postgresql 2>/dev/null; then
@@ -153,7 +153,7 @@ check_database() {
 check_cache() {
     echo ""
     echo "=== CACHE PERFORMANCE ==="
-    
+
     # TODO: Implement Redis cache check
     # - Check if Redis running: redis-cli PING
     # - Get hit/miss stats: redis-cli INFO stats | grep keyspace
@@ -163,24 +163,24 @@ check_cache() {
     # - OK if hit rate > 90%
     # - WARNING if hit rate > CACHE_HIT_RATE_MIN
     # - CRITICAL if hit rate <= CACHE_HIT_RATE_MIN
-    
+
     if ! command_exists redis-cli; then
         print_status "OK" "Redis not installed (skipping)"
         return
     fi
-    
+
     if ! redis-cli PING >/dev/null 2>&1; then
         print_status "WARNING" "Redis not running (skipping)"
         return
     fi
-    
+
     print_status "WARNING" "Redis cache check not implemented yet!"
 }
 
 check_sysctl() {
     echo ""
     echo "=== SYSCTL SETTINGS ==="
-    
+
     # TODO: Implement sysctl check
     # Check critical performance parameters:
     # - net.ipv4.tcp_fin_timeout (should be low, e.g., 30)
@@ -189,19 +189,19 @@ check_sysctl() {
     # - fs.file-max (should be high, e.g., > 100000)
     #
     # Print each setting with recommended value
-    
+
     print_status "WARNING" "sysctl check not implemented yet!"
 }
 
 check_network() {
     echo ""
     echo "=== NETWORK PERFORMANCE ==="
-    
+
     # TODO: Implement network check (optional)
     # - Check connection count: ss -s
     # - Check dropped packets: netstat -i
     # - Check bandwidth usage: sar -n DEV 1 3
-    
+
     print_status "WARNING" "Network check not implemented yet!"
 }
 
@@ -230,7 +230,7 @@ main() {
     echo " PERFORMANCE AUDIT"
     echo "========================================"
     echo "Starting audit at $(date)"
-    
+
     # Run all checks
     check_cpu
     check_memory
@@ -239,10 +239,10 @@ main() {
     check_cache
     check_sysctl
     check_network
-    
+
     # Generate summary
     generate_summary
-    
+
     echo ""
     echo "✅ Audit complete!"
 }
