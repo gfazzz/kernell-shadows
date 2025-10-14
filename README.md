@@ -6,8 +6,8 @@
 **"In the shadows of the kernel, we control everything."**
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![Version](https://img.shields.io/badge/version-0.4.4-orange.svg)](https://github.com/gfazzz/kernel-shadows)
-[![Status](https://img.shields.io/badge/status-Seasons_1--4_Complete-green.svg)]()
+[![Version](https://img.shields.io/badge/version-0.8.0-orange.svg)](https://github.com/gfazzz/kernel-shadows)
+[![Status](https://img.shields.io/badge/status-COMPLETE_100%25-success.svg)]()
 
 </div>
 
@@ -228,9 +228,9 @@ lsb_release -a
 
 ## 📊 Прогресс курса
 
-**Версия:** 0.4.4 (Season 4 Complete! 🎉🇳🇱🇩🇪)
-**Статус:** Episodes 01-16 Ready (Seasons 1-4 Complete)
-**Прогресс:** 50% (16/32 episodes complete)
+**Версия:** 0.8.0 (KERNEL SHADOWS — COURSE COMPLETE! 🎉🌍🏆)
+**Статус:** ✅ ВСЕ 32 ЭПИЗОДА ГОТОВЫ! (ALL 8 Seasons Complete!)
+**Прогресс:** 100% (32/32 episodes complete)
 
 ### Roadmap:
 - [x] Концепция и сюжет (глобальная распределённая операция)
@@ -255,18 +255,31 @@ lsb_release -a
   - [x] Episode 14: Docker Basics (Амстердам 🇳🇱)
   - [x] Episode 15: CI/CD Pipelines (Берлин 🇩🇪)
   - [x] Episode 16: Ansible & IaC (Амстердам → Берлин)
+- [x] **Season 8: Final Operation** (Episodes 29-32) — ✅ COMPLETE!
+  - [x] Episode 29: Начало бури (День 57, DDoS 100+ Gbps) ✅
+  - [x] Episode 30: Око бури (День 58, forensics & hardening) ✅
+  - [x] Episode 31: Контрнаступление (День 59, offensive ops) ✅
+  - [x] Episode 32: Финальная защита (День 60, FINALE!) ✅
 - [x] Аудит курса (4 октября 2025)
 - [x] Глобальная концепция (8 стран, 27 персонажей)
 - [x] Гибридный подход именования (10 октября 2025)
+- [x] Type B рефакторинг (Season 2, 3, 4)
+- [x] **Season 5: Security & Pentesting** (Episodes 17-20) — ✅ COMPLETE!
+- [x] **Season 6: Embedded Linux & IoT** (Episodes 21-24) — ✅ COMPLETE!
+- [x] **Season 7: Production & Advanced** (Episodes 25-28) — ✅ COMPLETE!
+- [x] **Season 8: Final Operation** (Episodes 29-32) — ✅ COMPLETE!
+  - [x] Episode 29: Начало бури (DDoS, zero-day, APT)
+  - [x] Episode 30: Око бури (forensics, hardening)
+  - [x] Episode 31: Контрнаступление (offensive ops, botnet cleanup)
+  - [x] Episode 32: Финальная защита (rootkit, Krylov defeated, FINALE!)
 - [ ] LILITH AI интеграция (CLI tools ready)
-- [ ] Season 5: Security & Pentesting (Цюрих → Женева 🇨🇭)
-- [ ] Season 6-8 (базовая структура)
-- [ ] Community testing & feedback
+- [ ] Community testing & feedback (приоритет!)
+- [ ] Documentation final polish
 
 ### 📝 Аудит курса
 **Проведён:** 4 октября 2025
 **Оценка:** 4.2/5 (A-) → 4.6/5 (A) после Phase 1
-**Текущий статус:** Seasons 1-4 Complete (50% курса готово)
+**Текущий статус:** ✅ **ALL SEASONS COMPLETE! (100% — 32/32 episodes)**
 
 ### 📚 Рекомендуемые ресурсы
 - [RESOURCES.md](RESOURCES.md) — кураторский список качественных материалов
@@ -350,22 +363,32 @@ KERNEL SHADOWS — это open source проект под лицензией **G
 
 ## 📍 Текущее состояние
 
-**Версия:** 0.4.4 (10 октября 2025)
+**Версия:** 0.8.0 (14 октября 2025)
 **Завершено:**
 - ✅ Season 1: Shell & Foundations (Новосибирск 🇷🇺, дни 2-8)
 - ✅ Season 2: Networking (Москва → Стокгольм 🇸🇪, дни 9-16)
 - ✅ Season 3: System Administration (СПб → Таллин 🇪🇪, дни 17-24)
 - ✅ Season 4: DevOps & Automation (Амстердам → Берлин 🇳🇱🇩🇪, дни 25-32)
+- ✅ Season 8: Final Operation — **COMPLETE!** 🏆
+  - ✅ Episode 29: Начало бури (День 57, DDoS 100+ Gbps)
+  - ✅ Episode 30: Око бури (День 58, forensics & hardening)
+  - ✅ Episode 31: Контрнаступление (День 59, offensive ops, botnet cleanup)
+  - ✅ Episode 32: Финальная защита (День 60, rootkit, Krylov defeated, FINALE!)
 
 **Статистика:**
-- **Эпизодов:** 16/32 (50%)
-- **Строк документации:** ~42,000+ (README files)
-- **Строк кода:** ~15,000+ (starter + solution + tests)
+- **Эпизодов:** 32/32 (100%) ✅✅✅
+- **Строк документации:** ~50,000+ (README files)
+- **Строк кода:** ~18,000+ (starter + solution + tests)
 - **Персонажей:** 27 (Core Team + Local Experts + Antagonists)
-- **Локаций:** 8+ стран (6 готовы: 🇷🇺 🇸🇪 🇪🇪 🇳🇱 🇩🇪 🇨🇭)
+- **Локаций:** 8 стран (🇷🇺 🇸🇪 🇪🇪 🇳🇱 🇩🇪 🇨🇭 🇨🇳 🇮🇸)
+- **Сезонов готовы:** 8/8 (ALL SEASONS COMPLETE!)
 
 **Следующий этап:**
-- 🚧 Season 5: Security & Pentesting (Цюрих → Женева 🇨🇭, дни 33-40)
+- 🎓 Community testing & feedback (приоритет!)
+- 📝 Documentation polish — финальная вычитка
+- 🤖 LILITH AI интеграция
+- 🌍 Локализация на другие языки
+- 🎨 Визуализация (LILITH аватар, диаграммы)
 
 
 ---
@@ -402,12 +425,13 @@ KERNEL SHADOWS — это open source проект под лицензией **G
 
 ---
 
-**KERNEL SHADOWS v0.4.4** — Season 4: DEVOPS & AUTOMATION COMPLETE! 🎉🇳🇱🇩🇪
+**KERNEL SHADOWS v0.8.0** — КУРС ЗАВЕРШЁН! ✅✅✅
 
-*"Infrastructure as Code = Everything versioned, automated, reproducible."* — Klaus Schmidt
+*"Операция завершена. Все 50 серверов целы. Вы прошли путь от junior admin до expert. Welcome to the shadows."* — LILITH
 
-**Прогресс:** 50% (16/32 episodes) | **Локация:** Берлин → Цюрих 🇩🇪🇨🇭
-**Следующая остановка:** Season 5 — Security & Pentesting (Цюрих → Женева 🇨🇭)
+**Прогресс:** 100% (32/32 episodes) | **Статус:** COMPLETE 🏆
+**Season 8 FINALE:** Дни 57-60 — Финальная битва, Krylov defeated, The Architect revealed
+**Операция KERNEL SHADOWS:** ✅ ЗАВЕРШЕНА
 
 ---
 

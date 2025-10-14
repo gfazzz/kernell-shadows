@@ -654,51 +654,57 @@ fi
 
 ## 🎯 Приоритеты разработки
 
-### Версия 0.4.4 (текущая) ✅
-- [x] **Season 1: Shell & Foundations** (Episodes 01-04) — COMPLETE
+### Версия 0.8.0 (текущая) ✅ COMPLETE!
+- [x] **Season 1: Shell & Foundations** (Episodes 01-04) — ✅ COMPLETE
   - [x] Episode 01: Terminal Awakening
   - [x] Episode 02: Shell Scripting Basics
   - [x] Episode 03: Text Processing Masters
   - [x] Episode 04: Package Management
-- [x] **Season 2: Networking** (Episodes 05-08) — COMPLETE
+- [x] **Season 2: Networking** (Episodes 05-08) — ✅ COMPLETE
   - [x] Episode 05: TCP/IP Fundamentals
   - [x] Episode 06: DNS & Name Resolution
   - [x] Episode 07: Firewalls & iptables
   - [x] Episode 08: VPN & SSH Tunneling
-- [x] **Season 3: System Administration** (Episodes 09-12) — COMPLETE
+- [x] **Season 3: System Administration** (Episodes 09-12) — ✅ COMPLETE
   - [x] Episode 09: Users & Permissions (СПб 🇷🇺)
   - [x] Episode 10: Processes & Systemd
   - [x] Episode 11: Disk Management & LVM (Таллин 🇪🇪)
   - [x] Episode 12: Backup & Recovery
-- [x] **Season 4: DevOps & Automation** (Episodes 13-16) — COMPLETE
+- [x] **Season 4: DevOps & Automation** (Episodes 13-16) — ✅ COMPLETE
   - [x] Episode 13: Git & Version Control (Берлин 🇩🇪)
   - [x] Episode 14: Docker Basics (Амстердам 🇳🇱)
   - [x] Episode 15: CI/CD Pipelines (Берлин 🇩🇪)
   - [x] Episode 16: Ansible & IaC (Амстердам → Берлин)
+- [x] **Season 8: Final Operation** (Episodes 29-32) — ✅ COMPLETE!
+  - [x] Episode 29: Начало бури (День 57, DDoS 100+ Gbps) ✅
+  - [x] Episode 30: Око бури (День 58, forensics & hardening) ✅
+  - [x] Episode 31: Контрнаступление (День 59, offensive ops) ✅
+  - [x] Episode 32: Финальная защита (День 60, FINALE!) ✅
 - [x] Глобальная концепция (8 стран, 27 персонажей, 60 дней)
 - [x] "Learn by Doing" + Progressive hints (3-уровневая система)
 - [x] LILITH как активный проводник
 - [x] Интегрированная структура (теория just-in-time)
 - [x] Гибридный подход именования (нарратив кириллица, техника translit)
+- [x] Type B рефакторинг (Seasons 2, 3, 4 — 50/50 баланс)
 
-### Версия 0.5.0 (следующая):
-- [ ] **Season 5: Security & Pentesting** (Episodes 17-20)
-  - [ ] Episode 17: Security Fundamentals (Цюрих 🇨🇭)
-  - [ ] Episode 18: Penetration Testing Basics
-  - [ ] Episode 19: Web Security (Женева 🇨🇭)
-  - [ ] Episode 20: Incident Response & Forensics
-- [ ] Локации: Цюрих → Женева
-- [ ] Новые персонажи: Eva Zimmerman, Marcus Weber, Dr. Heinrich Bauer
+### Версия 1.0.0 (следующая — production release):
+- [ ] Community testing ALL 32 episodes (обратная связь от студентов)
+- [ ] Documentation polish — финальная вычитка всех README
+- [ ] LILITH AI интеграция (интерактивный помощник)
+- [ ] Визуализация (LILITH аватар, ASCII диаграммы, иконки)
+- [ ] Переводы на английский, немецкий, испанский
+- [ ] Video tutorials (опционально)
+- [ ] Official launch & marketing
 
-### Версия 0.6.0 (планируется):
-- [ ] Season 6: Embedded Linux (Шэньчжэнь 🇨🇳)
-- [ ] LILITH CLI улучшения (интерактивный помощник)
-
-### Что нужно сейчас:
-1. **Season 5 Episodes 17-20** — начать разработку (Security & Pentesting)
-2. **Community testing Seasons 1-4** — feedback от студентов
-3. **LILITH визуализация** — аватар, иконки
-4. **Переводы** — локализация курса на другие языки
+### Что нужно сейчас (v0.8.0 → v1.0.0):
+1. **Community testing ALL 32 episodes** — feedback от студентов (ПРИОРИТЕТ!)
+2. **Season 5-7 review** — тестирование episodes 17-28
+3. **Season 8 final review** — полировка финала
+4. **Documentation consistency** — единый стиль across all episodes
+5. **LILITH визуализация** — аватар, иконки для каждого сезона
+6. **Переводы** — начать с английского (самый востребованный)
+7. **Landing page** — официальный сайт курса
+8. **Community platform** — Discord/Forum для студентов
 
 ---
 
@@ -723,15 +729,17 @@ fi
 
 ---
 
-**KERNEL SHADOWS v0.4.4** — Season 4: DevOps & Automation COMPLETE! 🎉🇳🇱🇩🇪
+**KERNEL SHADOWS v0.8.0** — КУРС ЗАВЕРШЁН! ✅✅✅
 
-**Прогресс:** 50% (16/32 episodes) | **Следующая остановка:** Season 5 — Цюрих 🇨🇭
+**Прогресс:** 100% (32/32 episodes) | **Статус:** COMPLETE 🏆
+
+**Season 8 FINALE:** Все 4 эпизода готовы, Krylov defeated, операция завершена!
 
 ---
 
 Сделано с ❤️ и lots of `sudo` commands
 
-**Последнее обновление:** 10 октября 2025
+**Последнее обновление:** 14 октября 2025
 
 [⬆ Наверх](#contributing-to-kernel-shadows)
 
